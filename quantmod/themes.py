@@ -1,6 +1,0 @@
-
-THEMES = dict(
-
-
-
-)
