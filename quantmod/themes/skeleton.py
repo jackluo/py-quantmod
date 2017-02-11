@@ -34,8 +34,8 @@ theme = dict(
         height = 720,
         autosize = True,
         font = dict(
-            family = "Overpass",
-            size = 12,
+            family = _PLACEHOLDER,
+            size = _PLACEHOLDER,
             color = _PLACEHOLDER,
         ),
         margin = dict(
