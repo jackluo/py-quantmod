@@ -8,17 +8,17 @@ theme = dict(
         hoverinfo = "x+y+text+name",
         mode = "lines",
         marker = dict(
-            size =
-            color =
-            opacity =
-            symbol =
+            size = 5,
+            opacity = 0.8,
+            symbol = "square",
+            color = _PLACEHOLDER,
         )
         line = dict(
-            size =
-            color =
-            shape =
-            smoothing =
-            dash =
+            width = 2,
+            color = _PLACEHOLDER,
+            #shape =  "spline",
+            #smoothing = "2",
+            #dash = 4,
         )
         fill =
         fillcolor =
@@ -85,7 +85,6 @@ theme = dict(
             #showline = False,
             #showgrid = False,
             #zeroline = False,
-            #anchor = "x1",
             #titlefont = dict(size = 10),
 
         ),
@@ -109,7 +108,6 @@ theme = dict(
             #showline = False,
             #showgrid = False,
             #zeroline = False,
-            #anchor = "x1",
             #titlefont = dict(size = 10),
 
         ),
@@ -133,7 +131,33 @@ theme = dict(
             #showline = False,
             #showgrid = False,
             #zeroline = False,
-            #anchor = "x",
+            #titlefont = dict(size = 10),
+
+        ),
+        # BAR PLOTS
+        barmode = "group",
+
+        ),
+        yaxis3 = dict(
+
+            # RANGE
+            #rangemode = "tozero",
+            #range = ,
+            #nticks = , #OR
+            #tick0 = , #AND
+            #dtick = ,
+
+            # TICKS
+            #tickfont = dict(size = 10),
+            #showticklabels = False,
+
+            # OTHER
+            type = "linear",
+            domain = [0.0, 0.0],
+            side = "right",
+            #showline = False,
+            #showgrid = False,
+            #zeroline = False,
             #titlefont = dict(size = 10),
 
         ),
