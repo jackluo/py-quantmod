@@ -1,4 +1,4 @@
- import pandas_datareader.data as web
+import pandas_datareader.data as web
 
 
 def get_symbols(ticker, src='yahoo', start=None, end=None):

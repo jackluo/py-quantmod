@@ -1,11 +1,11 @@
 import pandas as pd
 import pandas_datareader.data as web
 import talib
-from talib import abstract
 
 import plotly.plotly as py
 import plotly.offline as pyo
 
+from themes.themes import get_light_theme
 
 class Chart(object):
 
@@ -78,80 +78,66 @@ class Chart(object):
         self.primary = function(inputs, **kwargs)
 
 
-    def plot(self, type='candlestick', title='Stock', theme='light'):
+    def plot(self, type='candlestick', title='Stock'):
+
+        template, layout = get_light_theme()
 
         data = []
         if type == 'candlestick':
-            data.append(
-                dict(
-                    type = 'candlestick',
-                    x = self.df.index,
-                    open = self.df[self.op],
-                    high = self.df[self.hi],
-                    low = self.df[self.lo],
-                    close = self.df[self.cl],
-                    name = title,
-                    yaxis = 'y1',
-                )
-            )
+
+            candlestick = template['candlestick']
+
+            candlestick['x'] = self.df.index
+            candlestick['open'] = self.df[self.op]
+            candlestick['high'] = self.df[self.hi]
+            candlestick['low'] = self.df[self.lo]
+            candlestick['close'] = self.df[self.cl]
+            candlestick['name'] = title
+            candlestick['yaxis'] = 'y1'
+
+            data.append(candlestick)
+
         elif type == 'line':
-            data.append(
-                dict(
-                    type = 'scatter',
-                    mode = 'lines',
-                    x = self.df.index,
-                    y = self.df[self.ad],
-                    name = title,
-                    yaxis = 'y1',
-                )
-            )
 
-        for column in self.primary:
-            data.append(
-                dict(
-                    type = 'scatter',
-                    mode = 'lines',
-                    x = self.df.index,
-                    y = self.primary[column],
-                    name = column,
-                    yaxis = 'y1',
-                )
-            )
+            line = template['line']
 
-        for column in self.secondary:
-            data.append(
-                dict(
-                    type = 'scatter',
-                    mode = 'lines',
-                    x = self.df.index,
-                    y = self.secondary[column],
-                    name = column,
-                    yaxis = 'y2',
-                )
-            )
+            line['x'] = self.df.index
+            line['y'] = self.df[self.ad]
+            line['name'] = title
+            line['yaxis'] = 'y1'
 
-        layout = dict(
-            title = ticker,
+            data.append(line)
 
-            font = dict(family = 'overpass'),
-            showlegend = False,
-            yaxis = dict(
-                domain = [0.0, 1.0],
-                type = 'linear',
-            ),
-            xaxis = dict(
-                rangeslider = dict(
-                    visible = False,
-                ),
-            ),
-        )
+        for i, column in enumerate(self.primary):
+
+            line = template['line']
+
+            line['x'] = self.df.index
+            line['y'] = self.primary[column]
+            line['name'] = self.primary.columns[i]
+            line['yaxis'] = 'y1'
+
+            data.append(line)
+
+        for i, column in enumerate(self.secondary):
+
+            line = template['line']
+
+            line['x'] = self.df.index
+            line['y'] = self.secondary[column]
+            line['name'] = self.secondary.columns[i]
+            line['yaxis'] = 'y2'
+
+            data.append(line)
+
+        layout['xaxis'] = template['xaxis']
+        layout['yaxis'] = template['yaxis']
+        layout['title'] = title
+
         if len(self.secondary.columns):
+            layout['yaxis2'] = template['yaxis2']
             layout['yaxis1']['domain'] = [0.3, 1.0]
             layout['yaxis2']['domain'] = [0.0, 0.2]
-
-        if theme == 'light':
-            layout['plot_bgcolor'] = '#FAFAFA'
-            layout['paper_bgcolor'] = '#F5F6F9'
 
         figure = dict(data=data, layout=layout)
         return py.plot(figure)
@@ -168,11 +154,10 @@ def _EMA(self, timeperiod=30):
     name = 'EMA({})'.format(str(timeperiod))
     self.primary[name] = talib.EMA(self.df[self.cl].values, timeperiod)
 
-
-
 Chart.MA = _MA
 Chart.SMA = _SMA
 Chart.EMA = _EMA
+
 #Chart.BBANDS = _BBANDS
 #Chart.RSI = _RSI
 
@@ -190,16 +175,16 @@ Chart.EMA = _EMA
 #Chard.APO = _APO
 #Chart.HT_TRENDLINE = _HT_TRENDLINE
 
-
-# In[]:
 ticker = 'AAPL'
+
+template, layout = get_light_theme()
 
 df = web.DataReader(ticker, data_source='yahoo')
 ch = Chart(df)
-sma = abstract.SMA
-ch.add(sma)
-ch.adjust(inplace=True)
+ch = ch.adjust()
 ch.MA(50)
-ch.SMA(50)
-ch.EMA(200)
+ch.to_frame()
+ch.primary.columns
+#ch.SMA(50)
+#ch.EMA(200)
 ch.plot()
