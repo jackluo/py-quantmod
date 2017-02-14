@@ -130,54 +130,6 @@ base_template = dict(
 
     ),
 
-    yaxis2 = dict(
-
-        # RANGE
-        #rangemode = "tozero",
-        #range = ,
-        #nticks = , #OR
-        #tick0 = , #AND
-        #dtick = ,
-
-        # TICKS
-        #tickfont = dict(size = 10),
-        #showticklabels = False,
-
-        # OTHER
-        type = "linear",
-        domain = [0.0, 0.0],
-        side = "right",
-        #showline = False,
-        #showgrid = False,
-        #zeroline = False,
-        #titlefont = dict(size = 10),
-
-    ),
-
-    yaxis3 = dict(
-
-        # RANGE
-        #rangemode = "tozero",
-        #range = ,
-        #nticks = , #OR
-        #tick0 = , #AND
-        #dtick = ,
-
-        # TICKS
-        #tickfont = dict(size = 10),
-        #showticklabels = False,
-
-        # OTHER
-        type = "linear",
-        domain = [0.0, 0.0],
-        side = "right",
-        #showline = False,
-        #showgrid = False,
-        #zeroline = False,
-        #titlefont = dict(size = 10),
-
-    ),
-
     buttons = [
         dict(count = 1, step = "day", stepmode = "backward", label = "1D"),
         dict(count = 5, step = "day", stepmode = "backward", label = "5D"),

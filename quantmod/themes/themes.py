@@ -20,9 +20,11 @@ def get_light_theme():
     template['xaxis']['rangeselector']['bgcolor'] = '#C9C9C9'
     template['xaxis']['rangeselector']['activecolor'] = '#888888'
 
+    template['yaxis']['side'] = 'left'
+
     layout = base_layout
 
-    layout['font']['family'] = 'overpass'
+    layout['font']['family'] = 'droid mono'
     layout['font']['size'] = '12'
     layout['font']['color'] = '#000000'
 

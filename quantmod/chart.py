@@ -1,11 +1,10 @@
 import pandas as pd
 import pandas_datareader.data as web
 import talib
-
 import plotly.plotly as py
 import plotly.offline as pyo
-
 from themes.themes import get_light_theme
+
 
 class Chart(object):
 
@@ -142,9 +141,11 @@ class Chart(object):
         figure = dict(data=data, layout=layout)
         return py.plot(figure)
 
-def _MA(self, timeperiod=30):
+# ta.py
+
+def _MA(self, timeperiod=30, matype=0):
     name = 'MA({})'.format(str(timeperiod))
-    self.primary[name] = talib.MA(self.df[self.cl].values, timeperiod)
+    self.primary[name] = talib.MA(self.df[self.cl].values, timeperiod, matype)
 
 def _SMA(self, timeperiod=30):
     name = 'SMA({})'.format(str(timeperiod))
@@ -154,12 +155,21 @@ def _EMA(self, timeperiod=30):
     name = 'EMA({})'.format(str(timeperiod))
     self.primary[name] = talib.EMA(self.df[self.cl].values, timeperiod)
 
-Chart.MA = _MA
-Chart.SMA = _SMA
-Chart.EMA = _EMA
+def _BBANDS(self, timperiod=5, nbdevup=2, nbdevdn=2, matype=0):
+    name = 'BB({}, {}, {})'.format(str(timeperiod), str(nbdevup), str(nbdevdn))
+    upperband = name + ' Upper'
+    middleband = name + ' Middle'
+    lowerband = name + ' Lower'
+    self.primary[upperband], self.primary[middleband], self.primary[lowerband] = talib.BBANDS(self.df[self.cl], timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
 
-#Chart.BBANDS = _BBANDS
-#Chart.RSI = _RSI
+def _RSI(self, )[ for value in variable]
+
+Chart.add_MA = _MA
+Chart.add_SMA = _SMA
+Chart.add_EMA = _EMA
+
+Chart.add_BBANDS = _BBANDS
+Chart.add_RSI = _RSI
 
 #Chart.WMA = _WMA
 #Chart.DEMA = _DEMA
@@ -175,6 +185,8 @@ Chart.EMA = _EMA
 #Chard.APO = _APO
 #Chart.HT_TRENDLINE = _HT_TRENDLINE
 
+# tests.py
+
 ticker = 'AAPL'
 
 template, layout = get_light_theme()
@@ -182,7 +194,7 @@ template, layout = get_light_theme()
 df = web.DataReader(ticker, data_source='yahoo')
 ch = Chart(df)
 ch = ch.adjust()
-ch.MA(50)
+ch.add_MA(50)
 ch.to_frame()
 ch.primary.columns
 #ch.SMA(50)
