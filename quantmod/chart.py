@@ -3,7 +3,7 @@ import pandas_datareader.data as web
 import talib
 import plotly.plotly as py
 import plotly.offline as pyo
-from themes.themes import get_light_theme
+from .themes.themes import get_light_theme
 
 
 class Chart(object):
@@ -30,6 +30,43 @@ class Chart(object):
 
         self.primary = pd.DataFrame(index = df.index)
         self.secondary = pd.DataFrame(index = df.index)
+
+    @property
+    def has_open(self):
+        return [self.op in column for column in self.df.columns]
+
+    @property
+    def has_high(self):
+        return [self.hi in column for column in self.df.columns]
+
+    @property
+    def has_low(self):
+        return [self.lo in column for column in self.df.columns]
+
+    @property
+    def has_close(self):
+        return [self.cl in column for column in self.df.columns]
+
+    @property
+    def has_adjusted_close(self):
+        return [self.ad in column for column in self.df.columns]
+
+    @property
+    def has_volume(self):
+        return [self.vo in column for column in self.df.columns]
+
+
+    @property
+    def is_OHLC(self):
+        return not self.df.filter(like=[self.op, self.hi, self.lo, self.cl]).empty
+
+    @property
+    def has_OHLC(self):
+        return (np.array(self.has_open) + np.array(self.has_high) + np.array(self.has_low) + np.array(self.has_close))
+
+    @property
+    def is_line(self):
+        return not (self.df.filter(like=self.op).empty and self.df.filter(like=self.cl).empty)
 
 
     def adjust(self, inplace=False):
@@ -162,14 +199,14 @@ def _BBANDS(self, timperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     lowerband = name + ' Lower'
     self.primary[upperband], self.primary[middleband], self.primary[lowerband] = talib.BBANDS(self.df[self.cl], timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
 
-def _RSI(self, )[ for value in variable]
+#def _RSI(self, )[ for value in variable]
 
 Chart.add_MA = _MA
 Chart.add_SMA = _SMA
 Chart.add_EMA = _EMA
 
 Chart.add_BBANDS = _BBANDS
-Chart.add_RSI = _RSI
+#Chart.add_RSI = _RSI
 
 #Chart.WMA = _WMA
 #Chart.DEMA = _DEMA
@@ -187,16 +224,16 @@ Chart.add_RSI = _RSI
 
 # tests.py
 
-ticker = 'AAPL'
+#ticker = 'AAPL'
 
-template, layout = get_light_theme()
+#template, layout = get_light_theme()
 
-df = web.DataReader(ticker, data_source='yahoo')
-ch = Chart(df)
-ch = ch.adjust()
-ch.add_MA(50)
-ch.to_frame()
-ch.primary.columns
+#df = web.DataReader(ticker, data_source='yahoo')
+#ch = Chart(df)
+#ch = ch.adjust()
+#ch.add_MA(50)
+#ch.to_frame()
+#ch.primary.columns
 #ch.SMA(50)
 #ch.EMA(200)
-ch.plot()
+#ch.plot()

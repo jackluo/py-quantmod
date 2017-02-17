@@ -11,8 +11,17 @@ template, layout = get_light_theme()
 
 df = web.DataReader(ticker, data_source='yahoo')
 ch = qm.Chart(df)
-ch = ch.adjust()
+ch.has_close
+#ch.to_frame()
+#del df['Close']
+#del df['Adj Close']
+ch.has_open
+ch.has_close
+ch.is_OHLC
 #ch.MA(50)
 #ch.SMA(50)
 #ch.EMA(200)
 ch.plot()
+
+'a' in 'def'
+'1' in '123'

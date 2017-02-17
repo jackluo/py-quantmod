@@ -24,7 +24,7 @@ def get_light_theme():
 
     layout = base_layout
 
-    layout['font']['family'] = 'droid mono'
+    layout['font']['family'] = 'droid sans mono'
     layout['font']['size'] = '12'
     layout['font']['color'] = '#000000'
 
