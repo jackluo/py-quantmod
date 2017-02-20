@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pandas_datareader.data as web
 import talib
@@ -18,55 +19,72 @@ class Chart(object):
             hi = 'High'
             lo = 'Low'
             cl = 'Close'
-            ad = 'Adj Close'
+            aop = None
+            ahi = None
+            alo = None
+            acl = 'Adj Close'
             vo = 'Volume'
+            di = None
 
         self.op = op
         self.hi = hi
         self.lo = lo
         self.cl = cl
-        self.ad = ad
+        self.aop = aop
+        self.ahi = ahi
+        self.alo = alo
+        self.acl = acl
         self.vo = vo
+        self.di = di
 
-        self.primary = pd.DataFrame(index = df.index)
-        self.secondary = pd.DataFrame(index = df.index)
+        self.primary = pd.DataFrame([])
+        self.secondary = pd.DataFrame([])
 
     @property
     def has_open(self):
-        return [self.op in column for column in self.df.columns]
-
+        return np.fromiter((self.op == column for column in self.df.columns), dtype=np.bool_)
     @property
     def has_high(self):
-        return [self.hi in column for column in self.df.columns]
-
+        return np.fromiter((self.hi == column for column in self.df.columns), dtype=np.bool_)
     @property
     def has_low(self):
-        return [self.lo in column for column in self.df.columns]
-
+        return np.fromiter((self.lo == column for column in self.df.columns), dtype=np.bool_)
     @property
     def has_close(self):
-        return [self.cl in column for column in self.df.columns]
+        return np.fromiter((self.cl == column for column in self.df.columns), dtype=np.bool_)
 
     @property
+    def has_adjusted_open(self):
+        return np.fromiter((self.aop == column for column in self.df.columns), dtype=np.bool_)
+    @property
+    def has_adjusted_high(self):
+        return np.fromiter((self.ahi == column for column in self.df.columns), dtype=np.bool_)
+    @property
+    def has_adjusted_low(self):
+        return np.fromiter((self.alo == column for column in self.df.columns), dtype=np.bool_)
+    @property
     def has_adjusted_close(self):
-        return [self.ad in column for column in self.df.columns]
+        return np.fromiter((self.acl == column for column in self.df.columns), dtype=np.bool_)
 
     @property
     def has_volume(self):
-        return [self.vo in column for column in self.df.columns]
-
+        return np.fromiter((self.vo == column for column in self.df.columns), dtype=np.bool_)
+    @property
+    def has_dividend(self):
+        return np.fromiter((self.di == column for column in self.df.columns), dtype=np.bool_)
 
     @property
     def is_OHLC(self):
-        return not self.df.filter(like=[self.op, self.hi, self.lo, self.cl]).empty
-
+        return not (self.df.filter(like=[self.aop, self.ahi, self.alo, self.acl]).empty)
     @property
     def has_OHLC(self):
         return (np.array(self.has_open) + np.array(self.has_high) + np.array(self.has_low) + np.array(self.has_close))
-
     @property
     def is_line(self):
-        return not (self.df.filter(like=self.op).empty and self.df.filter(like=self.cl).empty)
+        return not (self.df.filter(like=self.cl).empty and self.df.filter(like=self.acl).empty)
+    @property
+    def has_OHLC(self):
+        return (np.array(self.has_close) + np.array(self.has_adjusted_close))
 
 
     def adjust(self, inplace=False):

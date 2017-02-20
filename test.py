@@ -17,6 +17,7 @@ ch.has_close
 #del df['Adj Close']
 ch.has_open
 ch.has_close
+ch.has_adjusted_close
 ch.is_OHLC
 #ch.MA(50)
 #ch.SMA(50)
