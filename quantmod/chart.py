@@ -19,9 +19,6 @@ class Chart(object):
             hi = 'High'
             lo = 'Low'
             cl = 'Close'
-            aop = None
-            ahi = None
-            alo = None
             acl = 'Adj Close'
             vo = 'Volume'
             di = None
@@ -30,84 +27,84 @@ class Chart(object):
         self.hi = hi
         self.lo = lo
         self.cl = cl
-        self.aop = aop
-        self.ahi = ahi
-        self.alo = alo
         self.acl = acl
         self.vo = vo
         self.di = di
 
-        self.primary = pd.DataFrame([])
-        self.secondary = pd.DataFrame([])
+        self.ind = pd.DataFrame([], index=self.df.index)
+        self.pri = {}
+        self.sec = {}
 
     @property
     def has_open(self):
-        return np.fromiter((self.op == column for column in self.df.columns), dtype=np.bool_)
+        cols = {self.op}
+        return self.df.columns.isin(cols)
     @property
     def has_high(self):
-        return np.fromiter((self.hi == column for column in self.df.columns), dtype=np.bool_)
+        cols = {self.hi}
+        return self.df.columns.isin(cols)
     @property
     def has_low(self):
-        return np.fromiter((self.lo == column for column in self.df.columns), dtype=np.bool_)
+        cols = {self.lo}
+        return self.df.columns.isin(cols)
     @property
     def has_close(self):
-        return np.fromiter((self.cl == column for column in self.df.columns), dtype=np.bool_)
-
-    @property
-    def has_adjusted_open(self):
-        return np.fromiter((self.aop == column for column in self.df.columns), dtype=np.bool_)
-    @property
-    def has_adjusted_high(self):
-        return np.fromiter((self.ahi == column for column in self.df.columns), dtype=np.bool_)
-    @property
-    def has_adjusted_low(self):
-        return np.fromiter((self.alo == column for column in self.df.columns), dtype=np.bool_)
+        cols = {self.cl}
+        return self.df.columns.isin(cols)
     @property
     def has_adjusted_close(self):
-        return np.fromiter((self.acl == column for column in self.df.columns), dtype=np.bool_)
+        cols = {self.acl}
+        return self.df.columns.isin(cols)
 
     @property
     def has_volume(self):
-        return np.fromiter((self.vo == column for column in self.df.columns), dtype=np.bool_)
+        cols = {self.vo}
+        return self.df.columns.isin(cols)
     @property
     def has_dividend(self):
-        return np.fromiter((self.di == column for column in self.df.columns), dtype=np.bool_)
+        cols = {self.di}
+        return self.df.columns.isin(cols)
+
+    @property
+    def has_OHLC(self):
+        cols = {self.op, self.hi, self.lo, self.cl}
+        return self.df.columns.isin(cols)
+    @property
+    def has_line(self):
+        cols = {self.cl}
+        return self.df.columns.isin(cols)
 
     @property
     def is_OHLC(self):
-        return not (self.df.filter(like=[self.aop, self.ahi, self.alo, self.acl]).empty)
-    @property
-    def has_OHLC(self):
-        return (np.array(self.has_open) + np.array(self.has_high) + np.array(self.has_low) + np.array(self.has_close))
+        cols = {self.op, self.hi, self.lo, self.cl}
+        arr = self.df.columns.isin(cols)
+        return np.sum(arr) >= len(cols)
     @property
     def is_line(self):
-        return not (self.df.filter(like=self.cl).empty and self.df.filter(like=self.acl).empty)
-    @property
-    def has_OHLC(self):
-        return (np.array(self.has_close) + np.array(self.has_adjusted_close))
+        cols = {self.cl}
+        arr = self.df.columns.isin(cols)
+        return np.sum(arr) >= len(cols)
 
 
     def adjust(self, inplace=False):
 
-        ratio = (self.df[self.cl]/self.df[self.ad])
+        ratio = (self.df[self.cl]/self.df[self.acl])
         if inplace:
             self.df[self.op] = self.df[self.op] / ratio
             self.df[self.hi] = self.df[self.hi] / ratio
             self.df[self.lo] = self.df[self.lo] / ratio
             self.df[self.cl] = self.df[self.cl] / ratio
-            #self.df = self.df.div(ratio, axis='index')
         else:
             df2 = self.df.copy()
             df2[self.op] = self.df[self.op] / ratio
             df2[self.hi] = self.df[self.hi] / ratio
             df2[self.lo] = self.df[self.lo] / ratio
             df2[self.cl] = self.df[self.cl] / ratio
-            #df2 = self.df.div(ratio, axis='index')
             return Chart(df2)
 
 
     def adjust_volume(self, inplace=False):
-        ratio = (self.df[self.cl]/self.df[self.ad])
+        ratio = (self.df[self.cl]/self.df[self.acl])
         if inplace:
             self.df[self.vo] = self.df[self.vo] / ratio
         else:
@@ -117,19 +114,7 @@ class Chart(object):
 
 
     def to_frame(self):
-        return self.df.join([self.primary, self.secondary])
-
-
-    def add(self, function, **kwargs):
-
-        inputs = dict(
-            open = self.df[self.op],
-            high = self.df[self.hi],
-            low = self.df[self.lo],
-            close = self.df[self.cl],
-            volume = self.df[self.vo],
-        )
-        self.primary = function(inputs, **kwargs)
+        return self.df.join([self.ind])
 
 
     def plot(self, type='candlestick', title='Stock'):
@@ -139,7 +124,7 @@ class Chart(object):
         data = []
         if type == 'candlestick':
 
-            candlestick = template['candlestick']
+            candlestick = template['candlestick'].copy()
 
             candlestick['x'] = self.df.index
             candlestick['open'] = self.df[self.op]
@@ -153,33 +138,33 @@ class Chart(object):
 
         elif type == 'line':
 
-            line = template['line']
+            line = template['line'].copy()
 
             line['x'] = self.df.index
-            line['y'] = self.df[self.ad]
+            line['y'] = self.df[self.cl]
             line['name'] = title
             line['yaxis'] = 'y1'
 
             data.append(line)
 
-        for i, column in enumerate(self.primary):
+        for trace in self.pri:
 
-            line = template['line']
+            line = template['line'].copy()
 
-            line['x'] = self.df.index
-            line['y'] = self.primary[column]
-            line['name'] = self.primary.columns[i]
+            line['x'] = self.ind.index
+            line['y'] = self.ind[trace]
+            line['name'] = trace
             line['yaxis'] = 'y1'
 
             data.append(line)
 
-        for i, column in enumerate(self.secondary):
+        for trace in self.sec:
 
             line = template['line']
 
-            line['x'] = self.df.index
-            line['y'] = self.secondary[column]
-            line['name'] = self.secondary.columns[i]
+            line['x'] = self.ind.index
+            line['y'] = self.ind[trace]
+            line['name'] = trace
             line['yaxis'] = 'y2'
 
             data.append(line)
@@ -188,7 +173,7 @@ class Chart(object):
         layout['yaxis'] = template['yaxis']
         layout['title'] = title
 
-        if len(self.secondary.columns):
+        if self.sec:
             layout['yaxis2'] = template['yaxis2']
             layout['yaxis1']['domain'] = [0.3, 1.0]
             layout['yaxis2']['domain'] = [0.0, 0.2]
@@ -200,24 +185,28 @@ class Chart(object):
 
 def _MA(self, timeperiod=30, matype=0):
     name = 'MA({})'.format(str(timeperiod))
-    self.primary[name] = talib.MA(self.df[self.cl].values, timeperiod, matype)
+    self.pri[name] = {}
+    self.ind[name] = talib.MA(self.df[self.cl].values, timeperiod, matype)
 
 def _SMA(self, timeperiod=30):
     name = 'SMA({})'.format(str(timeperiod))
-    self.primary[name] = talib.SMA(self.df[self.cl].values, timeperiod)
+    self.pri[name] = {}
+    self.ind[name] = talib.SMA(self.df[self.cl].values, timeperiod)
 
 def _EMA(self, timeperiod=30):
     name = 'EMA({})'.format(str(timeperiod))
-    self.primary[name] = talib.EMA(self.df[self.cl].values, timeperiod)
+    self.pri[name] = {}
+    self.ind[name] = talib.EMA(self.df[self.cl].values, timeperiod)
 
-def _BBANDS(self, timperiod=5, nbdevup=2, nbdevdn=2, matype=0):
-    name = 'BB({}, {}, {})'.format(str(timeperiod), str(nbdevup), str(nbdevdn))
+def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
+    name = 'BB({},{},{})'.format(str(timeperiod), str(nbdevup), str(nbdevdn))
     upperband = name + ' Upper'
     middleband = name + ' Middle'
     lowerband = name + ' Lower'
-    self.primary[upperband], self.primary[middleband], self.primary[lowerband] = talib.BBANDS(self.df[self.cl], timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
-
-#def _RSI(self, )[ for value in variable]
+    self.pri[upperband] = {}
+    self.pri[middleband] = dict(line = dict(width = 1, dash = 4))
+    self.pri[lowerband] = {}
+    self.ind[upperband], self.ind[middleband], self.ind[lowerband] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)
 
 Chart.add_MA = _MA
 Chart.add_SMA = _SMA
@@ -239,19 +228,3 @@ Chart.add_BBANDS = _BBANDS
 #Chart.ADXR = _ADXR
 #Chard.APO = _APO
 #Chart.HT_TRENDLINE = _HT_TRENDLINE
-
-# tests.py
-
-#ticker = 'AAPL'
-
-#template, layout = get_light_theme()
-
-#df = web.DataReader(ticker, data_source='yahoo')
-#ch = Chart(df)
-#ch = ch.adjust()
-#ch.add_MA(50)
-#ch.to_frame()
-#ch.primary.columns
-#ch.SMA(50)
-#ch.EMA(200)
-#ch.plot()
