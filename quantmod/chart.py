@@ -74,6 +74,7 @@ class Chart(object):
         cols = {self.cl}
         return self.df.columns.isin(cols)
 
+
     @property
     def is_OHLC(self):
         cols = {self.op, self.hi, self.lo, self.cl}
