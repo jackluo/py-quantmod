@@ -161,7 +161,7 @@ class Chart(object):
 
         for trace in self.sec:
 
-            line = template['line']
+            line = template['line'].copy()
 
             line['x'] = self.ind.index
             line['y'] = self.ind[trace]
@@ -170,13 +170,13 @@ class Chart(object):
 
             data.append(line)
 
-        layout['xaxis'] = template['xaxis']
-        layout['yaxis'] = template['yaxis']
+        layout['xaxis'] = template['xaxis'].copy()
+        layout['yaxis'] = template['yaxis'].copy()
         layout['title'] = title
 
         if self.sec:
-            layout['yaxis2'] = template['yaxis2']
-            layout['yaxis1']['domain'] = [0.3, 1.0]
+            layout['yaxis2'] = template['yaxis'].copy()
+            layout['yaxis']['domain'] = [0.3, 1.0]
             layout['yaxis2']['domain'] = [0.0, 0.2]
 
         figure = dict(data=data, layout=layout)
@@ -186,17 +186,17 @@ class Chart(object):
 
 def _MA(self, timeperiod=30, matype=0):
     name = 'MA({})'.format(str(timeperiod))
-    self.pri[name] = {}
+    self.pri[name] = dict(type='line')
     self.ind[name] = talib.MA(self.df[self.cl].values, timeperiod, matype)
 
 def _SMA(self, timeperiod=30):
     name = 'SMA({})'.format(str(timeperiod))
-    self.pri[name] = {}
+    self.pri[name] = dict(type='line')
     self.ind[name] = talib.SMA(self.df[self.cl].values, timeperiod)
 
 def _EMA(self, timeperiod=30):
     name = 'EMA({})'.format(str(timeperiod))
-    self.pri[name] = {}
+    self.pri[name] = dict(type='line')
     self.ind[name] = talib.EMA(self.df[self.cl].values, timeperiod)
 
 def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
@@ -204,17 +204,22 @@ def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     upperband = name + ' Upper'
     middleband = name + ' Middle'
     lowerband = name + ' Lower'
-    self.pri[upperband] = {}
-    self.pri[middleband] = dict(line = dict(width = 1, dash = 4))
-    self.pri[lowerband] = {}
+    self.pri[upperband] = dict(type='area')
+    self.pri[middleband] = dict(type='dashed-line', line = dict(width = 1, dash = 4))
+    self.pri[lowerband] = dict(type='line')
     self.ind[upperband], self.ind[middleband], self.ind[lowerband] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)
+
+def _RSI(self, timeperiod=14):
+    name = 'RSI({})'.format(str(timeperiod))
+    self.sec[name] = {}
+    self.ind[name] = talib.RSI(self.df[self.cl].values, timeperiod)
 
 Chart.add_MA = _MA
 Chart.add_SMA = _SMA
 Chart.add_EMA = _EMA
 
 Chart.add_BBANDS = _BBANDS
-#Chart.add_RSI = _RSI
+Chart.add_RSI = _RSI
 
 #Chart.WMA = _WMA
 #Chart.DEMA = _DEMA

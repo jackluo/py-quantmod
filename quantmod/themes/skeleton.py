@@ -4,6 +4,7 @@ _OPTIONAL = False
 
 base_template = dict(
 
+    # TRACE PRIMITIVES
     candlestick = dict(
 
         type = 'candlestick',
@@ -27,6 +28,22 @@ base_template = dict(
 
     ),
 
+    bar = dict(
+
+        type = 'bar',
+        hoverinfo = "x+y+text+name",
+        mode = "markers",
+
+        # MARKER
+        marker = dict(
+            size = 5,
+            opacity = 0.8,
+            symbol = "square",
+            color = _PLACEHOLDER,
+        ),
+
+    ),
+
     line = dict(
 
         type = 'scatter',
@@ -45,9 +62,9 @@ base_template = dict(
         line = dict(
             width = 2,
             color = _PLACEHOLDER,
-            #shape =  "spline",
-            #smoothing = "2",
             #dash = 4,
+            #shape = "spline",
+            #smoothing = "2",
         ),
 
         #fill = 'tonexty',
@@ -55,22 +72,7 @@ base_template = dict(
 
     ),
 
-    bar = dict(
-
-        type = 'bar',
-        hoverinfo = "x+y+text+name",
-        mode = "markers",
-
-        # MARKER
-        marker = dict(
-            size = 5,
-            opacity = 0.8,
-            symbol = "square",
-            color = _PLACEHOLDER,
-        ),
-
-    ),
-
+    # LAYOUT MODIFIERS
     xaxis = dict(
 
         # RANGE
@@ -143,8 +145,6 @@ base_template = dict(
         dict(count = 1, step = "year", stepmode = "todate", label = "YTD"),
     ],
 
-    barmode = "group",
-
 )
 
 
@@ -157,8 +157,8 @@ base_layout = dict(
     height = 720,
     autosize = True,
     font = dict(
-        family = _PLACEHOLDER,
-        size = _PLACEHOLDER,
+        family = 'open sans',
+        size = '12',
         color = _PLACEHOLDER,
     ),
     margin = dict(

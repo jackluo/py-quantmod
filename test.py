@@ -29,5 +29,6 @@ print(ch.is_OHLC)
 #ch.add_SMA(50)
 #ch.add_EMA(200)
 ch.add_BBANDS(30)
+ch.add_RSI(14)
 ch.ind
 ch.plot()
