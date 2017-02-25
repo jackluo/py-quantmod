@@ -1,10 +1,9 @@
 _PLACEHOLDER = False
-_OPTIONAL = False
 
 
-base_template = dict(
+# TRACE PRIMITIVES
+base_traces = dict(
 
-    # TRACE PRIMITIVES
     candlestick = dict(
 
         type = 'candlestick',
@@ -28,6 +27,36 @@ base_template = dict(
 
     ),
 
+    line = dict(
+
+        type = 'scatter',
+        hoverinfo = "x+y+text+name",
+        mode = "lines",
+        #fill = 'tonexty',
+        opacity = 0.6,
+
+        # MARKER
+        marker = dict(
+            size = 6,
+            opacity = 0.8,
+            symbol = "square",
+            color = _PLACEHOLDER,
+        ),
+
+        # LINE
+        line = dict(
+            width = 2,
+            color = _PLACEHOLDER,
+            #dash = 4,
+            #shape = "spline",
+            #smoothing = "2",
+        ),
+
+        # AREA
+        fillcolor = _PLACEHOLDER,
+
+    ),
+
     bar = dict(
 
         type = 'bar',
@@ -44,35 +73,12 @@ base_template = dict(
 
     ),
 
-    line = dict(
+)
 
-        type = 'scatter',
-        hoverinfo = "x+y+text+name",
-        mode = "lines",
 
-        # MARKER
-        marker = dict(
-            size = 5,
-            opacity = 0.8,
-            symbol = "square",
-            color = _PLACEHOLDER,
-        ),
+# LAYOUT MODIFIERS
+base_additions = dict(
 
-        # LINE
-        line = dict(
-            width = 2,
-            color = _PLACEHOLDER,
-            #dash = 4,
-            #shape = "spline",
-            #smoothing = "2",
-        ),
-
-        #fill = 'tonexty',
-        #fillcolor = _PLACEHOLDER,
-
-    ),
-
-    # LAYOUT MODIFIERS
     xaxis = dict(
 
         # RANGE
@@ -148,17 +154,17 @@ base_template = dict(
 )
 
 
+# LAYOUT PRIMITIVES
 base_layout = dict(
 
     title = "",
 
-    # GENERAL LAYOUT
     width = 1080,
     height = 720,
     autosize = True,
     font = dict(
-        family = 'open sans',
-        size = '12',
+        family = _PLACEHOLDER,
+        size = _PLACEHOLDER,
         color = _PLACEHOLDER,
     ),
     margin = dict(
@@ -170,11 +176,6 @@ base_layout = dict(
     ),
     showlegend = False,
     #hovermode = False,
-
-    # OPTIONAL
-    #annotations = _OPTIONAL, # list()
-    #shapes = _OPTIONAL, # list()
-    #images = _OPTIONAL, # list()
 
     # COLOR THEME
     plot_bgcolor = _PLACEHOLDER,

@@ -1,9 +1,12 @@
+from copy import deepcopy
+
 import numpy as np
 import pandas as pd
 import pandas_datareader.data as web
 import talib
 import plotly.plotly as py
 import plotly.offline as pyo
+
 from .themes.themes import get_light_theme
 
 
@@ -120,62 +123,62 @@ class Chart(object):
 
     def plot(self, type='candlestick', title='Stock'):
 
-        template, layout = get_light_theme()
+        colors, traces, additions, layout = get_light_theme()
 
         data = []
         if type == 'candlestick':
 
-            candlestick = template['candlestick'].copy()
+            trace = deepcopy(traces['candlestick'])
 
-            candlestick['x'] = self.df.index
-            candlestick['open'] = self.df[self.op]
-            candlestick['high'] = self.df[self.hi]
-            candlestick['low'] = self.df[self.lo]
-            candlestick['close'] = self.df[self.cl]
-            candlestick['name'] = title
-            candlestick['yaxis'] = 'y1'
+            trace['x'] = self.df.index
+            trace['open'] = self.df[self.op]
+            trace['high'] = self.df[self.hi]
+            trace['low'] = self.df[self.lo]
+            trace['close'] = self.df[self.cl]
+            trace['name'] = title
+            trace['yaxis'] = 'y1'
 
-            data.append(candlestick)
+            data.append(trace)
 
         elif type == 'line':
 
-            line = template['line'].copy()
+            trace = deepcopy(traces['line'])
 
-            line['x'] = self.df.index
-            line['y'] = self.df[self.cl]
-            line['name'] = title
-            line['yaxis'] = 'y1'
+            trace['x'] = self.df.index
+            trace['y'] = self.df[self.cl]
+            trace['name'] = title
+            trace['yaxis'] = 'y1'
 
-            data.append(line)
+            data.append(trace)
 
-        for trace in self.pri:
+        for column in self.pri:
 
-            line = template['line'].copy()
+            trace = deepcopy(traces[self.pri[column]['type']])
 
-            line['x'] = self.ind.index
-            line['y'] = self.ind[trace]
-            line['name'] = trace
-            line['yaxis'] = 'y1'
+            trace['x'] = self.ind.index
+            trace['y'] = self.ind[column]
+            trace['name'] = column
+            trace['yaxis'] = 'y1'
 
-            data.append(line)
+            data.append(trace)
 
-        for trace in self.sec:
+        for column in self.sec:
 
-            line = template['line'].copy()
+            trace = deepcopy(traces[self.sec[column]['type']])
 
-            line['x'] = self.ind.index
-            line['y'] = self.ind[trace]
-            line['name'] = trace
-            line['yaxis'] = 'y2'
+            trace['x'] = self.ind.index
+            trace['y'] = self.ind[column]
+            trace['name'] = column
+            trace['yaxis'] = 'y2'
 
-            data.append(line)
+            data.append(trace)
 
-        layout['xaxis'] = template['xaxis'].copy()
-        layout['yaxis'] = template['yaxis'].copy()
+        layout['xaxis'] = additions['xaxis'].copy()
+        layout['yaxis'] = additions['yaxis'].copy()
         layout['title'] = title
 
         if self.sec:
-            layout['yaxis2'] = template['yaxis'].copy()
+            layout['yaxis2'] = additions['yaxis'].copy()
             layout['yaxis']['domain'] = [0.3, 1.0]
             layout['yaxis2']['domain'] = [0.0, 0.2]
 
@@ -201,17 +204,17 @@ def _EMA(self, timeperiod=30):
 
 def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     name = 'BB({},{},{})'.format(str(timeperiod), str(nbdevup), str(nbdevdn))
-    upperband = name + ' Upper'
-    middleband = name + ' Middle'
-    lowerband = name + ' Lower'
-    self.pri[upperband] = dict(type='area')
-    self.pri[middleband] = dict(type='dashed-line', line = dict(width = 1, dash = 4))
-    self.pri[lowerband] = dict(type='line')
+    upperband = 'U' + name
+    middleband = name
+    lowerband = 'L' + name
+    self.pri[upperband] = dict(type='line-dashed')
+    self.pri[middleband] = dict(type='area-dashed')
+    self.pri[lowerband] = dict(type='area-dashed')
     self.ind[upperband], self.ind[middleband], self.ind[lowerband] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)
 
 def _RSI(self, timeperiod=14):
     name = 'RSI({})'.format(str(timeperiod))
-    self.sec[name] = {}
+    self.sec[name] = dict(type='line')
     self.ind[name] = talib.RSI(self.df[self.cl].values, timeperiod)
 
 Chart.add_MA = _MA
