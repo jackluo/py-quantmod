@@ -1,7 +1,7 @@
 import pandas_datareader.data as web
 
 
-def get_symbols(ticker, src='yahoo', start=None, end=None):
+def get_symbol(ticker, src='yahoo', start=None, end=None):
     """Get symbols as a DataFrame.
 
     Currently just a wrapper over pandas_datareader.data.DataReader.

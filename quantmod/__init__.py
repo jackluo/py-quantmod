@@ -4,7 +4,7 @@ A Python port of R's famous Quantmod library.
 Based on Plotly and Cufflinks, Quantmod provides pretty charting
 and a variety of quant and technical finance tools.
 
-Credits
+Contrib
 -------
 author : @jackwluo
 cufflinks: @jorgesantos

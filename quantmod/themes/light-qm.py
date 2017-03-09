@@ -23,6 +23,8 @@ light-qm = dict(
     rangeselector_bgcolor = '#C9C9C9',
     rangeselector_activecolor = '#888888',
 
+    yaxis = dict(side = 'left',),
+
     layout = dict(
 
         font = dict(
@@ -32,8 +34,6 @@ light-qm = dict(
         ),
         plot_bgcolor = '#FFFFFF',
         paper_bgcolor = '#F3F3F3',
-
-        yaxis = dict(side = 'left',),
 
     ),
 )
