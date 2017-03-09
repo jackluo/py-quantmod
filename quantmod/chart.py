@@ -153,7 +153,10 @@ class Chart(object):
 
         for column in self.pri:
 
-            trace = deepcopy(traces[self.pri[column]['type']])
+            trace = deepcopy(traces[self.pri[column]['type']
+
+            if linecolor in self.pri:
+
 
             trace['x'] = self.ind.index
             trace['y'] = self.ind[column]
@@ -189,17 +192,17 @@ class Chart(object):
 
 def _MA(self, timeperiod=30, matype=0):
     name = 'MA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line')
+    self.pri[name] = dict(type='line', color='primary')
     self.ind[name] = talib.MA(self.df[self.cl].values, timeperiod, matype)
 
 def _SMA(self, timeperiod=30):
     name = 'SMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line')
+    self.pri[name] = dict(type='line', linecolor='primary')
     self.ind[name] = talib.SMA(self.df[self.cl].values, timeperiod)
 
 def _EMA(self, timeperiod=30):
     name = 'EMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line')
+    self.pri[name] = dict(type='line', linecolor='primary')
     self.ind[name] = talib.EMA(self.df[self.cl].values, timeperiod)
 
 def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
@@ -207,7 +210,7 @@ def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     upperband = 'U' + name
     middleband = name
     lowerband = 'L' + name
-    self.pri[upperband] = dict(type='line-dashed')
+    self.pri[upperband] = dict(type='line-dashed', )
     self.pri[middleband] = dict(type='area-dashed')
     self.pri[lowerband] = dict(type='area-dashed')
     self.ind[upperband], self.ind[middleband], self.ind[lowerband] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)

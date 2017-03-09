@@ -1,21 +1,5 @@
-from copy import deepcopy
 
-from .template import base_traces
-from .template import base_additions
-from .template import base_layout
-
-
-def get_light_theme():
-
-    colors = dict(
-        increasing = '#00CC00',
-        decreasing = '#FF7700',
-        background = '#F3F3F3',
-        blue = '#0D47EF',
-        red = '#E13B30', # Should ideally contrast with trace1
-        green = '#87F35C', # Should ideally contrast with trace1 and trace2
-    )
-
+def make_full_layout():
 
     # FULL TRACES
     traces = base_traces
@@ -57,15 +41,7 @@ def get_light_theme():
     traces['histogram'] = deepcopy(traces['bar'])
 
 
-    # LAYOUT ADDITIONS
-    additions = base_additions
-    additions['xaxis']['rangeslider']['bordercolor'] = '#CCCCCC'
-    additions['xaxis']['rangeslider']['bgcolor'] = '#CCCCCC'
-
-    additions['xaxis']['rangeselector']['bordercolor'] = '#C9C9C9'
-    additions['xaxis']['rangeselector']['bgcolor'] = '#C9C9C9'
-    additions['xaxis']['rangeselector']['activecolor'] = '#888888'
-
+    # ADDITIONS
     additions['yaxis']['side'] = 'left'
 
 
@@ -78,6 +54,3 @@ def get_light_theme():
 
     layout['plot_bgcolor'] = '#FFFFFF'
     layout['paper_bgcolor'] = '#F3F3F3'
-
-
-    return colors, traces, additions, layout
