@@ -1,4 +1,4 @@
-"""Based from plotly's tools module"""
+"""Based on Plotly's tools module"""
 import os
 import json
 import warnings
