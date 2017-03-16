@@ -1,5 +1,8 @@
-"""Refactored Jorge Santos (@jorgesantos) date_tools module."""
+"""Date and time functions.
 
+Refactored from Cufflinks' date_tools.py module.
+
+"""
 import datetime as dt
 
 

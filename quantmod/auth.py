@@ -1,8 +1,14 @@
-"""Based on Plotly's tools module"""
+"""Functions that manage configuration writing.
+
+Based on Plotly's auth.py.
+
+"""
+from __future__ import absolute_import
+
 import os
+import six
 import json
 import warnings
-from offline import go_offline
 
 
 package = 'quantmod'
@@ -17,40 +23,38 @@ else:
 
 TEST_DIR = os.path.join(AUTH_DIR, 'test')
 TEST_FILE = os.path.join(AUTH_DIR, 'permission_test')
-# PICKLE_FILE = os.path.join(AUTH_DIR, 'pickle') # Unused
-# CREDENTIALS_FILE = os.path.join(AUTH_DIR, 'credentials.json') # Unused
+#PICKLE_FILE = os.path.join(AUTH_DIR, 'pickle') # Unused
+#CREDENTIALS_FILE = os.path.join(AUTH_DIR, 'credentials.json') # Unused
 CONFIG_FILE = os.path.join(AUTH_DIR, 'config.json')
 
 _FILE_CONTENT = {
     CONFIG_FILE: {
         'sharing': 'public',
-        'theme': 'light-qm',
+        'theme': 'light',
         'dimensions': None,
         'offline': False,
         'offline_url': '',
-        'offline_show_link': True,
-        'offline_link_text': "Export to plot.ly",
+        'offline_show_link': False, #True,
+        'offline_link_text': '', #"Export to plot.ly",
     }
 }
 
 
-try:
-    """Permissions test."""
-    if not os.path.exists(AUTH_DIR):
-        os.mkdir(AUTH_DIR) # Auth dir
+def _permissions():
+    """Check for write access."""
+    try:
+        os.mkdir(TEST_DIR)
+        os.rmdir(TEST_DIR)
+        if not os.path.exists(PLOTLY_DIR):
+            os.mkdir(PLOTLY_DIR)
+        with open(TEST_FILE, 'w') as f:
+            f.write('Testing\n')
+        os.remove(TEST_FILE)
+        return True
+    except:
+        return False
 
-    os.mkdir(TEST_DIR) # Test directory
-    os.rmdir(TEST_DIR)
-
-    f = open(TEST_FILE, 'w') # Test file
-    f.write("Testing write permissions.\n")
-    f.close()
-    os.remove(TEST_FILE)
-
-    _file_permissions = True
-
-except:
-    _file_permissions = False
+_file_permissions = _permissions()
 
 
 def get_path():
@@ -64,7 +68,7 @@ def get_pickle_path():
 
 
 def check_file_permissions():
-    """Returns True if write permissions, else returns False."""
+    """Return True if write permissions, else return False."""
     return _file_permissions
 
 
@@ -89,7 +93,7 @@ def ensure_local_files():
 
 
 def load_json_dict(filename, *args):
-    """Checks if file exists. Returns {} if something fails."""
+    """Check if file exists. Return {} if something fails."""
 
     data = {}
     if os.path.exists(filename):
@@ -118,7 +122,7 @@ def save_json_dict(filename, json_dict):
 def get_config_file(*args):
     """
     Return specified args from `~/config`. as dict.
-    Returns all if no arguments are specified.
+    Return all if no arguments are specified.
 
     Example
     -------
@@ -176,23 +180,42 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
             sharing = 'public'
         else:
             sharing = 'private'
-
-    if sharing:
+    if isinstance(sharing, six.string_types):
         config['sharing'] = sharing
-    if theme:
+    if isinstance(theme, six.string_types):
         config['theme'] = theme
-    if dimensions:
+    if isinstance(dimensions, tuple):
         config['dimensions'] = dimensions
-    if offline:
+    if isinstance(offline, bool):
         config['offline'] = offline
         if offline:
             go_offline()
-    if offline_url:
+    if isinstance(offline_url, six.string_types):
         config['offline_url'] = offline_url
-    if offline_show_link:
+    if isinstance(offline_show_link, six.string_types):
         config['offline_show_link'] = offline_show_link
-    if offline_link_text:
+    if isinstance(offline_link_text, six.string_types):
         config['offline_link_text'] = offline_link_text
 
     save_json_dict(CONFIG_FILE, config)
     ensure_local_files()
+
+
+def reset_config_file():
+    """Reset config file to package defaults."""
+    ensure_local_files() # Make sure what's there is OK
+    f = open(CONFIG_FILE, 'w')
+    f.close()
+    ensure_local_files()
+
+
+def check_url(url=None):
+    """Check URL integrity."""
+    if not url:
+        if 'http' not in get_config_file()['offline_url']:
+            raise Exception("No default offline URL set.\n"
+                            "Please run quantmod.set_config_file(offline_url=YOUR_URL) \
+                            to set the default offline URL.")
+        else:
+            url = get_config_file()['offline_url']
+    pyo.download_plotlyjs(url)
