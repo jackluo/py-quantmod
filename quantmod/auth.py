@@ -1,3 +1,4 @@
+"""Based from plotly's tools module"""
 import os
 import json
 import warnings
@@ -8,7 +9,6 @@ package = 'quantmod'
 
 
 dropbox_path = 'Programs/Data'
-
 if dropbox_path:
     AUTH_DIR = os.path.join(os.path.join(os.path.expanduser('~'),
                                          os.path.join('Dropbox', dropbox_path)), package)
@@ -18,7 +18,7 @@ else:
 TEST_DIR = os.path.join(AUTH_DIR, 'test')
 TEST_FILE = os.path.join(AUTH_DIR, 'permission_test')
 # PICKLE_FILE = os.path.join(AUTH_DIR, 'pickle') # Unused
-#CREDENTIALS_FILE = os.path.join(AUTH_DIR, 'credentials.json') # Unused
+# CREDENTIALS_FILE = os.path.join(AUTH_DIR, 'credentials.json') # Unused
 CONFIG_FILE = os.path.join(AUTH_DIR, 'config.json')
 
 _FILE_CONTENT = {
@@ -35,13 +35,14 @@ _FILE_CONTENT = {
 
 
 try:
-    if not os.path.exists(AUTH_DIR):  # Auth dir
-        os.mkdir(AUTH_DIR)
+    """Permissions test."""
+    if not os.path.exists(AUTH_DIR):
+        os.mkdir(AUTH_DIR) # Auth dir
 
-    os.mkdir(TEST_DIR)  # Test directory
+    os.mkdir(TEST_DIR) # Test directory
     os.rmdir(TEST_DIR)
 
-    f = open(TEST_FILE, 'w')  # Test file
+    f = open(TEST_FILE, 'w') # Test file
     f.write("Testing write permissions.\n")
     f.close()
     os.remove(TEST_FILE)
@@ -53,14 +54,17 @@ except:
 
 
 def get_path():
+    """Get path of AUTH_DIR."""
     return AUTH_DIR
 
 
 def get_pickle_path():
+    """Get path of the pickle file."""
     return PICKLE_FILE
 
 
 def check_file_permissions():
+    """Returns True if write permissions, else returns False."""
     return _file_permissions
 
 
