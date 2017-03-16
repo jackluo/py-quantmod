@@ -1,7 +1,7 @@
 # Light Quantmod theme
 LIGHT_QM = dict(
 
-    trace_colors = dict(
+    colors = dict(
         increasing = '#00CC00',
         decreasing = '#FF7700',
         background = '#F3F3F3',
@@ -10,27 +10,30 @@ LIGHT_QM = dict(
         tertiary = '#87F35C',
     ),
 
-    line_thin = dict(width = 1,),
-    line_thick = dict(width = 4,),
-    line_dashed = dict(dash = 4,),
-    line_dashed_thin = dict(dash = 4, width = 1,),
-    line_dashed_thick = dict(dash = 4, width = 4,),
-    area_dashed = dict(dash = 4),
-
-    xaxis = dict(
-        rangeslider = dict(
-            bordercolor = '#CCCCCC',
-            bgcolor = '#CCCCCC',
-            thickness = 0.1,
-        ),
-        rangeselector = dict(
-            bordercolor = '#C9C9C9',
-            bgcolor = '#C9C9C9',
-            activecolor = '#888888',
-        ),
+    traces = dict(
+        line_thin = dict(width = 1,),
+        line_thick = dict(width = 4,),
+        line_dashed = dict(dash = 4,),
+        line_dashed_thin = dict(dash = 4, width = 1,),
+        line_dashed_thick = dict(dash = 4, width = 4,),
+        area_dashed = dict(dash = 4),
     ),
 
-    yaxis = dict(side = 'left',),
+    additions = dict(
+        xaxis = dict(
+            rangeslider = dict(
+                bordercolor = '#CCCCCC',
+                bgcolor = '#CCCCCC',
+                thickness = 0.1,
+            ),
+            rangeselector = dict(
+                bordercolor = '#C9C9C9',
+                bgcolor = '#C9C9C9',
+                activecolor = '#888888',
+            ),
+        ),
+        yaxis = dict(side = 'left',),
+    ),
 
     layout = dict(
         font = dict(
@@ -40,8 +43,8 @@ LIGHT_QM = dict(
         ),
         plot_bgcolor = '#FFFFFF',
         paper_bgcolor = '#F3F3F3',
-
     ),
+
 )
 
 THEMES = {'light-qm': LIGHT_QM}

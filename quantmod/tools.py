@@ -1,32 +1,38 @@
 import copy
 
 import auth
+#from auth import default_theme
 from themes import THEMES
 
 
 __LAYOUT_KWARGS = ['legend', 'vline', 'hline', 'vspan', 'hspan', 'shapes', 'logx', 'logy', 'layout_update',
                    'xrange', 'yrange', 'zrange']
 
+default_theme = 'light-qm'
 
 def get_theme(theme):
     """Return a Quantmod theme (as a dict)."""
     if theme in THEMES:
         return copy.deepcopy(THEMES[theme])
     else:
-        raise Exception('Invalid theme: {0}'.format(theme))
+        raise Exception('Invalid theme "{0}'.format(theme))
 
 
 def get_themes():
     """Return the list of available themes."""
     return list(THEMES.keys())
 
+def get_layout(theme=default_theme, **kwargs):
+    """Generate a Plotly layout"""
 
+    for key in kwargs.keys():
+        if key not in __LAYOUT_KWARGS:
+            raise Exception('Invalid keyword "{}"'.format(key))
 
+    if not theme:
+        theme = auth.get_config()['theme']
 
-
-
-
-
+get_layout(legesdnd = "BB")
 
 
 
