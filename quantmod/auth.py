@@ -1,7 +1,7 @@
 import os
 import json
 import warnings
-from .offline import go_offline
+from offline import go_offline
 
 package = 'quantmod'
 

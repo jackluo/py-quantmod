@@ -1,5 +1,5 @@
 # Light Quantmod theme
-light-qm = dict(
+LIGHT_QM = dict(
 
     trace_colors = dict(
         increasing = '#00CC00',
@@ -17,16 +17,22 @@ light-qm = dict(
     line_dashed_thick = dict(dash = 4, width = 4,),
     area_dashed = dict(dash = 4),
 
-    rangeslider_bordercolor = '#CCCCCC',
-    rangeslider_bgcolor = '#CCCCCC',
-    rangeselector_bordercolor = '#C9C9C9',
-    rangeselector_bgcolor = '#C9C9C9',
-    rangeselector_activecolor = '#888888',
+    xaxis = dict(
+        rangeslider = dict(
+            bordercolor = '#CCCCCC',
+            bgcolor = '#CCCCCC',
+            thickness = 0.1,
+        ),
+        rangeselector = dict(
+            bordercolor = '#C9C9C9',
+            bgcolor = '#C9C9C9',
+            activecolor = '#888888',
+        ),
+    ),
 
     yaxis = dict(side = 'left',),
 
     layout = dict(
-
         font = dict(
             family = 'droid sans mono',
             size = 12,
@@ -37,3 +43,5 @@ light-qm = dict(
 
     ),
 )
+
+THEMES = {'light-qm': LIGHT_QM}
