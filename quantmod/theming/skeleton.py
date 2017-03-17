@@ -2,7 +2,7 @@ _PLACEHOLDER = False
 
 
 # TRACE PRIMITIVES
-base_traces = dict(
+BASE_TRACES = dict(
 
     candlestick = dict(
 
@@ -77,7 +77,7 @@ base_traces = dict(
 
 
 # LAYOUT MODIFIERS
-base_additions = dict(
+BASE_ADDITIONS = dict(
 
     xaxis = dict(
 
@@ -155,7 +155,7 @@ base_additions = dict(
 
 
 # LAYOUT PRIMITIVES
-base_layout = dict(
+BASE_LAYOUT = dict(
 
     title = "",
 
@@ -193,3 +193,6 @@ base_layout = dict(
     ),
 
 )
+
+
+SKELETON = {'base_traces': BASE_TRACES, 'base_additions': BASE_ADDITIONS, 'base_layout': BASE_LAYOUT}

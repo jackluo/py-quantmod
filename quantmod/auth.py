@@ -12,10 +12,10 @@ import warnings
 
 
 package = 'quantmod'
-
-
+dropbox = True
 dropbox_path = 'Programs/Data'
-if dropbox_path:
+
+if dropbox:
     AUTH_DIR = os.path.join(os.path.join(os.path.expanduser('~'),
                                          os.path.join('Dropbox', dropbox_path)), package)
 else:
@@ -180,9 +180,9 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
             sharing = 'public'
         else:
             sharing = 'private'
-    if isinstance(sharing, six.string_types):
+    if isinstance(sharing, string_types):
         config['sharing'] = sharing
-    if isinstance(theme, six.string_types):
+    if isinstance(theme, string_types):
         config['theme'] = theme
     if isinstance(dimensions, tuple):
         config['dimensions'] = dimensions
@@ -190,11 +190,11 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
         config['offline'] = offline
         if offline:
             go_offline()
-    if isinstance(offline_url, six.string_types):
+    if isinstance(offline_url, string_types):
         config['offline_url'] = offline_url
-    if isinstance(offline_show_link, six.string_types):
+    if isinstance(offline_show_link, string_types):
         config['offline_show_link'] = offline_show_link
-    if isinstance(offline_link_text, six.string_types):
+    if isinstance(offline_link_text, string_types):
         config['offline_link_text'] = offline_link_text
 
     save_json_dict(CONFIG_FILE, config)

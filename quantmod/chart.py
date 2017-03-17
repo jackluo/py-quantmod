@@ -1,13 +1,14 @@
-from copy import deepcopy
-
+import copy
 import numpy as np
 import pandas as pd
 import pandas_datareader.data as web
-import talib
 import plotly.plotly as py
 import plotly.offline as pyo
 
-from .themes.themes import get_light_theme
+from .themes import THEMES
+
+
+import talib # To be removed
 
 
 class Chart(object):
@@ -128,7 +129,7 @@ class Chart(object):
         data = []
         if type == 'candlestick':
 
-            trace = deepcopy(traces['candlestick'])
+            trace = copy.deepcopy(traces['candlestick'])
 
             trace['x'] = self.df.index
             trace['open'] = self.df[self.op]
@@ -142,7 +143,7 @@ class Chart(object):
 
         elif type == 'line':
 
-            trace = deepcopy(traces['line'])
+            trace = copy.deepcopy(traces['line'])
 
             trace['x'] = self.df.index
             trace['y'] = self.df[self.cl]
@@ -153,7 +154,7 @@ class Chart(object):
 
         for column in self.pri:
 
-            trace = deepcopy(traces[self.pri[column]['type']
+            trace = copy.deepcopy(traces[self.pri[column]['type']
 
             if linecolor in self.pri:
 
@@ -167,7 +168,7 @@ class Chart(object):
 
         for column in self.sec:
 
-            trace = deepcopy(traces[self.sec[column]['type']])
+            trace = copy.deepcopy(traces[self.sec[column]['type']])
 
             trace['x'] = self.ind.index
             trace['y'] = self.ind[column]

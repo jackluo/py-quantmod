@@ -3,12 +3,18 @@
 Based on Cufflinks' offline.py.
 
 """
+from __future__ import absolute_import
+
 import plotly.offline as pyo
-from auth import get_config_file
+from .auth import get_config_file
 
 
 def go_offline(connected=False):
-    """Take plotting offline."""
+    """Take plotting offline.
+
+    __PLOTLY_OFFLINE_INITIALIZED is a hidden variable in plotly/offline/offline.py
+
+    """
     pyo.init_notebook_mode(connected)
     pyo.__PLOTLY_OFFLINE_INITIALIZED = True
 
@@ -19,9 +25,5 @@ def go_online():
 
 
 def is_offline():
-    """Check on/offline status."""
+    """Check online/offline status."""
     return pyo.__PLOTLY_OFFLINE_INITIALIZED
-
-
-go_offline()
-print(is_offline())

@@ -1,45 +1,131 @@
+"""High-level functions not meant for user access.
+
+This includes various plotting and theming tools.
+
+"""
+from __future__ import absolute_import
+
 import copy
-
+#from plotly.graph_objs import *
 import auth
-#from auth import default_theme
-from themes import THEMES
+from theming.skeleton import SKELETON
+from theming.themes import THEMES
 
 
-__LAYOUT_KWARGS = ['legend', 'vline', 'hline', 'vspan', 'hspan', 'shapes', 'logx', 'logy', 'layout_update',
+_TEMPLATE_KWARGS = ['legend', 'vline', 'hline', 'vspan', 'hspan', 'shapes', 'logx', 'logy',
                    'xrange', 'yrange', 'zrange']
-
-default_theme = 'light-qm'
 
 def get_theme(theme):
     """Return a Quantmod theme (as a dict)."""
     if theme in THEMES:
         return copy.deepcopy(THEMES[theme])
     else:
-        raise Exception('Invalid theme "{0}'.format(theme))
+        raise Exception("Invalid theme '{0}'".format(theme))
 
 
 def get_themes():
     """Return the list of available themes."""
     return list(THEMES.keys())
 
-def get_layout(theme=default_theme, **kwargs):
-    """Generate a Plotly layout"""
 
+def get_skeleton():
+    """Return base template."""
+    return copy.deepcopy(SKELETON)
+
+
+def make_template(theme=None, layout=None, **kwargs):
+    """Generate a colors, traces, additions and layout
+
+    Parameters
+    ----------
+            theme : string
+                Quantmod theme
+            layout : dict or graph_objs.Layout
+                Plotly layout dict or graph_objs.Layout figure
+
+    """
     for key in kwargs.keys():
-        if key not in __LAYOUT_KWARGS:
-            raise Exception('Invalid keyword "{}"'.format(key))
+        if key not in _TEMPLATE_KWARGS:
+            raise Exception("Invalid keyword '{0}'".format(key))
 
     if not theme:
-        theme = auth.get_config()['theme']
+        theme = auth.get_config_file()['theme']
 
-get_layout(legesdnd = "BB")
+    if layout:
+        if not isinstance(layout, dict):
+            try:
+                layout = dict(layout.items()) # Coerce to regular dict
+            except:
+                raise Exception("Invalid layout '{0}'".format(layout))
+
+
+    template = get_template()
+    colors, traces, additions, layout = template['base_colors'], template['base_traces'],
+                                        template['base_additions'], template['base_layout']
+
+    theme = get_theme(theme)
+
+
+    def get_colors(theme=None):
+
+        if not theme:
+            theme = auth.get_config_file()['theme']
+
+        colors = get_theme(theme)['colors']
+        return colors
+
+    def get_traces(theme=None):
+
+        if not theme:
+            theme = auth.get_config_file()['theme']
+
+        base_traces = get_template()
+        traces = get_theme(theme)['traces']
+        deep_update(base_traces, traces)
+
+        return base_traces
+
+
+    def get_additions(theme=None):
+
+        if not theme:
+            theme = auth.get_config_file()['theme']
+
+        base_additions = get_template()['base_additions']
+        additions = get(theme)['additions']
+        deep_update(base_additions, additions)
+
+        return base_additions
+
+
+    def get_layout(theme=None, layout=None, **kwargs):
+        """Generate a Plotly layout
+
+        Parameters
+        ----------
+                theme : string
+                    Quantmod theme
+                layout : dict or graph_objs.Layout
+                    Plotly layout dict or graph_objs.Layout figure
+
+        """
+        for key in kwargs.keys():
+            if key not in __LAYOUT_KWARGS:
+                raise Exception("Invalid keyword '{0}'".format(key))
+
+        if not theme:
+            theme = auth.get_config_file()['theme']
+
+        if layout:
+            if not isinstance(layout, dict):
+                try:
+                    layout = dict(layout.items()) # Coerce to regular dict
+                except:
+                    raise Exception("Invalid layout '{0}'".format(layout))
 
 
 
-def merge_dict(dict1, dict2):
-    """Merge 2 Python dicts (shallow copy)."""
-    dct = dict1.copy()
-    return dct.update(dict2)
+get_layout()
 
 
 def strip_figure(figure):
@@ -73,14 +159,30 @@ def get_base_layout(figures):
     return layout
 
 
-
-def go_offline(connected=False, offline=True):
-    if offline:
-        py_offline.init_notebook_mode(connected)
-        py_offline.__PLOTLY_OFFLINE_INITIALIZED = True
-    else:
-        py_offline.__PLOTLY_OFFLINE_INITIALIZED = False
+def merge_dict(dict1, dict2):
+    """Merge 2 Python dicts (shallow copy)."""
+    dct = dict1.copy()
+    return dct.update(dict2)
 
 
-def is_offline():
-    return py_offline.__PLOTLY_OFFLINE_INITIALIZED
+def deep_update(dict1, dict2):
+    """Updates the values (deep form) of a given dictionary.
+
+    Parameters
+    ----------
+            dict1 : dict
+                    Dictionary that contains the values to update.
+            dict2 : dict
+                    Dictionary to be updated.
+
+    """
+    for key, value in dict2.items():
+        if isinstance(value, dict):
+            if key in dict1:
+                deep_update(dict1[key], value)
+            else:
+                dict1[key] = value
+        else:
+            dict1[key] = value
+
+    return dict1
