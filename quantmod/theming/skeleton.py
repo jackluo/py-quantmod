@@ -1,7 +1,11 @@
 _PLACEHOLDER = False
 
 
-# TRACE PRIMITIVES
+# Color primitives to be implemented
+BASE_COLORS = dict()
+
+
+# Trace primitives
 BASE_TRACES = dict(
 
     candlestick = dict(
@@ -76,7 +80,7 @@ BASE_TRACES = dict(
 )
 
 
-# LAYOUT MODIFIERS
+# Layout modifiers
 BASE_ADDITIONS = dict(
 
     xaxis = dict(
@@ -154,7 +158,7 @@ BASE_ADDITIONS = dict(
 )
 
 
-# LAYOUT PRIMITIVES
+# Layout primitives
 BASE_LAYOUT = dict(
 
     title = "",
@@ -195,4 +199,4 @@ BASE_LAYOUT = dict(
 )
 
 
-SKELETON = {'base_traces': BASE_TRACES, 'base_additions': BASE_ADDITIONS, 'base_layout': BASE_LAYOUT}
+SKELETON = {'base_colors': BASE_COLORS, 'base_traces': BASE_TRACES, 'base_additions': BASE_ADDITIONS, 'base_layout': BASE_LAYOUT}

@@ -5,8 +5,8 @@ Based on Plotly's auth.py.
 """
 from __future__ import absolute_import
 
-import os
 import six
+import os
 import json
 import warnings
 
@@ -89,7 +89,7 @@ def ensure_local_files():
             save_json_dict(fn, contents)
     else:
         warnings.warn("Looks like you don't have 'read-write' permission to \
-        your specified Dropbox folder or home ('~') directory")
+        your specified Dropbox folder or home ('~') directory.")
 
 
 def load_json_dict(filename, *args):
@@ -180,9 +180,9 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
             sharing = 'public'
         else:
             sharing = 'private'
-    if isinstance(sharing, string_types):
+    if isinstance(sharing, six.string_types):
         config['sharing'] = sharing
-    if isinstance(theme, string_types):
+    if isinstance(theme, six.string_types):
         config['theme'] = theme
     if isinstance(dimensions, tuple):
         config['dimensions'] = dimensions
@@ -190,11 +190,11 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
         config['offline'] = offline
         if offline:
             go_offline()
-    if isinstance(offline_url, string_types):
+    if isinstance(offline_url, six.string_types):
         config['offline_url'] = offline_url
-    if isinstance(offline_show_link, string_types):
+    if isinstance(offline_show_link, six.string_types):
         config['offline_show_link'] = offline_show_link
-    if isinstance(offline_link_text, string_types):
+    if isinstance(offline_link_text, six.string_types):
         config['offline_link_text'] = offline_link_text
 
     save_json_dict(CONFIG_FILE, config)
