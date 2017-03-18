@@ -41,51 +41,62 @@ class Chart(object):
 
     @property
     def has_open(self):
+
         cols = {self.op}
         return self.df.columns.isin(cols)
     @property
     def has_high(self):
+
         cols = {self.hi}
         return self.df.columns.isin(cols)
     @property
     def has_low(self):
+
         cols = {self.lo}
         return self.df.columns.isin(cols)
     @property
     def has_close(self):
+
         cols = {self.cl}
         return self.df.columns.isin(cols)
     @property
     def has_adjusted_close(self):
+
         cols = {self.acl}
         return self.df.columns.isin(cols)
 
     @property
     def has_volume(self):
+
         cols = {self.vo}
         return self.df.columns.isin(cols)
     @property
     def has_dividend(self):
+
         cols = {self.di}
         return self.df.columns.isin(cols)
 
     @property
     def has_OHLC(self):
+
         cols = {self.op, self.hi, self.lo, self.cl}
         return self.df.columns.isin(cols)
     @property
     def has_line(self):
+
         cols = {self.cl}
         return self.df.columns.isin(cols)
 
 
     @property
     def is_OHLC(self):
+        """Return True if Chart() supports OHLC, False otherwise."""
         cols = {self.op, self.hi, self.lo, self.cl}
         arr = self.df.columns.isin(cols)
         return np.sum(arr) >= len(cols)
     @property
     def is_line(self):
+        """Return True if Chart() supports line, False otherwise."""
         cols = {self.cl}
         arr = self.df.columns.isin(cols)
         return np.sum(arr) >= len(cols)
@@ -157,7 +168,7 @@ class Chart(object):
             trace = copy.deepcopy(traces[self.pri[column]['type']
 
             if linecolor in self.pri:
-
+                pass
 
             trace['x'] = self.ind.index
             trace['y'] = self.ind[column]
@@ -211,7 +222,7 @@ def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     upperband = 'U' + name
     middleband = name
     lowerband = 'L' + name
-    self.pri[upperband] = dict(type='line-dashed', )
+    self.pri[upperband] = dict(type='line-dashed')
     self.pri[middleband] = dict(type='area-dashed')
     self.pri[lowerband] = dict(type='area-dashed')
     self.ind[upperband], self.ind[middleband], self.ind[lowerband] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)

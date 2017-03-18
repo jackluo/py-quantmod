@@ -23,9 +23,9 @@ else:
 
 TEST_DIR = os.path.join(AUTH_DIR, 'test')
 TEST_FILE = os.path.join(AUTH_DIR, 'permission_test')
-#PICKLE_FILE = os.path.join(AUTH_DIR, 'pickle') # Unused
-#CREDENTIALS_FILE = os.path.join(AUTH_DIR, 'credentials.json') # Unused
 CONFIG_FILE = os.path.join(AUTH_DIR, 'config.json')
+#CREDENTIALS_FILE = os.path.join(AUTH_DIR, 'credentials.json') # Unused
+#PICKLE_FILE = os.path.join(AUTH_DIR, 'pickle') # Unused
 
 _FILE_CONTENT = {
     CONFIG_FILE: {
