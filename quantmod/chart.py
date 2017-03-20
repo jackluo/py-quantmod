@@ -151,6 +151,23 @@ class Chart(object):
         layout = template['layout']
 
         data = []
+
+        for column in self.pri:
+
+            trace = copy.deepcopy(traces[self.pri[column]['type']])
+
+            trace['x'] = self.ind.index
+            trace['y'] = self.ind[column]
+            trace['name'] = column
+            trace['yaxis'] = 'y1'
+
+            #COLORS
+            trace['line']['color'] = colors[self.pri[column]['color']]
+            if 'fillcolor' in self.pri[column]:
+                trace['fillcolor'] = colors[self.pri[column]['fillcolor']]
+
+            data.append(trace)
+
         if type == 'candlestick':
 
             trace = copy.deepcopy(traces['candlestick'])
@@ -177,22 +194,6 @@ class Chart(object):
             trace['y'] = self.df[self.cl]
             trace['name'] = title
             trace['yaxis'] = 'y1'
-
-            data.append(trace)
-
-        for column in self.pri:
-
-            trace = copy.deepcopy(traces[self.pri[column]['type']])
-
-            trace['x'] = self.ind.index
-            trace['y'] = self.ind[column]
-            trace['name'] = column
-            trace['yaxis'] = 'y1'
-
-            #COLORS
-            trace['line']['color'] = colors[self.pri[column]['color']]
-            if 'fillcolor' in self.pri[column]:
-                trace['fillcolor'] = colors[self.pri[column]['fillcolor']]
 
             data.append(trace)
 
