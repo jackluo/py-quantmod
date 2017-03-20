@@ -111,6 +111,6 @@ def get_base_layout(figures):
     """
     layout = {}
     for figure in figures:
-        for key, value in list(figure['layout'].items()):
+        for key, value in figure['layout'].items():
             layout[key] = value
     return layout
