@@ -1,6 +1,8 @@
-"""Low-level functions not meant for user access.
+"""Low-level functions not meant for user access
 
-Used to maintain consistency for certain Python tasks.
+Functions used to maintain consistency for certain Python tasks,
+e.g. type checking of function arguments. Users should not expect any function
+inside this module to keep a consistent API, as they are only used internally.
 
 """
 from __future__ import absolute_import

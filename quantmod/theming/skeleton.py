@@ -1,173 +1,156 @@
+"""Quantmod skeleton module
+
+Edit your own modules by copying one of the themes.
+Make sure that colors, traces, additions and layout are all under one dict.
+
+"""
 _PLACEHOLDER = False
 
 
-# COLOR PRIMTIVES
-BASE_COLORS = dict()
+# Color primitives
+BASE_COLORS = dict(
+)
 
 
-# TRACE PRIMITIVES
+# Trace primitives
 BASE_TRACES = dict(
 
     candlestick = dict(
-
         type = 'candlestick',
-        hoverinfo = "x+y+text+name",
-
-        # INCREASING
+        hoverinfo = 'x+y+text+name',
+        whiskerwidth = 0,
+        # Increasing
         increasing = dict(
             line = dict(
-                width = 2,
                 color = _PLACEHOLDER,
+                width = 1,
             ),
+            fillcolor = _PLACEHOLDER,
         ),
-
-        # DECREASING
+        # Decreasing
         decreasing = dict(
             line = dict(
-                width = 2,
                 color = _PLACEHOLDER,
+                width = 1,
             ),
+            fillcolor = _PLACEHOLDER,
         ),
-
     ),
 
     line = dict(
-
         type = 'scatter',
-        hoverinfo = "x+y+text+name",
-        mode = "lines",
+        hoverinfo = 'x+y+text+name',
+        mode = 'lines',
         #fill = 'tonexty',
         opacity = 0.6,
-
-        # MARKER
+        # Marker
         marker = dict(
+            color = _PLACEHOLDER,
             size = 6,
             opacity = 0.8,
-            symbol = "square",
-            color = _PLACEHOLDER,
+            symbol = 'square',
         ),
-
-        # LINE
+        # Line
         line = dict(
-            width = 2,
             color = _PLACEHOLDER,
+            width = 2,
             #dash = 4,
-            #shape = "spline",
-            #smoothing = "2",
+            #shape = 'spline',
+            #smoothing = '2',
         ),
-
-        # AREA
+        # Area
         fillcolor = _PLACEHOLDER,
-
     ),
 
     bar = dict(
-
         type = 'bar',
-        hoverinfo = "x+y+text+name",
-        mode = "markers",
-
-        # MARKER
+        hoverinfo = 'x+y+text+name',
+        mode = 'markers',
+        # Marker
         marker = dict(
+            color = _PLACEHOLDER,
             size = 5,
             opacity = 0.8,
-            symbol = "square",
-            color = _PLACEHOLDER,
+            symbol = 'square',
         ),
-
     ),
 
 )
 
 
-# LAYOUT MODIFIERS
+# Layout modifiers
 BASE_ADDITIONS = dict(
 
     xaxis = dict(
-
-        # RANGE
+        # Range
         #nticks = , #OR
         #tick0 = , #AND
         #dtick = ,
-
-        # RANGE SLIDER AND SELECTOR
+        # Ticks
+        #tickfont = dict(size = 10),
+        #showticklabels = False,
+        # Range slider
         rangeslider = dict(
             visible = False,
             bordercolor = _PLACEHOLDER,
             bgcolor = _PLACEHOLDER,
             thickness = 0.1,
         ),
-
+        # Range selector
         rangeselector = dict(
-            visible = True,
+            visible = False,
             bordercolor = _PLACEHOLDER,
             bgcolor = _PLACEHOLDER,
             activecolor = _PLACEHOLDER,
+            buttons = [
+                dict(count = 1, step = 'day', stepmode = 'backward', label = '1D'),
+                dict(count = 5, step = 'day', stepmode = 'backward', label = '5D'),
+                dict(count = 1, step = 'month', stepmode = 'backward', label = '1M'),
+                dict(count = 3, step = 'month', stepmode = 'backward', label = '3M'),
+                dict(count = 6, step = 'month', stepmode = 'backward', label = '6M'),
+                dict(count = 1, step = 'year', stepmode = 'backward', label = '1Y'),
+                dict(count = 2, step = 'year', stepmode = 'backward', label = '2Y'),
+                dict(count = 5, step = 'year', stepmode = 'backward', label = '5Y'),
+                dict(count = 1, step = 'all', stepmode = 'backward', label = 'MAX'),
+                dict(count = 1, step = 'year', stepmode = 'todate', label = 'YTD'),
+            ],
         ),
-
-        # TICKS
-        #tickfont = dict(size = 10),
-        #showticklabels = False,
-
-        # OTHER
-        side = "bottom",
+        # Other
+        #type = 'datetime'
+        side = 'bottom',
         #showline = False,
         #showgrid = False,
         #zeroline = False,
         #titlefont = dict(size = 10),
-
     ),
 
     yaxis = dict(
-
-        # RANGE
-        #rangemode = "tozero",
+        # Range
+        #rangemode = 'tozero',
         #range = ,
         #nticks = , #OR
         #tick0 = , #AND
         #dtick = ,
-
-        # TICKS
+        # Ticks
         #tickfont = dict(size = 10),
         #showticklabels = False,
-
-        # OTHER
-        type = "linear",
+        # Other
+        type = 'linear',
         domain = [0.0, 1],
-        side = "right",
+        side = 'right',
         #showline = False,
         #showgrid = False,
         #zeroline = False,
         #titlefont = dict(size = 10),
-
     ),
-
-    rangeslider = dict(
-    ),
-
-    rangeselector = dict(
-        buttons = [
-            dict(count = 1, step = "day", stepmode = "backward", label = "1D"),
-            dict(count = 5, step = "day", stepmode = "backward", label = "5D"),
-            dict(count = 1, step = "month", stepmode = "backward", label = "1M"),
-            dict(count = 3, step = "month", stepmode = "backward", label = "3M"),
-            dict(count = 6, step = "month", stepmode = "backward", label = "6M"),
-            dict(count = 1, step = "year", stepmode = "backward", label = "1Y"),
-            dict(count = 2, step = "year", stepmode = "backward", label = "2Y"),
-            dict(count = 5, step = "year", stepmode = "backward", label = "5Y"),
-            dict(count = 1, step = "all", stepmode = "backward", label = "MAX"),
-            dict(count = 1, step = "year", stepmode = "todate", label = "YTD"),
-        ],
-    )
 
 )
 
 
-# LAYOUT PRIMITIVES
+# Layout primitives
 BASE_LAYOUT = dict(
-
-    title = "",
-
+    # General
+    title = '',
     width = 1080,
     height = 720,
     autosize = True,
@@ -184,12 +167,10 @@ BASE_LAYOUT = dict(
         pad = 0,
     ),
     hovermode = 'x',
-
-    # COLOR THEME
+    # Color theme
     plot_bgcolor = _PLACEHOLDER,
     paper_bgcolor = _PLACEHOLDER,
-
-    # LEGEND
+    # Legend
     showlegend = False,
     legend = dict(
         x = 1.02,
@@ -200,7 +181,6 @@ BASE_LAYOUT = dict(
         #    color = _OPTIONAL,
         #),
     ),
-
 )
 
 

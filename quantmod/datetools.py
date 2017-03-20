@@ -1,6 +1,6 @@
-"""Date and time functions.
+"""Date and time functions
 
-Refactored from Cufflinks' date_tools.py module.
+Refactored from Cufflinks' 'date_tools.py' module.
 
 """
 import datetime as dt

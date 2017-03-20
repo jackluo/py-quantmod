@@ -9,6 +9,7 @@ import pandas_datareader as web
 ticker = 'AAPL'
 #template, layout = get_light_theme()
 df = web.DataReader(ticker, data_source='yahoo')
+df = df.tail(365)
 ch = qm.Chart(df)
 ch.has_close
 #ch.to_frame()
@@ -29,8 +30,8 @@ print(ch.is_OHLC)
 #ch.add_SMA(50)
 #ch.add_EMA(200)
 ch.add_BBANDS(30)
-ch.add_RSI(60)
+ch.add_RSI(14)
 ch.ind
 ch.pri
-ch.pri['BB(30,2,2)']['type']
+#ch.pri['BB(30,2,2)']['type']
 ch.plot()

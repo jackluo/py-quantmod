@@ -1,6 +1,6 @@
-"""Functions that manage online/offline plotting.
+"""Functions that manage online/offline plotting
 
-Based on Cufflinks' offline.py.
+Refactored from Cufflinks' 'offline.py' module.
 
 """
 from __future__ import absolute_import

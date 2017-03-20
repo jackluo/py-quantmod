@@ -1,6 +1,7 @@
-"""High-level functions meant for user access.
+"""High-level functions meant for user access
 
-This includes various plotting and theming tools.
+This includes various plotting and theming helpers.
+Module also contains all argument validity checks.
 
 """
 from __future__ import absolute_import
@@ -19,8 +20,11 @@ _VALID_BASE_COMPONENTS = {'base_colors', 'base_traces',
 
 _VALID_THEME_COMPONENTS = {'colors', 'traces', 'additions', 'layout'}
 
-_VALID_COLORS = {'increasing', 'decreasing', 'background',
-                 'primary', 'secondary', 'tertiary'}
+_VALID_COLORS = {'increasing', 'decreasing',
+                 'primary', 'secondary', 'tertiary',
+                 'grey', 'grey_light', 'grey_strong',
+                 'fill', 'fill_light', 'fill_strong',
+                 'fillcolor'}
 
 _VALID_TRACES = {'candlestick',
                  'line', 'line_thin', 'line_thick', 'line_dashed',
@@ -28,7 +32,7 @@ _VALID_TRACES = {'candlestick',
                  'area', 'area_dashed', 'area_threshold',
                  'scatter', 'bar', 'histogram'}
 
-_VALID_ADDITIONS = {'xaxis', 'yaxis', 'rangeslider', 'rangeselector'}
+_VALID_ADDITIONS = {'xaxis', 'yaxis'}
 
 _VALID_LAYOUT = {'title', 'width', 'height', 'autosize',
                  'font', 'margin', 'hovermode',

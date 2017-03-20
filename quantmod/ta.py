@@ -1,5 +1,5 @@
-"""Wrappers around Ta-Lib technical indicators.
+"""Wrappers around Ta-Lib technical indicators
 
-Native indicators in 'tanolib.py' file.
+Python native indicators in 'tanolib.py' file.
 
 """

@@ -1,4 +1,4 @@
-"""Main Chart() functionnality.
+"""Main Chart() functionnality
 
 Includes Quantmod plotting engine.
 
@@ -152,22 +152,6 @@ class Chart(object):
 
         data = []
 
-        for column in self.pri:
-
-            trace = copy.deepcopy(traces[self.pri[column]['type']])
-
-            trace['x'] = self.ind.index
-            trace['y'] = self.ind[column]
-            trace['name'] = column
-            trace['yaxis'] = 'y1'
-
-            #COLORS
-            trace['line']['color'] = colors[self.pri[column]['color']]
-            if 'fillcolor' in self.pri[column]:
-                trace['fillcolor'] = colors[self.pri[column]['fillcolor']]
-
-            data.append(trace)
-
         if type == 'candlestick':
 
             trace = copy.deepcopy(traces['candlestick'])
@@ -181,8 +165,11 @@ class Chart(object):
             trace['yaxis'] = 'y1'
 
             # COLORS
-            trace['increasing']['line']['color'] = colors['increasing']
-            trace['decreasing']['line']['color'] = colors['decreasing']
+            trace['increasing']['line']['color'] = colors['grey']
+            trace['increasing']['fillcolor'] = colors['increasing']
+
+            trace['decreasing']['line']['color'] = colors['grey']
+            trace['decreasing']['fillcolor'] = colors['decreasing']
 
             data.append(trace)
 
@@ -194,6 +181,22 @@ class Chart(object):
             trace['y'] = self.df[self.cl]
             trace['name'] = title
             trace['yaxis'] = 'y1'
+
+            data.append(trace)
+
+        for column in self.pri:
+
+            trace = copy.deepcopy(traces[self.pri[column]['type']])
+
+            trace['x'] = self.ind.index
+            trace['y'] = self.ind[column]
+            trace['name'] = column
+            trace['yaxis'] = 'y1'
+
+            #COLORS
+            trace['line']['color'] = colors[self.pri[column]['color']]
+            if 'fillcolor' in self.pri[column]:
+                trace['fillcolor'] = colors[self.pri[column]['fillcolor']]
 
             data.append(trace)
 
@@ -241,9 +244,9 @@ def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     upperband = 'U' + name
     middleband = name
     lowerband = 'L' + name
-    self.pri[upperband] = dict(type='line_dashed', color='primary')
-    self.pri[middleband] = dict(type='area_dashed', color='secondary', fillcolor='background')
-    self.pri[lowerband] = dict(type='area_dashed', color='primary', fillcolor='background')
+    self.pri[upperband] = dict(type='line_dashed', color='secondary')
+    self.pri[middleband] = dict(type='area_dashed', color='grey', fillcolor='fill')
+    self.pri[lowerband] = dict(type='area_dashed', color='secondary', fillcolor='fill')
     self.ind[upperband], self.ind[middleband], self.ind[lowerband] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)
 
 def _RSI(self, timeperiod=14):

@@ -1,6 +1,6 @@
-"""Functions that manage configuration writing.
+"""Functions that manage configuration writing
 
-Based on Plotly's auth.py.
+Refactored from Plotly's 'auth.py'.
 
 """
 from __future__ import absolute_import
