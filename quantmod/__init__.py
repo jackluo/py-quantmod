@@ -11,8 +11,8 @@ cufflinks: @jorgesantos
 
 """
 
-from .plotlytools import *
-from .ta import *
+#from .plotlytools import *
+#from .ta import *
 from .version import __version__
 
 """

@@ -8,10 +8,10 @@ from __future__ import absolute_import
 import six
 import copy
 
-import auth
-import utils
-from theming.skeleton import SKELETON
-from theming.themes import THEMES
+from . import auth
+from . import utils
+from .theming.skeleton import SKELETON
+from .theming.themes import THEMES
 
 
 _VALID_BASE_COMPONENTS = {'base_colors', 'base_traces',
@@ -28,14 +28,15 @@ _VALID_TRACES = {'candlestick',
                  'area', 'area_dashed', 'area_threshold',
                  'scatter', 'bar', 'histogram'}
 
-_VALID_ADDITIONS = {'xaxis', 'yaxis'}
+_VALID_ADDITIONS = {'xaxis', 'yaxis', 'rangeslider', 'rangeselector'}
 
-_VALID_LAYOUT = {'font', 'plot_bgcolor', 'paper_bgcolor'}
+_VALID_LAYOUT = {'title', 'width', 'height', 'autosize',
+                 'font', 'margin', 'hovermode',
+                 'plot_bgcolor', 'paper_bgcolor',
+                 'showlegend', 'legend'}
 
-# Common alternative spellings (from Matplotlib)
-_VALID_TEMPLATE_KWARGS = {'xlabel', 'ylabel', 'xitle', 'ytitle',
-                          'xTitle', 'yTitle', 'xrange', 'yrange',
-                          'log', 'xlog', 'ylog', 'logx', 'logy'}
+# Common alternative spellings (from Matplotlib/Cufflinks/etc.)
+_VALID_TEMPLATE_KWARGS = {'figsize'}
 
 
 def get_theme(theme):
@@ -55,7 +56,7 @@ def get_theme(theme):
 
 def get_themes():
     """Return the list of available themes, or none if there is a problem."""
-    return list(THEMES.keys())
+    return list(THEMES)
 
 
 def get_skeleton():
@@ -76,7 +77,7 @@ def make_colors(base_colors, colors):
             Additions configuration from specified theme.
 
     """
-    for key in colors.keys():
+    for key in colors:
         if key not in _VALID_COLORS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
@@ -86,10 +87,9 @@ def make_colors(base_colors, colors):
     _expand(base_colors)
 
     # Modifiers directly to base_colors
-    for key in colors.keys():
-        utils.update(base_colors[key], colors[key])
+    utils.update(base_colors, colors)
 
-    for key in base_colors.keys():
+    for key in base_colors:
         if key not in _VALID_COLORS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
@@ -110,7 +110,7 @@ def make_traces(base_traces, traces):
 
     """
     # Check for invalid entries
-    for key in traces.keys():
+    for key in traces:
         if key not in _VALID_TRACES:
             raise Exception("Invalid keyword '{0}'".format(key))
 
@@ -140,11 +140,11 @@ def make_traces(base_traces, traces):
 
     # Mdifiers currently to 'line' only
     # This may be subject to laterchange
-    for key in traces.keys():
+    for key in traces:
         utils.update(base_traces[key]['line'], traces[key])
 
     # Check after copying
-    for key in base_traces.keys():
+    for key in base_traces:
         if key not in _VALID_TRACES:
             raise Exception("Invalid keyword '{0}'".format(key))
 
@@ -164,22 +164,20 @@ def make_additions(base_additions, additions):
             Additions configuration from specified theme.
 
     """
-    for key in additions.keys():
+    for key in additions:
         if key not in _VALID_ADDITIONS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     # No utility right now, planned in the future for additions
     def _expand(base_additions):
-        base_additions['xaxis']
-        base_additions['yaxis']
+        pass
 
     _expand(base_additions)
 
     # Modifiers directly to base_additions
-    for key in additions.keys():
-        utils.update(base_additions[key], additions[key])
+    utils.update(base_additions, additions)
 
-    for key in base_additions.keys():
+    for key in base_additions:
         if key not in _VALID_ADDITIONS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
@@ -187,10 +185,9 @@ def make_additions(base_additions, additions):
 
 
 def make_layout(base_layout, layout,
-                legend, showlegend, annotations, shapes,
-                title, xaxis_title, yaxis_title,
-                xaxis_log, yaxis_log, xaxis_range, yaxis_range,
-                dimensions, height, width, margin, **kwargs):
+                legend, hovermode,
+                annotations, shapes, title,
+                dimensions, width, height, margin, **kwargs):
     """Make layout configuration from theme/skeleton and theme/traces.
 
     Recursively update base_theme with theme using custom tool in utils.
@@ -203,38 +200,65 @@ def make_layout(base_layout, layout,
             Trace configuration from specified theme.
 
     """
-    for key in traces.keys():
+    if kwargs:
+        for key in kwargs:
+            if key not in _VALID_TEMPLATE_KWARGS:
+                raise Exception("Invalid keyword '{0}'.".format(key))
+
+    for key in layout:
         if key not in _VALID_LAYOUT:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     # No utility right now, planned in the future for additions
     def _expand(base_layout):
-        base_layout['title']
-        base_layout['width']
-        base_layout['height']
-        base_layout['autosize']
-        base_layout['hovermode']
-        base_layout['font']
-        base_layout['margin']
-
-        base_layout['plot_bgcolor']
-        base_layout['paper_bgcolor']
-        base_layout['showlegend']
-        base_layout['legend']
+        pass
 
     _expand(base_layout)
 
     # Modifiers directly to base_layout
-    for key in layout.keys():
-        utils.update(base_layout[key], layout[key])
+    utils.update(base_layout, layout)
+
+    if legend:
+        base_layout['showlegend'] = True
+        if not isinstance(legend, dict): # If not bool
+            base_layout['legend'] = legend
+
+    if hovermode:
+        base_layout['hovermode'] = hovermode
+
+    # Annotations
+    # Shapes
+
+    if title:
+        base_layout['title'] = title
+
+    if dimensions or height or width:
+        base_layout['autosize'] = False
+
+    if dimensions:
+        base_layout['width'] = dimensions[0]
+        bsae_layout['height'] = dimensions[1]
+
+    if height:
+        base_layout['height'] = height
+
+    if width:
+        base_layout['width'] = width
+
+    if margin:
+        base_layout['margin'] = margin
+
+    for key in base_layout:
+        if key not in _VALID_LAYOUT:
+            raise Exception("Invalid keyword '{0}'".format(key))
+
+    return base_layout
 
 
 def make_template(theme=None, layout=None,
-                  legend=None, hovermode=None, annotations=None, shapes=None,
-                  title=None, xaxis_title=None, yaxis_title=None,
-                  xaxis_log=None, yaxis_log=None,
-                  xaxis_range=None, yaxis_range=None,
-                  dimensions=None, height=None, width=None, margin=None,
+                  legend=None, hovermode=None,
+                  annotations=None, shapes=None, title=None,
+                  dimensions=None, width=None, height=None, margin=None,
                   **kwargs):
     """Generate color, traces, additions and layout dicts.
 
@@ -246,71 +270,29 @@ def make_template(theme=None, layout=None,
             Plotly layout dict or graph_objs.Layout figure
         legend : dict, Legend or bool
             BLABLA
+        hovermode : str
+            BLABLA
         annotations : list or Annotations
             BLABLA
         shapes : list or Shapes
             BLABLA
         title : string
             BLABLALA
-        xaxis_title : string
-            BLABLA
-        yaxis_title : string
-            BLABLA
-        xaxis_log : bool
-            BLABLA
-        yaxis_log : bool
-            BLABLA
-        xaxis_range : list
-            BLABLA
-        yaxis_range : list
-            BLABLA
         dimensions : tuple
-            BLABLA
-        height : int
             BLABLA
         width : int
             BLABLA
+        height : int
+            BLABLA
         margin : dict or tuple
             BLABLA
+
     """
     # Check for kwargs integrity
     if kwargs:
-        for key in kwargs.keys():
+        for key in kwargs:
             if key not in _VALID_TEMPLATE_KWARGS:
                 raise Exception("Invalid keyword '{0}'.".format(key))
-
-        # Rename
-        if 'xlabel' in kwargs:
-            xaxis_title = kwargs['xlabel']  # Matplotlib
-        if 'xtitle' in kwargs:
-            xaxis_title = kwargs['xtitle']  # Cufflinks
-        if 'xTitle' in kwargs:
-            xaxis_title = kwargs['xTitle']  # Cufflinks
-
-        if 'xlabel' in kwargs:
-            xaxis_title = kwargs['xlabel']  # Matplotlib
-        if 'xtitle' in kwargs:
-            xaxis_title = kwargs['xtitle']  # Cufflinks
-        if 'xTitle' in kwargs:
-            xaxis_title = kwargs['xTitle']  # Cufflinks
-
-        if 'xrange' in kwargs:
-            xaxis_range = kwargs['xrange']
-        if 'yrange' in kwargs:
-            yaxis_range = kwargs['yrange']
-
-        if 'log' in kwargs:
-            yaxis_log = kwargs['log']
-
-        if 'xlog' in kwargs:
-            xaxis_log = kwargs['xlog']
-        if 'logx' in kwargs:
-            xaxis_log = kwargs['logx']
-
-        if 'ylog' in kwargs:
-            xaxis_log = kwargs['ylog']
-        if 'logy' in kwargs:
-            xaxis_log = kwargs['logy']
 
     # Get skeleton
     skeleton = get_skeleton()
@@ -347,6 +329,11 @@ def make_template(theme=None, layout=None,
             except:
                 raise Exception("Invalid legend '{0}'.".format(layout))
 
+    # Test if hovermode is str else raise exception (can also be False)
+    if hovermode or hovermode == False:
+        if not isinstance(hovermode, six.string_types):
+            raise Exception("Invalid hovermode '{0}'.".format(hovermode))
+
     # Test if annotations is list, else coerce Annotations() to regular list
     if annotations:
         if not isinstance(annotations, list):
@@ -369,39 +356,48 @@ def make_template(theme=None, layout=None,
         if not isinstance(title, six.string_types):
             raise Exception("Invalid title '{0}'.".format(title))
 
-    if xaxis_title:
-        if not isinstance(xaxis_title, six.string_types):
-            raise Exception("Invalid xaxis_title '{0}'.".format(xaxis_title))
+    # Test below items is tuple, else raise exception
+    if 'figsize' in kwargs:  # Matplotlib
+        figsize = kwargs['figsize']
+        if isinstance(figsize, tuple):
+            dimensions = tuple(80 * i for i in figsize)  # 80x Matplotlib sizes
+        else:
+            raise Exception("Invalid figsize '{0}'.".format(figsize))
+    elif dimensions:  # Cufflinks
+        if not isinstance(dimensions, tuple):
+            raise Exception("Invalid dimensions '{0}'.".format(dimensions))
+    else:
+        pass
 
-    if yaxis_title:
-        if not isinstance(yaxis_title, six.string_types):
-            raise Exception("Invalid yaxis_title '{0}'.".format(yaxis_title))
+    # Test below items if int, else raise exception
+    if width:
+        if not isinstance(width, six.integer_types):
+            raise Exception("Invalid width '{0}'.".format(width))
 
-    # Test below items if bool, else raise exception
-    if xaxis_log:
-        if not isinstance(xaxis_log, bool):
-            raise Exception("Invalid xaxis_log '{0}'.".format(xaxis_log))
+    if height:
+        if not isinstance(height, six.integer_types):
+            raise Exception("Invalid height '{0}'.".format(height))
 
-    if yaxis_log:
-        if not isinstance(yaxis_log, bool):
-            raise Exception("Invalid yaxis_log '{0}'.".format(yaxis_log))
-
-    if xaxis_range:
-        if not isinstance(xaxis_range, list):
-            raise Exception("Invalid yaxis_log '{0}'.".format(yaxis_log))
-
+    # Test if margin is dict, else convert tuple to dict, else raise exception
+    if margin:
+        if isinstance(margin, dict):
+            pass
+        elif isinstance(margin, tuple):
+            margin = dict(list(zip(('l', 'r', 'b', 't'), margin)))  # Cufflinks
+        else:
+            raise Exception("Invalid margin '{0}'.".format(margin))
 
     # Split theme and skeleton
-    if all(key in skeleton.keys() for key in _VALID_BASE_COMPONENTS):
+    if all(key in skeleton for key in _VALID_BASE_COMPONENTS):
         base_colors = skeleton['base_colors']
         base_traces = skeleton['base_traces']
         base_additions = skeleton['base_additions']
         base_layout = skeleton['base_layout']
     else:
-        raise Exception("Improperly configured skeleton. \
-                        Consider reinstalling Quantmod.")
+        raise Exception("Improperly configured skeleton. "
+                        "Consider reinstalling Quantmod.")
 
-    if all(key in theme.keys() for key in _VALID_THEME_COMPONENTS):
+    if all(key in theme for key in _VALID_THEME_COMPONENTS):
         colors = theme['colors']
         traces = theme['traces']
         additions = theme['additions']
@@ -414,10 +410,9 @@ def make_template(theme=None, layout=None,
     final_traces = make_traces(base_traces, traces)
     final_additions = make_additions(base_additions, additions)
     final_layout = make_layout(base_layout, layout,
-                               legend, hovermode, annotations, shapes,
-                               title, xaxis_title, yaxis_title,
-                               xaxis_log, yaxis_log, xaxis_range, yaxis_range,
-                               dimensions, height, width, margin, **kwargs)
+                               legend, hovermode,
+                               annotations, shapes, title,
+                               dimensions, width, height, margin, **kwargs)
 
     # Convert to dict
     template = dict(colors=final_colors, traces=final_traces,

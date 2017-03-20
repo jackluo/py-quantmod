@@ -1,11 +1,11 @@
 _PLACEHOLDER = False
 
 
-# Color primitives to be implemented
+# COLOR PRIMTIVES
 BASE_COLORS = dict()
 
 
-# Trace primitives
+# TRACE PRIMITIVES
 BASE_TRACES = dict(
 
     candlestick = dict(
@@ -80,7 +80,7 @@ BASE_TRACES = dict(
 )
 
 
-# Layout modifiers
+# LAYOUT MODIFIERS
 BASE_ADDITIONS = dict(
 
     xaxis = dict(
@@ -142,23 +142,28 @@ BASE_ADDITIONS = dict(
 
     ),
 
-    buttons = [
-        dict(count = 1, step = "day", stepmode = "backward", label = "1D"),
-        dict(count = 5, step = "day", stepmode = "backward", label = "5D"),
-        dict(count = 1, step = "month", stepmode = "backward", label = "1M"),
-        dict(count = 3, step = "month", stepmode = "backward", label = "3M"),
-        dict(count = 6, step = "month", stepmode = "backward", label = "6M"),
-        dict(count = 1, step = "year", stepmode = "backward", label = "1Y"),
-        dict(count = 2, step = "year", stepmode = "backward", label = "2Y"),
-        dict(count = 5, step = "year", stepmode = "backward", label = "5Y"),
-        dict(count = 1, step = "all", stepmode = "backward", label = "MAX"),
-        dict(count = 1, step = "year", stepmode = "todate", label = "YTD"),
-    ],
+    rangeslider = dict(
+    ),
+
+    rangeselector = dict(
+        buttons = [
+            dict(count = 1, step = "day", stepmode = "backward", label = "1D"),
+            dict(count = 5, step = "day", stepmode = "backward", label = "5D"),
+            dict(count = 1, step = "month", stepmode = "backward", label = "1M"),
+            dict(count = 3, step = "month", stepmode = "backward", label = "3M"),
+            dict(count = 6, step = "month", stepmode = "backward", label = "6M"),
+            dict(count = 1, step = "year", stepmode = "backward", label = "1Y"),
+            dict(count = 2, step = "year", stepmode = "backward", label = "2Y"),
+            dict(count = 5, step = "year", stepmode = "backward", label = "5Y"),
+            dict(count = 1, step = "all", stepmode = "backward", label = "MAX"),
+            dict(count = 1, step = "year", stepmode = "todate", label = "YTD"),
+        ],
+    )
 
 )
 
 
-# Layout primitives
+# LAYOUT PRIMITIVES
 BASE_LAYOUT = dict(
 
     title = "",
@@ -178,14 +183,14 @@ BASE_LAYOUT = dict(
         r = 40,
         pad = 0,
     ),
-    showlegend = False,
-    #hovermode = False,
+    hovermode = 'x',
 
     # COLOR THEME
     plot_bgcolor = _PLACEHOLDER,
     paper_bgcolor = _PLACEHOLDER,
 
     # LEGEND
+    showlegend = False,
     legend = dict(
         x = 1.02,
         y = 1,
@@ -199,4 +204,5 @@ BASE_LAYOUT = dict(
 )
 
 
-SKELETON = {'base_colors': BASE_COLORS, 'base_traces': BASE_TRACES, 'base_additions': BASE_ADDITIONS, 'base_layout': BASE_LAYOUT}
+SKELETON = {'base_colors': BASE_COLORS, 'base_traces': BASE_TRACES,
+            'base_additions': BASE_ADDITIONS, 'base_layout': BASE_LAYOUT}

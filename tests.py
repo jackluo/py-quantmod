@@ -1,7 +1,6 @@
 
 # In[]:
 import quantmod.chart as qm
-#from quantmod.themes.themes import base_template, get_light_theme
 import pandas as pd
 import pandas_datareader as web
 

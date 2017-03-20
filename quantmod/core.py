@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import pandas_datareader.data as web
 
 

@@ -1,28 +1,20 @@
-"""Main Chart() functionnality.
-
-Includes Quantmod plotting engine.
-
-"""
 from __future__ import absolute_import
 
 import copy
 import numpy as np
 import pandas as pd
+import pandas_datareader.data as web
 import plotly.plotly as py
 import plotly.offline as pyo
 
-import talib # To be removed
+from .themes import THEMES
 
-from . import utils
-from . import tools
+
+import talib # To be removed
 
 
 class Chart(object):
-    """Quantmod's Chart() object based on a df.
 
-    BLABLABLA
-
-    """
     def __init__(self, df, source='yahoo'):
 
         self.df = df
@@ -97,6 +89,7 @@ class Chart(object):
         cols = {self.cl}
         return self.df.columns.isin(cols)
 
+
     @property
     def is_OHLC(self):
         """Return True if Chart() supports OHLC, False otherwise."""
@@ -144,11 +137,7 @@ class Chart(object):
 
     def plot(self, type='candlestick', title='Stock'):
 
-        template = tools.make_template()
-        colors = template['colors']
-        traces = template['traces']
-        additions = template['additions']
-        layout = template['layout']
+        colors, traces, additions, layout = get_light_theme()
 
         data = []
         if type == 'candlestick':
@@ -163,13 +152,9 @@ class Chart(object):
             trace['name'] = title
             trace['yaxis'] = 'y1'
 
-            # COLORS
-            trace['increasing']['line']['color'] = colors['increasing']
-            trace['decreasing']['line']['color'] = colors['decreasing']
-
             data.append(trace)
 
-        if type == 'line':
+        elif type == 'line':
 
             trace = copy.deepcopy(traces['line'])
 
@@ -182,17 +167,15 @@ class Chart(object):
 
         for column in self.pri:
 
-            trace = copy.deepcopy(traces[self.pri[column]['type']])
+            trace = copy.deepcopy(traces[self.pri[column]['type']
+
+            if linecolor in self.pri:
+                pass
 
             trace['x'] = self.ind.index
             trace['y'] = self.ind[column]
             trace['name'] = column
             trace['yaxis'] = 'y1'
-
-            #COLORS
-            trace['line']['color'] = colors[self.pri[column]['color']]
-            if 'fillcolor' in self.pri[column]:
-                trace['fillcolor'] = colors[self.pri[column]['fillcolor']]
 
             data.append(trace)
 
@@ -209,6 +192,7 @@ class Chart(object):
 
         layout['xaxis'] = additions['xaxis'].copy()
         layout['yaxis'] = additions['yaxis'].copy()
+        layout['title'] = title
 
         if self.sec:
             layout['yaxis2'] = additions['yaxis'].copy()
@@ -227,12 +211,12 @@ def _MA(self, timeperiod=30, matype=0):
 
 def _SMA(self, timeperiod=30):
     name = 'SMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
+    self.pri[name] = dict(type='line', linecolor='primary')
     self.ind[name] = talib.SMA(self.df[self.cl].values, timeperiod)
 
 def _EMA(self, timeperiod=30):
     name = 'EMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
+    self.pri[name] = dict(type='line', linecolor='primary')
     self.ind[name] = talib.EMA(self.df[self.cl].values, timeperiod)
 
 def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
@@ -240,9 +224,9 @@ def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     upperband = 'U' + name
     middleband = name
     lowerband = 'L' + name
-    self.pri[upperband] = dict(type='line_dashed', color='primary')
-    self.pri[middleband] = dict(type='area_dashed', color='secondary', fillcolor='background')
-    self.pri[lowerband] = dict(type='area_dashed', color='primary', fillcolor='background')
+    self.pri[upperband] = dict(type='line-dashed')
+    self.pri[middleband] = dict(type='area-dashed')
+    self.pri[lowerband] = dict(type='area-dashed')
     self.ind[upperband], self.ind[middleband], self.ind[lowerband] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)
 
 def _RSI(self, timeperiod=14):

@@ -70,19 +70,17 @@ DARK_QM = dict(
     ),
 
     additions = dict(
-        xaxis = dict(
-            rangeslider = dict(
-                bordercolor = '#CCCCCC',
-                bgcolor = '#CCCCCC',
-                thickness = 0.1,
-            ),
-            rangeselector = dict(
-                bordercolor = '#C9C9C9',
-                bgcolor = '#C9C9C9',
-                activecolor = '#888888',
-            ),
-        ),
         yaxis = dict(side = 'left',),
+        rangeslider = dict(
+            bordercolor = '#CCCCCC',
+            bgcolor = '#CCCCCC',
+            thickness = 0.1,
+        ),
+        rangeselector = dict(
+            bordercolor = '#C9C9C9',
+            bgcolor = '#C9C9C9',
+            activecolor = '#888888',
+        ),
     ),
 
     layout = dict(
