@@ -39,8 +39,7 @@ _VALID_LAYOUT = {'title', 'width', 'height', 'autosize',
                  'plot_bgcolor', 'paper_bgcolor',
                  'showlegend', 'legend'}
 
-# Common alternative spellings (from Matplotlib/Cufflinks/etc.)
-_VALID_TEMPLATE_KWARGS = {'figsize'}
+_VALID_TEMPLATE_KWARGS = {'figsize'}  # Matplotlib/Cufflinks syntax
 
 
 def get_theme(theme):
@@ -188,7 +187,7 @@ def make_additions(base_additions, additions):
     return base_additions
 
 
-def make_layout(base_layout, layout,
+def make_layout(base_layout, layout, custom_layout,
                 legend, hovermode,
                 annotations, shapes, title,
                 dimensions, width, height, margin, **kwargs):
@@ -199,16 +198,37 @@ def make_layout(base_layout, layout,
     Parameters
     ----------
         base_traces : dict
-            Trace file containing primitives from 'skeleton.py'.
-        traces : dict
-            Trace configuration from specified theme.
+            Layout file containing primitives from 'skeleton.py'.
+        layout : dict
+            Layout configuration from specified theme.
+        custom_layout : dict
+            Plotly layout dict or graph_objs.Layout object.
+            Will override all other arguments if conflicting as
+            user-inputted layout is updated last.
+        legend : dict or bool
+            True/False or Plotly legend dict / graph_objs.Legend object.
+            If legend is a bool, Quantmod will simply toggle legend visibility.
+        hovermode : str or bool
+            Can be either 'x', 'y', 'closest' or False.
+            Toggles how a tooltip appears on cursor hover.
+        annotations : list
+            Plotly annotations list.
+        shapes : list or
+            Plotly shapes list.
+        title : string
+            Chart title.
+        dimensions : tuple
+            Dimensions 2-tuple in order (width, height). Disables autosize=True.
+        width : int
+            Width of chart. Disables autosize=True.
+        height : int
+            Height of chart. Disables autosize=True.
+        margin : dict or tuple
+            Plotly margin dict or 4-tuple in order (l, r, b, t) or
+            5-tuple in order (l, r, b, t, margin). Tuple input added for
+            Cufflinks compatibility.
 
     """
-    if kwargs:
-        for key in kwargs:
-            if key not in _VALID_TEMPLATE_KWARGS:
-                raise Exception("Invalid keyword '{0}'.".format(key))
-
     for key in layout:
         if key not in _VALID_LAYOUT:
             raise Exception("Invalid keyword '{0}'".format(key))
@@ -222,16 +242,20 @@ def make_layout(base_layout, layout,
     # Modifiers directly to base_layout
     utils.update(base_layout, layout)
 
+    legend = True  # Debug
     if legend:
         base_layout['showlegend'] = True
-        if not isinstance(legend, dict): # If not bool
+        if not isinstance(legend, bool):  # If not bool
             base_layout['legend'] = legend
 
     if hovermode:
         base_layout['hovermode'] = hovermode
 
-    # Annotations
-    # Shapes
+    if annotations:
+        base_layout['annotations'] = annotations
+
+    if shapes:
+        base_layout['shapes'] = shapes
 
     if title:
         base_layout['title'] = title
@@ -252,6 +276,10 @@ def make_layout(base_layout, layout,
     if margin:
         base_layout['margin'] = margin
 
+    # Custom layout update
+    if custom_layout:
+        layout = utils.update(layout, custom_layout)
+
     for key in base_layout:
         if key not in _VALID_LAYOUT:
             raise Exception("Invalid keyword '{0}'".format(key))
@@ -259,37 +287,43 @@ def make_layout(base_layout, layout,
     return base_layout
 
 
-def make_template(theme=None, layout=None,
-                  legend=None, hovermode=None,
-                  annotations=None, shapes=None, title=None,
-                  dimensions=None, width=None, height=None, margin=None,
-                  **kwargs):
+def get_template(theme=None, layout=None,
+                 legend=None, hovermode=None,
+                 annotations=None, shapes=None, title=None,
+                 dimensions=None, width=None, height=None, margin=None,
+                 **kwargs):
     """Generate color, traces, additions and layout dicts.
 
     Parameters
     ----------
         theme : string
-            Quantmod theme
+            Quantmod theme.
         layout : dict or Layout
-            Plotly layout dict or graph_objs.Layout figure
+            Plotly layout dict or graph_objs.Layout object.
+            Will override all other arguments if conflicting as
+            user-inputted layout is updated last.
         legend : dict, Legend or bool
-            BLABLA
-        hovermode : str
-            BLABLA
+            True/False or Plotly legend dict / graph_objs.Legend object.
+            If legend is a bool, Quantmod will simply toggle legend visibility.
+        hovermode : str or bool
+            Can be either 'x', 'y', 'closest' or False.
+            Toggles how a tooltip appears on cursor hover.
         annotations : list or Annotations
-            BLABLA
+            Plotly annotations list or graph_objs.Annotations object.
         shapes : list or Shapes
-            BLABLA
+            Plotly shapes list or graph_objs.Shapes object.
         title : string
-            BLABLALA
+            Chart title.
         dimensions : tuple
-            BLABLA
+            Dimensions 2-tuple in order (width, height). Disables autosize=True.
         width : int
-            BLABLA
+            Width of chart. Disables autosize=True.
         height : int
-            BLABLA
+            Height of chart. Disables autosize=True.
         margin : dict or tuple
-            BLABLA
+            Plotly margin dict or 4-tuple in order (l, r, b, t) or
+            5-tuple in order (l, r, b, t, margin). Tuple input added for
+            Cufflinks compatibility.
 
     """
     # Check for kwargs integrity
@@ -312,13 +346,17 @@ def make_template(theme=None, layout=None,
     else:
         theme = get_theme(auth.get_config_file()['theme'])
 
-    # Test if legend is dict, else coerce Layout() to regular dict
+    # Test if layout is dict, else coerce Layout() to regular dict
+    # Rename to custom_layout (to distinguish from base_layout and layout)
     if layout:
-        if not isinstance(layout, dict):
+        custom_layout = layout
+        if not isinstance(custom_layout, dict):
             try:
-                layout = dict(layout.items())
+                custom_layout = dict(custom_layout.items())
             except:
-                raise Exception("Invalid layout '{0}'.".format(layout))
+                raise Exception("Invalid layout '{0}'.".format(custom_layout))
+    else:
+        custom_layout = None
 
     # Test if legend is True/False, else coerce Legend() to regular dict
     # if legend is not regular dict
@@ -363,12 +401,12 @@ def make_template(theme=None, layout=None,
     # Test below items is tuple, else raise exception
     if 'figsize' in kwargs:  # Matplotlib
         figsize = kwargs['figsize']
-        if isinstance(figsize, tuple):
+        if isinstance(figsize, tuple) and len(figsize) == 2:
             dimensions = tuple(80 * i for i in figsize)  # 80x Matplotlib sizes
         else:
             raise Exception("Invalid figsize '{0}'.".format(figsize))
     elif dimensions:  # Cufflinks
-        if not isinstance(dimensions, tuple):
+        if not isinstance(dimensions, tuple) or len(dimensions) == 2:
             raise Exception("Invalid dimensions '{0}'.".format(dimensions))
     else:
         pass
@@ -386,8 +424,13 @@ def make_template(theme=None, layout=None,
     if margin:
         if isinstance(margin, dict):
             pass
-        elif isinstance(margin, tuple):
-            margin = dict(list(zip(('l', 'r', 'b', 't'), margin)))  # Cufflinks
+        elif isinstance(margin, tuple):  # Cufflinks
+            if len(margin) == 4:
+                margin = dict(zip(('l', 'r', 'b', 't'), margin))
+            elif len(margin) == 5:
+                margin = dict(zip(('l', 'r', 'b', 't', 'pad'), margin))
+            else:
+                raise Exception("Invalid margin '{0}'.".format(margin))
         else:
             raise Exception("Invalid margin '{0}'.".format(margin))
 
@@ -413,7 +456,7 @@ def make_template(theme=None, layout=None,
     final_colors = make_colors(base_colors, colors)
     final_traces = make_traces(base_traces, traces)
     final_additions = make_additions(base_additions, additions)
-    final_layout = make_layout(base_layout, layout,
+    final_layout = make_layout(base_layout, layout, custom_layout,
                                legend, hovermode,
                                annotations, shapes, title,
                                dimensions, width, height, margin, **kwargs)
@@ -423,3 +466,34 @@ def make_template(theme=None, layout=None,
                     additions=final_additions, layout=final_layout)
 
     return template
+
+
+def get_base_layout(figures):
+    """Generate a layout with the union of multiple figures' layouts.
+
+    Parameters
+    ----------
+        figures : list
+            List of Plotly figures
+
+    """
+    layout = {}
+    for figure in figures:
+        for key, value in figure['layout'].items():
+            layout[key] = value
+    return layout
+
+
+def strip_figure(figure):
+    """Strip a Plotly figure into multiple figures with a trace on each of them.
+
+    Parameters
+    ----------
+        figure : dict or Figure
+            Plotly figure
+
+    """
+    figures = []
+    for trace in figure['data']:
+        figures.append(dict(data=[trace], layout=figure['layout']))
+    return figures

@@ -5,11 +5,10 @@
 
 __docformat__ = 'restructuredtext'
 
-hard_dependencies = ("numpy",
-                     "pandas",
-                     "plotly",
-                     "pandas_datareader,
-                     "talib")
+hard_dependencies = ('numpy',
+                     'pandas',
+                     'plotly',
+                     'pandas_datareader')
 missing_dependencies = []
 
 for dependency in hard_dependencies:
@@ -20,7 +19,7 @@ for dependency in hard_dependencies:
 
 if missing_dependencies:
     raise ImportError(
-        "Missing required dependencies {0}".format(missing_dependencies))
+        "Missing required dependencies {0}.".format(missing_dependencies))
 del hard_dependencies, dependency, missing_dependencies
 
 from core import *

@@ -3,13 +3,15 @@
 Used to dynamically link to theme colors rather than rely on hardcoding
 of greyscale traces.
 
+For readability, files under theming do not follow PEP8 guideline of
+no space between assignment of named arguments.
+
 """
-
-
 # Palette for lighter themes
 LIGHT_PALETTE = dict(
     white = '#FFFFFF',
     black = '#000000',
+    transparent = 'rgba(0, 0, 0, 0.00)',
     grey02 = 'rgba(0, 0, 0, 0.02)',
     grey05 = 'rgba(0, 0, 0, 0.05)',
     grey10 = 'rgba(0, 0, 0, 0.10)',
@@ -38,6 +40,7 @@ LIGHT_PALETTE = dict(
 DARK_PALETTE = dict(
     white = '#FFFFFF',
     black = '#000000',
+    transparent = 'rgba(255, 255, 255, 0.00)',
     grey02 = 'rgba(255, 255, 255, 0.98)',
     grey05 = 'rgba(255, 255, 255, 0.95)',
     grey10 = 'rgba(255, 255, 255, 0.90)',

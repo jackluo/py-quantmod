@@ -2,7 +2,10 @@
 
 Create your own modules by copying one of the themes and editing it after.
 Make sure that colors, traces, additions and layout are all under one main dict,
-and add that dict to 'THEMES' at the bottom of the file.
+and add that dict to '_VALID_THEMES' at the bottom of the file.
+
+For readability, files under theming do not follow PEP8 guideline of
+no space between assignment of named arguments.
 
 """
 from __future__ import absolute_import
@@ -33,7 +36,7 @@ LIGHT_QM = dict(
         line_dashed = dict(dash = 5,),
         line_dashed_thin = dict(dash = 5, width = 1,),
         line_dashed_thick = dict(dash = 5, width = 4,),
-        area_dashed = dict(dash = 4),
+        area_dashed = dict(dash = 4,),
     ),
 
     additions = dict(
@@ -60,6 +63,9 @@ LIGHT_QM = dict(
         ),
         plot_bgcolor = '#FFFFFF',
         paper_bgcolor = '#F3F3F3',
+        legend = dict(
+            bgcolor = LIGHT_PALETTE['transparent'],
+        ),
     ),
 
 )

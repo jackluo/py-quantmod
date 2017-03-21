@@ -18,9 +18,9 @@ from . import tools
 
 
 class Chart(object):
-    """Quantmod's Chart() object based on a df.
+    """Quantmod's Chart() object based on Pandas' df.
 
-    BLABLABLA
+    ADD DOCUMENTATION.
 
     """
     def __init__(self, df, source='yahoo'):
@@ -144,7 +144,7 @@ class Chart(object):
 
     def plot(self, type='candlestick', title='Stock'):
 
-        template = tools.make_template()
+        template = tools.get_template()
         colors = template['colors']
         traces = template['traces']
         additions = template['additions']

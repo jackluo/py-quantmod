@@ -1,5 +1,6 @@
 
 # In[]:
+import quantmod.offline as qmo
 import quantmod.chart as qm
 import pandas as pd
 import pandas_datareader as web
@@ -12,14 +13,14 @@ df = web.DataReader(ticker, data_source='yahoo')
 df = df.tail(365)
 ch = qm.Chart(df)
 ch.has_close
-#ch.to_frame()
+ch.to_frame()
 #del df['Close']
 #del df['Adj Close']
+#del ch.df['Open']
 ch.has_open
 ch.has_close
 ch.has_adjusted_close
 ch.op
-#del ch.df['Open']
 ch.df
 ch.ind
 ch.pri
@@ -34,4 +35,5 @@ ch.add_RSI(14)
 ch.ind
 ch.pri
 #ch.pri['BB(30,2,2)']['type']
+qmo.go_offline()
 ch.plot()

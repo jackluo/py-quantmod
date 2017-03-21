@@ -3,6 +3,9 @@
 Edit your own modules by copying one of the themes.
 Make sure that colors, traces, additions and layout are all under one dict.
 
+For readability, files under theming do not follow PEP8 guideline of
+no space between assignment of named arguments.
+
 """
 _PLACEHOLDER = False
 
@@ -23,7 +26,7 @@ BASE_TRACES = dict(
         increasing = dict(
             line = dict(
                 color = _PLACEHOLDER,
-                width = 1,
+                width = 1.5,
             ),
             fillcolor = _PLACEHOLDER,
         ),
@@ -31,7 +34,7 @@ BASE_TRACES = dict(
         decreasing = dict(
             line = dict(
                 color = _PLACEHOLDER,
-                width = 1,
+                width = 1.5,
             ),
             fillcolor = _PLACEHOLDER,
         ),
@@ -173,8 +176,9 @@ BASE_LAYOUT = dict(
     # Legend
     showlegend = False,
     legend = dict(
-        x = 1.02,
-        y = 1,
+        bgcolor = _PLACEHOLDER,
+        x = 0.01,
+        y = 0.99,
         tracegroupgap = 10,
         #font = dict(
         #    size = 10,
