@@ -3,3 +3,4 @@
 Python native indicators in 'tanolib.py' file.
 
 """
+import talib

@@ -14,34 +14,7 @@ from . import utils
 from .theming.skeleton import SKELETON
 from .theming.themes import THEMES
 from .sources import SOURCES
-
-
-_VALID_BASE_COMPONENTS = {'base_colors', 'base_traces',
-                          'base_additions', 'base_layout'}
-
-_VALID_THEME_COMPONENTS = {'colors', 'traces', 'additions', 'layout'}
-
-_VALID_COLORS = {'increasing', 'decreasing',
-                 'primary', 'secondary', 'tertiary',
-                 'grey', 'grey_light', 'grey_strong',
-                 'fill', 'fill_light', 'fill_strong',
-                 'fillcolor'}
-
-_VALID_TRACES = {'candlestick',
-                 'line', 'line_thin', 'line_thick', 'line_dashed',
-                 'line_dashed_thin', 'line_dashed_thick',
-                 'area', 'area_dashed',
-                 'area_dashed_thin', 'area_dashed_thick', 'area_threshold',
-                 'scatter', 'bar', 'histogram'}
-
-_VALID_ADDITIONS = {'xaxis', 'yaxis'}
-
-_VALID_LAYOUT = {'title', 'width', 'height', 'autosize',
-                 'font', 'margin', 'hovermode',
-                 'plot_bgcolor', 'paper_bgcolor',
-                 'showlegend', 'legend'}
-
-_VALID_TEMPLATE_KWARGS = {'figsize'}  # Matplotlib/Cufflinks syntax
+from .valid import *
 
 
 def get_theme(theme):
@@ -103,7 +76,7 @@ def make_colors(base_colors, colors):
 
     """
     for key in colors:
-        if key not in _VALID_COLORS:
+        if key not in VALID_COLORS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     def _expand(base_colors):
@@ -115,7 +88,7 @@ def make_colors(base_colors, colors):
     utils.update(base_colors, colors)
 
     for key in base_colors:
-        if key not in _VALID_COLORS:
+        if key not in VALID_COLORS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     return base_colors
@@ -136,7 +109,7 @@ def make_traces(base_traces, traces):
     """
     # Check for invalid entries
     for key in traces:
-        if key not in _VALID_TRACES:
+        if key not in VALID_TRACES:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     def _expand(base_traces):
@@ -172,7 +145,7 @@ def make_traces(base_traces, traces):
 
     # Check after copying
     for key in base_traces:
-        if key not in _VALID_TRACES:
+        if key not in VALID_TRACES:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     return base_traces
@@ -192,7 +165,7 @@ def make_additions(base_additions, additions):
 
     """
     for key in additions:
-        if key not in _VALID_ADDITIONS:
+        if key not in VALID_ADDITIONS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     # No utility right now, planned in the future for additions
@@ -205,15 +178,15 @@ def make_additions(base_additions, additions):
     utils.update(base_additions, additions)
 
     for key in base_additions:
-        if key not in _VALID_ADDITIONS:
+        if key not in VALID_ADDITIONS:
             raise Exception("Invalid keyword '{0}'".format(key))
 
     return base_additions
 
 
 def make_layout(base_layout, layout, custom_layout,
-                legend, hovermode,
-                annotations, shapes, title,
+                title, hovermode,
+                legend, annotations, shapes,
                 dimensions, width, height, margin, **kwargs):
     """Make layout configuration from theme/skeleton and theme/traces.
 
@@ -229,115 +202,18 @@ def make_layout(base_layout, layout, custom_layout,
             Plotly layout dict or graph_objs.Layout object.
             Will override all other arguments if conflicting as
             user-inputted layout is updated last.
-        legend : dict or bool
-            True/False or Plotly legend dict / graph_objs.Legend object.
-            If legend is a bool, Quantmod will simply toggle legend visibility.
-        hovermode : str or bool
+        title : string
+            Chart title.
+        hovermode : str or False
             Can be either 'x', 'y', 'closest' or False.
             Toggles how a tooltip appears on cursor hover.
+        legend : dict or bool
+            True/False or Plotly legend dict.
+            If legend is a bool, Quantmod will simply toggle legend visibility.
         annotations : list
             Plotly annotations list.
         shapes : list or
             Plotly shapes list.
-        title : string
-            Chart title.
-        dimensions : tuple
-            Dimensions 2-tuple in order (width, height). Disables autosize=True.
-        width : int
-            Width of chart. Disables autosize=True.
-        height : int
-            Height of chart. Disables autosize=True.
-        margin : dict or tuple
-            Plotly margin dict or 4-tuple in order (l, r, b, t) or
-            5-tuple in order (l, r, b, t, margin). Tuple input added for
-            Cufflinks compatibility.
-
-    """
-    for key in layout:
-        if key not in _VALID_LAYOUT:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    # No utility right now, planned in the future for additions
-    def _expand(base_layout):
-        pass
-
-    _expand(base_layout)
-
-    # Modifiers directly to base_layout
-    utils.update(base_layout, layout)
-
-    legend = True  # Debug
-    if legend:
-        base_layout['showlegend'] = True
-        if not isinstance(legend, bool):  # If not bool
-            base_layout['legend'] = legend
-
-    if hovermode:
-        base_layout['hovermode'] = hovermode
-
-    if annotations:
-        base_layout['annotations'] = annotations
-
-    if shapes:
-        base_layout['shapes'] = shapes
-
-    if title:
-        base_layout['title'] = title
-
-    if dimensions or height or width:
-        base_layout['autosize'] = False
-
-    if dimensions:
-        base_layout['width'] = dimensions[0]
-        bsae_layout['height'] = dimensions[1]
-
-    if height:
-        base_layout['height'] = height
-
-    if width:
-        base_layout['width'] = width
-
-    if margin:
-        base_layout['margin'] = margin
-
-    # Custom layout update
-    if custom_layout:
-        layout = utils.update(layout, custom_layout)
-
-    for key in base_layout:
-        if key not in _VALID_LAYOUT:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    return base_layout
-
-
-def get_template(theme=None, layout=None,
-                 legend=None, hovermode=None,
-                 annotations=None, shapes=None, title=None,
-                 dimensions=None, width=None, height=None, margin=None,
-                 **kwargs):
-    """Generate color, traces, additions and layout dicts.
-
-    Parameters
-    ----------
-        theme : string
-            Quantmod theme.
-        layout : dict or Layout
-            Plotly layout dict or graph_objs.Layout object.
-            Will override all other arguments if conflicting as
-            user-inputted layout is updated last.
-        legend : dict, Legend or bool
-            True/False or Plotly legend dict / graph_objs.Legend object.
-            If legend is a bool, Quantmod will simply toggle legend visibility.
-        hovermode : str or bool
-            Can be either 'x', 'y', 'closest' or False.
-            Toggles how a tooltip appears on cursor hover.
-        annotations : list or Annotations
-            Plotly annotations list or graph_objs.Annotations object.
-        shapes : list or Shapes
-            Plotly shapes list or graph_objs.Shapes object.
-        title : string
-            Chart title.
         dimensions : tuple
             Dimensions 2-tuple in order (width, height). Disables autosize=True.
         width : int
@@ -351,10 +227,137 @@ def get_template(theme=None, layout=None,
 
     """
     # Check for kwargs integrity
-    if kwargs:
-        for key in kwargs:
-            if key not in _VALID_TEMPLATE_KWARGS:
-                raise Exception("Invalid keyword '{0}'.".format(key))
+    for key in kwargs:
+        if key not in VALID_TEMPLATE_KWARGS:
+            raise Exception("Invalid keyword '{0}'.".format(key))
+
+    # Kwargs
+    if 'showlegend' in kwargs:
+        legend = kwargs['showlegend']
+
+    if 'figsize' in kwargs: # Matplotlib
+        figsize = kwargs['figsize']
+        if isinstance(figsize, tuple) and len(figsize) == 2:
+            dimensions = tuple(80 * i for i in figsize) # 80x size
+        else:
+            raise Exception("Invalid figsize '{0}'.".format(figsize))
+
+    # Check for invalid entries
+    for key in layout:
+        if key not in VALID_LAYOUT:
+            raise Exception("Invalid keyword '{0}'".format(key))
+
+    # No utility right now, planned in the future for additions
+    def _expand(base_layout):
+        pass
+
+    _expand(base_layout)
+
+    # Modifiers directly to base_layout
+    utils.update(base_layout, layout)
+
+    if title:
+        base_layout['title'] = title
+
+    if hovermode or hovermode == False:
+        base_layout['hovermode'] = hovermode
+
+    if legend or legend == False:
+        if legend == True:
+            base_layout['showlegend'] = True
+        elif legend == False:
+            base_layout['showlegend'] = False
+        else:
+            base_layout['showlegend'] = True
+            base_layout['legend'] = legend
+
+    if annotations:
+        base_layout['annotations'] = annotations
+
+    if shapes:
+        base_layout['shapes'] = shapes
+
+    if dimensions or height or width:
+        base_layout['autosize'] = False
+
+        if dimensions:
+            base_layout['width'] = dimensions[0]
+            bsae_layout['height'] = dimensions[1]
+
+        if height:
+            base_layout['height'] = height
+
+        if width:
+            base_layout['width'] = width
+
+    if margin:
+        base_layout['margin'] = margin
+
+    # Custom layout update
+    if custom_layout:
+        utils.update(layout, custom_layout)
+
+    for key in base_layout:
+        if key not in VALID_LAYOUT:
+            raise Exception("Invalid keyword '{0}'".format(key))
+
+    return base_layout
+
+
+def get_template(theme=None, layout=None,
+                 title=None, hovermode=None,
+                 legend=None, annotations=None, shapes=None,
+                 dimensions=None, width=None, height=None, margin=None,
+                 **kwargs):
+    """Generate color, traces, additions and layout dicts.
+
+    Parameters
+    ----------
+        theme : string
+            Quantmod theme.
+        layout : dict or Layout
+            Plotly layout dict or graph_objs.Layout object.
+            Will override all other arguments if conflicting as
+            user-inputted layout is updated last.
+        title : string
+            Chart title.
+        hovermode : str or False
+            Can be either 'x', 'y', 'closest' or False.
+            Toggles how a tooltip appears on cursor hover.
+        legend : dict, Legend or bool
+            True/False or Plotly legend dict / graph_objs.Legend object.
+            If legend is a bool, Quantmod will simply toggle legend visibility.
+        annotations : list or Annotations
+            Plotly annotations list / graph.objs.Annotations object.
+        shapes : list or Shapes
+            Plotly shapes list or graph_objs.Shapes object.
+        dimensions : tuple
+            Dimensions 2-tuple in order (width, height). Disables autosize=True.
+        width : int
+            Width of chart. Disables autosize=True.
+        height : int
+            Height of chart. Disables autosize=True.
+        margin : dict or tuple
+            Plotly margin dict or 4-tuple in order (l, r, b, t) or
+            5-tuple in order (l, r, b, t, margin). Tuple input added for
+            Cufflinks compatibility.
+
+    """
+    # Check for kwargs integrity
+    for key in kwargs:
+        if key not in VALID_TEMPLATE_KWARGS:
+            raise Exception("Invalid keyword '{0}'.".format(key))
+
+    # Kwargs
+    if 'showlegend' in kwargs:
+        legend = kwargs['showlegend']
+
+    if 'figsize' in kwargs: # Matplotlib
+        figsize = kwargs['figsize']
+        if isinstance(figsize, tuple) and len(figsize) == 2:
+            dimensions = tuple(80 * i for i in figsize) # 80x size
+        else:
+            raise Exception("Invalid figsize '{0}'.".format(figsize))
 
     # Get skeleton
     skeleton = get_skeleton()
@@ -382,9 +385,23 @@ def get_template(theme=None, layout=None,
     else:
         custom_layout = None
 
+    # Test title if string, else raise exception
+    if title:
+        if not isinstance(title, six.string_types):
+            raise Exception("Invalid title '{0}'.".format(title))
+
+    # Test if hovermode is str or False, else raise exception
+    if hovermode or hovermode == False:
+        if hovermode == False:
+            pass
+        elif isinstance(hovermode, six.string_types):
+            pass
+        else:
+            raise Exception("Invalid hovermode '{0}'.".format(hovermode))
+
     # Test if legend is True/False, else coerce Legend() to regular dict
     # if legend is not regular dict
-    if legend:
+    if legend or legend == False:
         if isinstance(legend, bool):
             pass
         elif isinstance(legend, dict):
@@ -394,11 +411,6 @@ def get_template(theme=None, layout=None,
                 layout = dict(layout.items())
             except:
                 raise Exception("Invalid legend '{0}'.".format(layout))
-
-    # Test if hovermode is str else raise exception (can also be False)
-    if hovermode or hovermode == False:
-        if not isinstance(hovermode, six.string_types):
-            raise Exception("Invalid hovermode '{0}'.".format(hovermode))
 
     # Test if annotations is list, else coerce Annotations() to regular list
     if annotations:
@@ -417,23 +429,10 @@ def get_template(theme=None, layout=None,
             except:
                 raise Exception("Invalid shapes '{0}'.".format(shapes))
 
-    # Test below items if string, else raise exception
-    if title:
-        if not isinstance(title, six.string_types):
-            raise Exception("Invalid title '{0}'.".format(title))
-
-    # Test below items is tuple, else raise exception
-    if 'figsize' in kwargs:  # Matplotlib
-        figsize = kwargs['figsize']
-        if isinstance(figsize, tuple) and len(figsize) == 2:
-            dimensions = tuple(80 * i for i in figsize)  # 80x Matplotlib sizes
-        else:
-            raise Exception("Invalid figsize '{0}'.".format(figsize))
-    elif dimensions:  # Cufflinks
+    # Test if dimensions is tuple, else raise exception
+    if dimensions: # Cufflinks
         if not isinstance(dimensions, tuple) or len(dimensions) == 2:
             raise Exception("Invalid dimensions '{0}'.".format(dimensions))
-    else:
-        pass
 
     # Test below items if int, else raise exception
     if width:
@@ -459,7 +458,7 @@ def get_template(theme=None, layout=None,
             raise Exception("Invalid margin '{0}'.".format(margin))
 
     # Split theme and skeleton
-    if all(key in skeleton for key in _VALID_BASE_COMPONENTS):
+    if all(key in skeleton for key in VALID_BASE_COMPONENTS):
         base_colors = skeleton['base_colors']
         base_traces = skeleton['base_traces']
         base_additions = skeleton['base_additions']
@@ -468,7 +467,7 @@ def get_template(theme=None, layout=None,
         raise Exception("Improperly configured skeleton. "
                         "Consider reinstalling Quantmod.")
 
-    if all(key in theme for key in _VALID_THEME_COMPONENTS):
+    if all(key in theme for key in VALID_THEME_COMPONENTS):
         colors = theme['colors']
         traces = theme['traces']
         additions = theme['additions']
@@ -481,8 +480,8 @@ def get_template(theme=None, layout=None,
     final_traces = make_traces(base_traces, traces)
     final_additions = make_additions(base_additions, additions)
     final_layout = make_layout(base_layout, layout, custom_layout,
-                               legend, hovermode,
-                               annotations, shapes, title,
+                               title, hovermode,
+                               legend, annotations, shapes,
                                dimensions, width, height, margin, **kwargs)
 
     # Convert to dict

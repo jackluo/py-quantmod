@@ -19,6 +19,7 @@ LIGHT_QM = dict(
     colors = dict(
         increasing = '#00CC00',
         decreasing = '#FF7700',
+        border = LIGHT_PALETTE['grey25'],
         primary = '#0D47EF',
         secondary = '#E13B30',
         tertiary = '#87F35C',

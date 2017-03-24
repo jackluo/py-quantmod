@@ -9,11 +9,8 @@ no space between assignment of named arguments.
 """
 _PLACEHOLDER = False
 
-
 # Color primitives
-BASE_COLORS = dict(
-)
-
+BASE_COLORS = dict()
 
 # Trace primitives
 BASE_TRACES = dict(
@@ -26,7 +23,7 @@ BASE_TRACES = dict(
         increasing = dict(
             line = dict(
                 color = _PLACEHOLDER,
-                width = 1.5,
+                width = 1,
             ),
             fillcolor = _PLACEHOLDER,
         ),
@@ -34,7 +31,7 @@ BASE_TRACES = dict(
         decreasing = dict(
             line = dict(
                 color = _PLACEHOLDER,
-                width = 1.5,
+                width = 1,
             ),
             fillcolor = _PLACEHOLDER,
         ),
@@ -68,18 +65,18 @@ BASE_TRACES = dict(
     bar = dict(
         type = 'bar',
         hoverinfo = 'x+y+text+name',
-        mode = 'markers',
+        #opacity = 0.6,
         # Marker
         marker = dict(
             color = _PLACEHOLDER,
-            size = 5,
-            opacity = 0.8,
-            symbol = 'square',
+            line = dict(
+                color = _PLACEHOLDER,
+                width = 1,
+            ),
         ),
     ),
 
 )
-
 
 # Layout modifiers
 BASE_ADDITIONS = dict(
@@ -149,7 +146,6 @@ BASE_ADDITIONS = dict(
 
 )
 
-
 # Layout primitives
 BASE_LAYOUT = dict(
     # General
@@ -170,15 +166,23 @@ BASE_LAYOUT = dict(
         pad = 0,
     ),
     hovermode = 'x',
+    barmode = "group",
     # Color theme
     plot_bgcolor = _PLACEHOLDER,
     paper_bgcolor = _PLACEHOLDER,
+    # Gaps
+    bargap = 0.3,
+    bargroupgap = 0.0,
+    boxgap = 0.3,
+    boxgroupgap = 0.0,
     # Legend
     showlegend = False,
     legend = dict(
         bgcolor = _PLACEHOLDER,
         x = 0.01,
         y = 0.99,
+        xanchor = 'left',
+        yanchor = 'top',
         tracegroupgap = 10,
         #font = dict(
         #    size = 10,

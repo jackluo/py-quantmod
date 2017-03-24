@@ -19,7 +19,6 @@ YAHOO = dict(
     di = None,
 )
 
-
 # Google
 GOOGLE = dict(
     index = 'Date',
@@ -34,6 +33,5 @@ GOOGLE = dict(
     vo = 'Volume',
     di = None,
 )
-
 
 SOURCES = {'yahoo': YAHOO, 'google': GOOGLE}
