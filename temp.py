@@ -134,3 +134,18 @@ def get_annotations(annotation):
 
 
 		layout['shapes']=shapes
+
+
+        # Check for argument integrity
+        if title:
+            if not isinstance(title, six.string_types):
+                raise Exception("Invalid title '{0}'.".format(title))
+        else:
+            if self.ticker:
+                title = ticker
+            else:
+                title = 'EQUITY'
+
+        if self.start and self.end:
+            if isinstance(self.start, str) and isinstance(self.end, str):
+                title = title + ' [{0}/{1}]'.format(self.start, self.end)

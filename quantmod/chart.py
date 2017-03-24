@@ -55,6 +55,12 @@ class Chart(object):
         else:
             source = tools.get_source(auth.get_config_file()['source'])
 
+        """
+        Ticker,
+        Start,
+        End
+        """
+
         self.df = df
 
         self.ticker = ticker
@@ -271,21 +277,24 @@ class Chart(object):
         if 'kind' in kwargs:
             type = kwargs['kind']
 
-        # Default arguments
-        if not title:
-            if self.ticker:
-                title = ticker
-        else:
-            title = 'EQUITY'
-            print(title)
-
-#        if self.start and self.end:
-#            title = title + ' [{0}/{1}]'.format(self.start, self.end)
-
+        # Default settings
         if not legend:
             legend = True
 
         # Check for argument integrity
+        if title:
+            if not isinstance(title, six.string_types):
+                raise Exception("Invalid title '{0}'.".format(title))
+        else:
+            if self.ticker:
+                title = ticker
+            else:
+                title = 'EQUITY'
+
+        if self.start and self.end:
+            if isinstance(self.start, str) and isinstance(self.end, str):
+                title = title + ' [{0}/{1}]'.format(self.start, self.end)
+
         if type:
             if not isinstance(type, six.string_types):
                 raise Exception("Invalid type '{0}'.".format(type))
