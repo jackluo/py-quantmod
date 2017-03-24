@@ -30,8 +30,9 @@ CONFIG_FILE = os.path.join(AUTH_DIR, 'config.json')
 _FILE_CONTENT = {
     CONFIG_FILE: {
         'sharing': 'public',
-        'theme': 'light',
         'dimensions': None,
+        'theme': 'light',
+        'source': 'yahoo',
         'offline': False,
         'offline_url': '',
         'offline_show_link': False, #True,

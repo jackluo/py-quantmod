@@ -13,6 +13,7 @@ from . import auth
 from . import utils
 from .theming.skeleton import SKELETON
 from .theming.themes import THEMES
+from .sources import SOURCES
 
 
 _VALID_BASE_COMPONENTS = {'base_colors', 'base_traces',
@@ -68,7 +69,27 @@ def get_skeleton():
     return copy.deepcopy(SKELETON)
 
 
-def _make_colors(base_colors, colors):
+def get_source(source):
+    """Return a Quantmod source (as a dict).
+
+    Parameters
+    ----------
+        source : string
+            Quantmod source
+
+    """
+    if source in SOURCES:
+        return copy.deepcopy(SOURCES[source])
+    else:
+        raise Exception("Invalid source '{0}'.".format(source))
+
+
+def get_sources():
+    """Return the list of available sources, or none if there is a problem."""
+    return list(SOURCES)
+
+
+def make_colors(base_colors, colors):
     """Make trace configuration from theme/skeleton and theme/colors.
 
     Recursively update base_theme with theme using custom tool in utils.
@@ -100,7 +121,7 @@ def _make_colors(base_colors, colors):
     return base_colors
 
 
-def _make_traces(base_traces, traces):
+def make_traces(base_traces, traces):
     """Make trace configuration from theme/skeleton and theme/traces.
 
     Recursively update base_theme with theme using custom tool in utils.
@@ -157,7 +178,7 @@ def _make_traces(base_traces, traces):
     return base_traces
 
 
-def _make_additions(base_additions, additions):
+def make_additions(base_additions, additions):
     """Make trace configuration from theme/skeleton and theme/additions.
 
     Recursively update base_theme with theme using custom tool in utils.
@@ -190,7 +211,7 @@ def _make_additions(base_additions, additions):
     return base_additions
 
 
-def _make_layout(base_layout, layout, custom_layout,
+def make_layout(base_layout, layout, custom_layout,
                 legend, hovermode,
                 annotations, shapes, title,
                 dimensions, width, height, margin, **kwargs):
@@ -456,10 +477,10 @@ def get_template(theme=None, layout=None,
         raise Exception("Improperly configured theme '{0}'.".format(theme))
 
     # Generate final template
-    final_colors = _make_colors(base_colors, colors)
-    final_traces = _make_traces(base_traces, traces)
-    final_additions = _make_additions(base_additions, additions)
-    final_layout = _make_layout(base_layout, layout, custom_layout,
+    final_colors = make_colors(base_colors, colors)
+    final_traces = make_traces(base_traces, traces)
+    final_additions = make_additions(base_additions, additions)
+    final_layout = make_layout(base_layout, layout, custom_layout,
                                legend, hovermode,
                                annotations, shapes, title,
                                dimensions, width, height, margin, **kwargs)

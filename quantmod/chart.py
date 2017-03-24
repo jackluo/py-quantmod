@@ -14,12 +14,17 @@ import plotly.offline as pyo
 
 import talib  # To be removed
 
+from . import auth
 from . import utils
 from . import tools
 from .tools import _VALID_TRACES
 
 
-_VALID_FIGURE_KWARGS = {'kind'}  # Alternative for type
+_VALID_COLUMNS = {'op', 'hi', 'lo', 'cl',
+                  'aop', 'ahi', 'alo', 'acl',
+                  'vo', 'di'}
+
+_VALID_FIGURE_KWARGS = {'kind'}
 
 
 class Chart(object):
@@ -29,7 +34,8 @@ class Chart(object):
 
     """
 
-    def __init__(self, df, source='yahoo', columns=None):
+    def __init__(self, df, source=None,
+                 ticker=None, start=None, end=None):
         """ADD INFO
 
         ADD DOCUMENTATION
@@ -38,25 +44,33 @@ class Chart(object):
 
         """ADD ERROR HANDLING"""
 
+        # Test if source is str or dict, or get default vendor otherwise
+        if source:
+            if isinstance(source, six.string_types):
+                source = tools.get_source(source)
+            elif isinstance(source, dict):
+                pass
+            else:
+                raise Exception("Invalid source '{0}'.".format(source))
+        else:
+            source = tools.get_source(auth.get_config_file()['source'])
+
         self.df = df
 
-        self.source = source
-        if self.source == 'yahoo':
-            op = 'Open'
-            hi = 'High'
-            lo = 'Low'
-            cl = 'Close'
-            acl = 'Adj Close'
-            vo = 'Volume'
-            di = None
+        self.ticker = ticker
+        self.start = self.df.index[0]
+        self.end = self.df.index[-1]
 
-        self.op = op
-        self.hi = hi
-        self.lo = lo
-        self.cl = cl
-        self.acl = acl
-        self.vo = vo
-        self.di = di
+        self.op = source['op']
+        self.hi = source['hi']
+        self.lo = source['lo']
+        self.cl = source['cl']
+        self.aop = source['aop']
+        self.ahi = source['ahi']
+        self.alo = source['alo']
+        self.acl = source['acl']
+        self.vo = source['vo']
+        self.di = source['di']
 
         self.ind = pd.DataFrame([], index=self.df.index)
         self.pri = {}
@@ -253,12 +267,20 @@ class Chart(object):
                 if key not in _VALID_FIGURE_KWARGS:
                     raise Exception("Invalid keyword '{0}'.".format(key))
 
-        # Default arguments
+        # Kwargs
         if 'kind' in kwargs:
             type = kwargs['kind']
 
+        # Default arguments
         if not title:
-            title = 'Stock'
+            if self.ticker:
+                title = ticker
+        else:
+            title = 'EQUITY'
+            print(title)
+
+#        if self.start and self.end:
+#            title = title + ' [{0}/{1}]'.format(self.start, self.end)
 
         if not legend:
             legend = True
@@ -411,19 +433,21 @@ class Chart(object):
                 layout['yaxis3']['domain'] = [0.0, 0.20]
 
             else:
-                print('Error for now.')
+                print('Quantmod does not yet support plotting 3+ indicators.')
 
         figure = dict(data=data, layout=layout)
         return figure
 
-    def plot(self, type=None, theme=None, layout=None,
+    def plot(self, type=None,
+             theme=None, layout=None,
              legend=None, hovermode=None,
              annotations=None, shapes=None, title=None,
              dimensions=None, width=None, height=None, margin=None,
              **kwargs):
-        """Generate a Plotly chart of specified Chart.
+        """Generate a Plotly chart from Chart.
 
-        ADD DOCUMENTATION.
+        Parameters
+        ----------
 
         """
         figure = self.to_figure(type=type, theme=theme, layout=layout,
@@ -434,7 +458,9 @@ class Chart(object):
                                 margin=margin, ** kwargs)
         return py.plot(figure)
 
-""" ta.py """
+
+"""Indicators below to be moved to 'ta.py'."""
+
 
 def _MA(self, timeperiod=30, matype=0):
     name = 'MA({})'.format(str(timeperiod))
@@ -472,6 +498,7 @@ def _RSI(self, timeperiod=14):
     name = 'RSI({})'.format(str(timeperiod))
     self.sec[name] = dict(type='line', color='primary')
     self.ind[name] = talib.RSI(self.df[self.cl].values, timeperiod)
+
 
 Chart.add_MA = _MA
 Chart.add_SMA = _SMA
