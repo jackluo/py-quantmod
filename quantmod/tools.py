@@ -29,7 +29,8 @@ _VALID_COLORS = {'increasing', 'decreasing',
 _VALID_TRACES = {'candlestick',
                  'line', 'line_thin', 'line_thick', 'line_dashed',
                  'line_dashed_thin', 'line_dashed_thick',
-                 'area', 'area_dashed', 'area_threshold',
+                 'area', 'area_dashed',
+                 'area_dashed_thin', 'area_dashed_thick', 'area_threshold',
                  'scatter', 'bar', 'histogram'}
 
 _VALID_ADDITIONS = {'xaxis', 'yaxis'}
@@ -67,7 +68,7 @@ def get_skeleton():
     return copy.deepcopy(SKELETON)
 
 
-def make_colors(base_colors, colors):
+def _make_colors(base_colors, colors):
     """Make trace configuration from theme/skeleton and theme/colors.
 
     Recursively update base_theme with theme using custom tool in utils.
@@ -99,7 +100,7 @@ def make_colors(base_colors, colors):
     return base_colors
 
 
-def make_traces(base_traces, traces):
+def _make_traces(base_traces, traces):
     """Make trace configuration from theme/skeleton and theme/traces.
 
     Recursively update base_theme with theme using custom tool in utils.
@@ -131,6 +132,8 @@ def make_traces(base_traces, traces):
         base_traces['area'] = copy.deepcopy(base_traces['line'])
         base_traces['area']['fill'] = 'tonexty'
         base_traces['area_dashed'] = copy.deepcopy(base_traces['area'])
+        base_traces['area_dashed_thin'] = copy.deepcopy(base_traces['area'])
+        base_traces['area_dashed_thick'] = copy.deepcopy(base_traces['area'])
         base_traces['area_threshold'] = copy.deepcopy(base_traces['area'])
 
         base_traces['scatter'] = copy.deepcopy(base_traces['line'])
@@ -154,7 +157,7 @@ def make_traces(base_traces, traces):
     return base_traces
 
 
-def make_additions(base_additions, additions):
+def _make_additions(base_additions, additions):
     """Make trace configuration from theme/skeleton and theme/additions.
 
     Recursively update base_theme with theme using custom tool in utils.
@@ -187,7 +190,7 @@ def make_additions(base_additions, additions):
     return base_additions
 
 
-def make_layout(base_layout, layout, custom_layout,
+def _make_layout(base_layout, layout, custom_layout,
                 legend, hovermode,
                 annotations, shapes, title,
                 dimensions, width, height, margin, **kwargs):
@@ -337,7 +340,7 @@ def get_template(theme=None, layout=None,
 
     # Test if theme is str or dict, or get default theme from config otherwise
     if theme:
-        if instance(theme, six.string_types):
+        if isinstance(theme, six.string_types):
             theme = get_theme(theme)
         elif isinstance(theme, dict):
             pass
@@ -453,10 +456,10 @@ def get_template(theme=None, layout=None,
         raise Exception("Improperly configured theme '{0}'.".format(theme))
 
     # Generate final template
-    final_colors = make_colors(base_colors, colors)
-    final_traces = make_traces(base_traces, traces)
-    final_additions = make_additions(base_additions, additions)
-    final_layout = make_layout(base_layout, layout, custom_layout,
+    final_colors = _make_colors(base_colors, colors)
+    final_traces = _make_traces(base_traces, traces)
+    final_additions = _make_additions(base_additions, additions)
+    final_layout = _make_layout(base_layout, layout, custom_layout,
                                legend, hovermode,
                                annotations, shapes, title,
                                dimensions, width, height, margin, **kwargs)

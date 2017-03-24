@@ -85,34 +85,3 @@ def deep_update(dict1, dict2):
             dict1[key] = value
 
     return dict1
-
-
-def strip_figure(figure):
-    """Strip a Plotly figure into multiple figures with a trace on each of them.
-
-    Parameters
-    ----------
-        figure : dict or Figure()
-            Plotly figure
-
-    """
-    figures = []
-    for trace in figure['data']:
-        figures.append(dict(data=[trace], layout=figure['layout']))
-    return figures
-
-
-def get_base_layout(figures):
-    """Generate a layout with the union of all properties of multiple figures' layouts.
-
-    Parameters
-    ----------
-        figures : list(dict or Figure())
-            List of Plotly figures
-
-    """
-    layout = {}
-    for figure in figures:
-        for key, value in figure['layout'].items():
-            layout[key] = value
-    return layout

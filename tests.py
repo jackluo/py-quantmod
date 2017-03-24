@@ -2,6 +2,7 @@
 # In[]:
 import quantmod.offline as qmo
 import quantmod.chart as qm
+import quantmod.tools as qmt
 import pandas as pd
 import pandas_datareader as web
 
@@ -32,8 +33,11 @@ print(ch.is_OHLC)
 #ch.add_EMA(200)
 ch.add_BBANDS(30)
 ch.add_RSI(14)
+ch.add_RSI(25)
 ch.ind
 ch.pri
 #ch.pri['BB(30,2,2)']['type']
 qmo.go_offline()
-ch.plot()
+qmt.get_template()
+ch.to_figure()
+ch.plot(type='line')

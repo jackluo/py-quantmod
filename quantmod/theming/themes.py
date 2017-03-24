@@ -36,7 +36,9 @@ LIGHT_QM = dict(
         line_dashed = dict(dash = 5,),
         line_dashed_thin = dict(dash = 5, width = 1,),
         line_dashed_thick = dict(dash = 5, width = 4,),
-        area_dashed = dict(dash = 4,),
+        area_dashed = dict(dash = 5,),
+        area_dashed_thin = dict(dash = 5, width = 1,),
+        area_dashed_thick = dict(dash = 5, width = 4,),
     ),
 
     additions = dict(

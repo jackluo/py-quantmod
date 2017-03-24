@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import pandas_datareader.data as web
 
 
-def get_symbol(ticker, src='yahoo', start=None, end=None):
+def get_symbol(ticker, src='yahoo', start=None, end=None, to_frame=False):
     """Get symbols as a DataFrame.
 
     Currently just a wrapper over pandas_datareader.data.DataReader.
@@ -38,7 +38,9 @@ def get_symbol(ticker, src='yahoo', start=None, end=None):
     """
 
     symbols = web.DataReader(ticker, src, start, end)
-    return symbols
+
+    if not to_frame:
+        symbols = Chart(symbols, ticker=ticker, src=src, start=start, end=end)
 
 
 def chart_series(Chart):
