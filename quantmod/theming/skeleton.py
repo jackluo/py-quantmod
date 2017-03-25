@@ -37,6 +37,25 @@ BASE_TRACES = dict(
         ),
     ),
 
+    ohlc = dict(
+        type = 'ohlc',
+        hoverinfo = 'x+y+text+name',
+        # Increasing
+        increasing = dict(
+            line = dict(
+                color = _PLACEHOLDER,
+                width = 1.5,
+            ),
+        ),
+        # Decreasing
+        decreasing = dict(
+            line = dict(
+                color = _PLACEHOLDER,
+                width = 1.5,
+            ),
+        ),
+    ),
+
     line = dict(
         type = 'scatter',
         hoverinfo = 'x+y+text+name',

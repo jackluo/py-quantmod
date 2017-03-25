@@ -482,7 +482,7 @@ def get_template(theme=None, layout=None,
     final_layout = make_layout(base_layout, layout, custom_layout,
                                title, hovermode,
                                legend, annotations, shapes,
-                               dimensions, width, height, margin, **kwargs)
+                               dimensions, width, height, margin)
 
     # Convert to dict
     template = dict(colors=final_colors, traces=final_traces,

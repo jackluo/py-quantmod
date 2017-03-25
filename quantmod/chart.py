@@ -27,7 +27,6 @@ class Chart(object):
     Features include time series adjustement, volume adjustement, and plotting.
 
     """
-
     def __init__(self, df, source=None,
                  ticker=None, start=None, end=None):
         """ADD INFO
@@ -201,7 +200,7 @@ class Chart(object):
         technical indicators."""
         return self.df.join([self.ind])
 
-    def to_figure(self, type=None, volume=None,
+    def to_figure(self, type=None, volume=None, subtitle=None,
                   theme=None, layout=None,
                   title=None, hovermode=None,
                   legend=None, annotations=None, shapes=None,
@@ -221,6 +220,9 @@ class Chart(object):
         # Kwargs
         if 'kind' in kwargs:
             type = kwargs['kind']
+
+        if 'subtitles' in kwargs:
+            subtitle = kwargs['subtitles']
 
         if 'showlegend' in kwargs:
             legend = kwargs['showlegend']
@@ -247,6 +249,9 @@ class Chart(object):
             else:
                 volume = False
 
+        if subtitle is None:
+            subtitle = True
+
         if title is None:
             if self.ticker:
                 title = ticker
@@ -265,6 +270,12 @@ class Chart(object):
                 raise Exception("Invalid type '{0}'.".format(type))
                 if type not in VALID_TRACES:
                     raise Exception("Invalid keyword '{0}'.".format(type))
+                if type in OHLC_TRACES:
+                    if not self.has_OHLC:
+                        raise Exception("Insufficient data for '{}'.".format(type))
+                else:
+                    if not self.has_close:
+                        raise Exception("Insufficient data for '{}'.".format(type))
 
         if volume or volume == False:
             if not isinstance(volume, bool):
@@ -277,7 +288,7 @@ class Chart(object):
                                       annotations=annotations, shapes=shapes,
                                       dimensions=dimensions,
                                       width=width, height=height,
-                                      margin=margin, **kwargs)
+                                      margin=margin)
         colors = template['colors']
         traces = template['traces']
         additions = template['additions']
@@ -287,9 +298,8 @@ class Chart(object):
         data = []
 
         # Plot main chart
-        if type == 'candlestick':
-
-            trace = copy.deepcopy(traces['candlestick'])
+        if type in OHLC_TRACES:
+            trace = copy.deepcopy(traces[type])
 
             trace['x'] = self.df.index
             trace['open'] = self.df[self.op]
@@ -301,16 +311,37 @@ class Chart(object):
             trace['showlegend'] = False
 
             # Colors
-            trace['increasing']['fillcolor'] = colors['increasing']
-            trace['increasing']['line']['color'] = colors['border']
+            if type == 'candlestick':
+                trace['increasing']['fillcolor'] = colors['increasing']
+                trace['increasing']['line']['color'] = colors['border']
+                trace['decreasing']['fillcolor'] = colors['decreasing']
+                trace['decreasing']['line']['color'] = colors['border']
 
-            trace['decreasing']['fillcolor'] = colors['decreasing']
-            trace['decreasing']['line']['color'] = colors['border']
+            if type == 'ohlc':
+                trace['increasing']['line']['color'] = colors['increasing']
+                trace['decreasing']['line']['color'] = colors['decreasing']
+
+            data.append(trace)
+
+        elif type == 'ohlc':
+            trace = copy.deepcopy(traces[type])
+
+            trace['x'] = self.df.index
+            trace['open'] = self.df[self.op]
+            trace['high'] = self.df[self.hi]
+            trace['low'] = self.df[self.lo]
+            trace['close'] = self.df[self.cl]
+            trace['name'] = title
+            trace['yaxis'] = 'y1'
+            trace['showlegend'] = False
+
+            # Colors
+            trace['increasing']['line']['color'] = colors['increasing']
+            trace['decreasing']['line']['color'] = colors['decreasing']
 
             data.append(trace)
 
         elif 'line' in type:
-
             trace = copy.deepcopy(traces[type])
 
             trace['x'] = self.df.index
@@ -325,7 +356,6 @@ class Chart(object):
             data.append(trace)
 
         elif 'area' in type:
-
             trace = copy.deepcopy(traces[type])
 
             trace['x'] = self.df.index
@@ -340,7 +370,6 @@ class Chart(object):
             data.append(trace)
 
         elif 'scatter' in type:
-
             trace = copy.deepcopy(traces[type])
 
             trace['x'] = self.df.index
@@ -359,7 +388,6 @@ class Chart(object):
 
         # Plot primary indicators
         for name in self.pri:
-
             primary = self.pri[name]
             trace = copy.deepcopy(traces[primary['type']])
 
@@ -379,16 +407,16 @@ class Chart(object):
 
         # Plot volume
         if volume:
-
             trace = copy.deepcopy(traces['bar'])
+
             trace['x'] = self.df.index
-            trace['y'] = self.df[self.cl]
+            trace['y'] = self.df[self.vo]
             trace['name'] = 'Volume'
             trace['yaxis'] = 'y2'
             trace['showlegend'] = False
 
             # Determine if volume should be in 2 colors or in 1
-            if type == 'candlestick' and self.has_open and self.has_close:
+            if type in OHLC_TRACES and self.has_open and self.has_close:
                 volume_color = [
                     colors['increasing']
                     if (value - self.df[self.op].values[i]) >= 0
@@ -398,8 +426,12 @@ class Chart(object):
             else:
                 volume_color = colors['primary']
 
-            trace['marker']['color'] = volume_color
-            trace['marker']['line']['color'] = colors['border']
+            if type == 'candlestick':
+                trace['marker']['color'] = volume_color
+                trace['marker']['line']['color'] = colors['border']
+            else:
+                trace['marker']['color'] = volume_color
+                trace['marker']['line']['color'] = volume_color
 
             data.append(trace)
 
@@ -411,7 +443,6 @@ class Chart(object):
 
         # Plot secondary indicators
         for i, name in enumerate(self.sec):
-
             secondary = self.sec[name]
             trace = copy.deepcopy(traces[secondary['type']])
 
@@ -429,25 +460,6 @@ class Chart(object):
             data.append(trace)
 
         # Modify layout
-
-        # Margin
-        if not title:
-            layout['margin']['t'] = layout['margin']['b']
-
-        if legend == True:
-            if annotations == None:
-                layout['legend']['y'] -= 0.02
-                annotation = dict(
-                    x = layout['legend']['x'],
-                    xanchor = layout['legend']['xanchor'],
-                    xref = 'paper',
-                    y = layout['legend']['y'] + 0.02,
-                    yanchor = layout['legend']['yanchor'],
-                    yref = 'paper',
-                    showarrow = False,
-                    text = 'TEMPORARY'
-                )
-                layout['annotations'] = [annotation]
 
         # Axis
         layout['xaxis'] = copy.deepcopy(additions['xaxis'])
@@ -471,10 +483,56 @@ class Chart(object):
             else:
                 print('Quantmod does not yet support plotting 3+ indicators.')
 
+        # Margin
+        if not title:
+            layout['margin']['t'] = layout['margin']['b']
+
+        # Subtitle
+        if legend == True and subtitle:
+
+            if not annotations:
+                layout['annotations'] = []
+
+            if type in OHLC_TRACES:
+                if (self.df[self.cl][-1] - self.df[self.op].values[-1]) >= 0:
+                    annotations_color = colors['increasing']
+                else:
+                    annotations_color = colors['decreasing']
+            else:
+                annotations_color = colors['primary']
+
+            last_price = dict(
+                x = layout['legend']['x'],
+                xanchor = layout['legend']['xanchor'],
+                xref = 'paper',
+                y = layout['legend']['y'],
+                yanchor = layout['legend']['yanchor'],
+                yref = 'paper',
+                showarrow = False,
+                text = 'Last {0:,.02f}'.format(self.df[self.cl][-1]),
+                font = dict(color = annotations_color),
+            )
+            layout['annotations'].append(last_price)
+            layout['legend']['y'] -= 0.03
+
+            if volume:
+                last_volume = dict(
+                    x = layout['legend']['x'],
+                    xanchor = layout['legend']['xanchor'],
+                    xref = 'paper',
+                    y = layout['yaxis2']['domain'][-1] - 0.01,
+                    yanchor = layout['legend']['yanchor'],
+                    yref = 'paper',
+                    showarrow = False,
+                    text = 'Volume {0:,}'.format(self.df[self.vo][-1]),
+                    font = dict(color = annotations_color),
+                )
+                layout['annotations'].append(last_volume)
+
         figure = dict(data=data, layout=layout)
         return figure
 
-    def plot(self, type=None, volume=None,
+    def plot(self, type=None, volume=None, subtitle=None,
              theme=None, layout=None,
              title=None, hovermode=None,
              legend=None, annotations=None, shapes=None,
@@ -486,8 +544,8 @@ class Chart(object):
         ----------
 
         """
-        figure = self.to_figure(type=type, volume=None, theme=theme,
-                                layout=layout, title=title,
+        figure = self.to_figure(type=type, volume=volume, subtitle=subtitle,
+                                theme=theme, layout=layout, title=title,
                                 hovermode=hovermode, legend=legend,
                                 annotations=annotations, shapes=shapes,
                                 dimensions=dimensions,
@@ -496,108 +554,24 @@ class Chart(object):
         return py.plot(figure)
 
 
-"""Overlap studies"""
-def _SMA(self, timeperiod=30):
-    """Simple moving average."""
-    name = 'SMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.SMA(self.df[self.cl].values, timeperiod)
-
-
-def _EMA(self, timeperiod=30):
-    """Exponential moving average."""
-    name = 'EMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.EMA(self.df[self.cl].values, timeperiod)
-
-
-def _WMA(self, timeperiod=30):
-    """Weighted moving average."""
-    name = 'WMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.WMA(self.df[self.cl].values, timeperiod)
-
-
-def _DEMA(self, timeperiod=30):
-    """Double exponential moving average."""
-    name = 'DEMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.DEMA(self.df[self.cl].values, timeperiod)
-
-
-def _TEMA(self, timeperiod=30):
-    """Triple moving exponential average."""
-    name = 'TEMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.TEMA(self.df[self.cl].values, timeperiod)
-
-
-def _KAMA(self, timeperiod=30):
-    """Kaufmann adaptive moving average."""
-    name = 'KAMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.KAMA(self.df[self.cl].values, timeperiod)
-
-
-def _TRIMA(self, timeperiod=30):
-    """Triangular moving average."""
-    name = 'TRIMA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.TRIMA(self.df[self.cl].values, timeperiod)
-
-
-def _MA(self, timeperiod=30, matype=0):
-    """Moving average (customizable)."""
-    name = 'MA({})'.format(str(timeperiod))
-    self.pri[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.MA(self.df[self.cl].values, timeperiod, matype)
-
-
-def _BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
-    """Bollinger bands."""
-    name = 'BB({},{},{})'.format(str(timeperiod), str(nbdevup), str(nbdevdn))
-    ubb = 'U' + name
-    bb = name
-    lbb = 'L' + name
-    self.pri[ubb] = dict(type='line_dashed_thin', color='secondary')
-    self.pri[bb] = dict(type='area_dashed_thin', color='grey', fillcolor='fill')
-    self.pri[lbb] = dict(type='area_dashed_thin', color='secondary', fillcolor='fill')
-    self.ind[ubb], self.ind[bb], self.ind[lbb] = talib.BBANDS(self.df[self.cl].values,
-                                                              timeperiod, nbdevup, nbdevdn, matype)
-
-
-def _MAMA(self):
-    pass
-
-
-def _MAVP(self, periods, inperiod=2, maxperiod=30, matype=0):
-    pass
-
-
-def _RSI(self, timeperiod=14):
-    name = 'RSI({})'.format(str(timeperiod))
-    self.sec[name] = dict(type='line', color='primary')
-    self.ind[name] = talib.RSI(self.df[self.cl].values, timeperiod)
-
-
-Chart.add_SMA = _SMA
-Chart.add_EMA = _EMA
-Chart.add_WMA = _WMA
-Chart.add_DEMA = _DEMA
-Chart.add_TEMA = _TEMA
-Chart.add_KAMA = _KAMA
-Chart.add_TRIMA = _TRIMA
-Chart.add_MA = _MA
-#Chart.add_MAMA = _MAMA
-#Chart.add_MAVP = _MAVP
-Chart.add_BBANDS = _BBANDS
-#Chart.SAR = _SAR
-#Chart.SAREXT = _SAREXT
-#Chart.HT_TRENDLINE = _HT_TRENDLINE
-#Chart.T3 = _T3
+Chart.add_SMA = add_SMA
+Chart.add_EMA = add_EMA
+Chart.add_WMA = add_WMA
+Chart.add_DEMA = add_DEMA
+Chart.add_TEMA = add_TEMA
+Chart.add_KAMA = add_KAMA
+Chart.add_TRIMA = add_TRIMA
+Chart.add_MA = add_MA
+#Chart.add_MAMA = add_MAMA
+#Chart.add_MAVP = add_MAVP
+Chart.add_BBANDS = add_BBANDS
+#Chart.SAR = add_SAR
+#Chart.SAREXT = add_SAREXT
+#Chart.HT_TRENDLINE = add_HT_TRENDLINE
+#Chart.T3 = add_T3
 #Chart.add_midpoint =
 
-Chart.add_RSI = _RSI
-#Chart.ADX = _ADX
-#Chart.ADXR = _ADXR
-#Chard.APO = _APO
+Chart.add_RSI = add_RSI
+#Chart.ADX = add_ADX
+#Chart.ADXR = add_ADXR
+#Chard.APO = add_APO
