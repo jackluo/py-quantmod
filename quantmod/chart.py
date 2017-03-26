@@ -200,8 +200,8 @@ class Chart(object):
                 returns modified Chart by default.
 
         """
-
-        """ADD ERROR HANDLING"""
+        if not self.has_OHLC and self.has_adjusted_close:
+            raise Exception("Insufficient data to adjust OHLC data.")
 
         ratio = (self.df[self.cl] / self.df[self.acl])
 
@@ -230,8 +230,8 @@ class Chart(object):
                 returns modified Chart by default.
 
         """
-
-        """ADD ERROR HANDLING"""
+        if not self.has_volume and self.has_close and self.has_adjusted_close:
+            raise Exception("Insufficient data to adjust volume.")
 
         ratio = (self.df[self.cl] / self.df[self.acl])
 
