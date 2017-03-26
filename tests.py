@@ -40,5 +40,6 @@ ch.add_RSI(14)
 
 qm.go_offline()
 ch.to_figure()
-qm.go_online()
-ch.plot(title=False)
+#qm.go_online()
+#ch.plot(title=False)
+ch.plot(dimensions=(2560,1440))

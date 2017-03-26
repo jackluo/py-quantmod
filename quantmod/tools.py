@@ -24,6 +24,12 @@ def go_offline(connected=False):
     __PLOTLY_OFFLINE_INITIALIZED is a secret variable
     in plotly/offline/offline.py.
 
+    Parameters
+    ---------
+        connected : bool
+            Determines if init_notebook_mode should be set to 'connected'.
+            99% of time will not need to touch this.
+
     """
     try:
         pyo.init_notebook_mode(connected)
@@ -52,13 +58,20 @@ def check_url(url=None):
             URL to be checked.
 
     """
-    if not url:
+    if url is None:
         if 'http' not in get_config_file()['offline_url']:
-            raise Exception("No default offline URL set.\n"
-                            "Please run quantmod.set_config_file(offline_url=YOUR_URL) \
-                            to set the default offline URL.")
+            raise Exception("No default offline URL set. "
+                            "Please run "
+                            "quantmod.set_config_file(offline_url=YOUR_URL) "
+                            "to set the default offline URL.")
         else:
             url = get_config_file()['offline_url']
+
+    if url is not None:
+        if not isinstance(url, six.string_types):
+            raise TypeError("Invalid url '{0}'. "
+                            "It should be string."
+                            .format(url))
 
     pyo.download_plotlyjs(url)
 
@@ -66,21 +79,26 @@ def check_url(url=None):
 def ensure_local_files():
     """Ensure that filesystem is setup/filled out in a valid way."""
     if auth.check_file_permissions():
+
         if not os.path.isdir(AUTH_DIR):
             os.mkdir(AUTH_DIR)
+
         for fn in [CONFIG_FILE]:
             contents = utils.load_json_dict(fn)
+
             for key, value in list(FILE_CONTENT[fn].items()):
                 if key not in contents:
                     contents[key] = value
             contents_keys = list(contents.keys())
+
             for key in contents_keys:
                 if key not in FILE_CONTENT[fn]:
                     del contents[key]
             utils.save_json_dict(fn, contents)
+
     else:
         warnings.warn("Looks like you don't have 'read-write' permission to "
-                      "your specified Dropbox folder or home ('~') directory.")
+                      "your specified home ('~') directory.")
 
 
 def set_config_file(sharing=None, theme=None, dimensions=None,
@@ -90,11 +108,11 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
 
     Parameters
     ----------
-        sharing : string
+        sharing : string or bool
             Sets the sharing level permission.
-                public - anyone can see this chart
-                private - only you can see this chart
-                secret - only people with the link can see the chart
+                True / 'public' - anyone can see this chart
+                False / 'private' - only you can see this chart
+                'secret' - only people with the link can see the chart
         theme : string
             Sets the default theme.
             See factory.get_themes() for available themes.
@@ -117,26 +135,84 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
 
     config = get_config_file()
 
-    if isinstance(sharing, bool):
-        if sharing:
-            sharing = 'public'
+    # Type checks for optionally used arguments
+    if sharing is not None:
+        if isinstance(sharing, bool):
+            pass
+        elif isinstance(sharing, six.string_types):
+            pass
         else:
-            sharing = 'private'
-    if isinstance(sharing, six.string_types):
-        config['sharing'] = sharing
-    if isinstance(theme, six.string_types):
+            raise TypeError("Invalid sharing '{0}'. "
+                            "It should be string or bool."
+                            .format(sharing))
+
+    if theme is not None:
+        if not isinstance(theme, six.string_types):
+            raise TypeError("Invalid theme '{0}'. "
+                            "It should be string."
+                            .format(theme))
+
+    if dimensions is not None:  # Cufflinks
+        if not isinstance(dimensions, tuple):
+            raise TypeError("Invalid dimensions '{0}'. "
+                            "It should be tuple."
+                            .format(dimensions))
+            if not len(dimensions) == 2:
+                raise Exception("Invalid dimensions '{0}'. "
+                                "It should be tuple of len 2."
+                                .format(dimensions))
+
+    if offline is not None:
+        if not isinstance(offline, bool):
+            raise TypeError("Invalid offline '{0}'. "
+                            "It should be bool."
+                            .format(offline))
+
+    if offline_url is not None:
+        if not isinstance(offline_url, six.string_types):
+            raise TypeError("Invalid offline_url '{0}'. "
+                            "It should be string."
+                            .format(offline_url))
+
+    if offline_show_link is not None:
+        if not isinstance(offline_show_link, six.string_types):
+            raise TypeError("Invalid offline_show_link '{0}'. "
+                            "It should be string."
+                            .format(offline_show_link))
+
+    if offline_link_text is not None:
+        if not isinstance(offline_link_text, six.string_types):
+            raise TypeError("Invalid offline_link_text '{0}'. "
+                            "It should be string."
+                            .format(offline_link_text))
+
+    # Argument parsing
+    if sharing is not None:
+        if sharing == True:
+            config['sharing'] = 'public'
+        elif sharing == False:
+            config['sharing'] = 'private'
+        else:
+            config['sharing'] = sharing
+
+    if theme is not None:
         config['theme'] = theme
-    if isinstance(dimensions, tuple):
+
+    if dimensions is not None:
         config['dimensions'] = dimensions
-    if isinstance(offline, bool):
+
+    if offline is not None:
         config['offline'] = offline
         if offline:
             go_offline()
-    if isinstance(offline_url, six.string_types):
+
+    if offline_url is not None:
         config['offline_url'] = offline_url
-    if isinstance(offline_show_link, six.string_types):
+
+    if offline_show_link is not None:
         config['offline_show_link'] = offline_show_link
-    if isinstance(offline_link_text, six.string_types):
+
+    if offline_link_text is not None:
         config['offline_link_text'] = offline_link_text
 
     utils.save_json_dict(CONFIG_FILE, config)

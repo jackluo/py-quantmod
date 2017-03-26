@@ -289,7 +289,7 @@ def make_layout(base_layout, layout, custom_layout,
 
         if dimensions is not None:
             base_layout['width'] = dimensions[0]
-            bsae_layout['height'] = dimensions[1]
+            base_layout['height'] = dimensions[1]
 
         if height is not None:
             base_layout['height'] = height
@@ -463,10 +463,14 @@ def get_template(theme=None, layout=None,
 
     # Test if dimensions is tuple, else raise exception
     if dimensions is not None:  # Cufflinks
-        if not isinstance(dimensions, tuple) or len(dimensions) == 2:
-            raise Exception("Invalid dimensions '{0}'. "
-                            "It should be tuple of len 2."
+        if not isinstance(dimensions, tuple):
+            raise TypeError("Invalid dimensions '{0}'. "
+                            "It should be tuple."
                             .format(dimensions))
+            if not len(dimensions) == 2:
+                raise Exception("Invalid dimensions '{0}'. "
+                                "It should be tuple of len 2."
+                                .format(dimensions))
 
     # Test below items if int, else raise exception
     if width is not None:
