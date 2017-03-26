@@ -1,6 +1,7 @@
 """Date and time functions
 
 Refactored from Cufflinks' 'date_tools.py' module.
+Credits to @jorgesantos.
 
 """
 import datetime as dt
@@ -23,7 +24,7 @@ def string_to_date(string_date, strfmt='%Y%m%d'):
     """ Converts a string format date into datetime.
     Parameters:
     -----------
-            stringDate : string
+            string_date : string
                     date in string format
             strfmt : string
                     format in which the input date is represented
@@ -36,10 +37,10 @@ def int_to_date(int_date):
     """ Converts an int format date into datetime.
     Parameters:
     -----------
-            intDate : int
+            int_date : int
                     date in int format
     Example:
-            intDate(20151023)
+            int_date(20151023)
 
     """
     return string_to_date(str(int_date))
@@ -54,7 +55,7 @@ def date_to_int(date, strfmt='%Y%m%d'):
             strfmt : string
                     format in which the int date will be generated
     Example:
-            dateToInt(dt.date(2015,10,23),'%Y')
+            date_to_int(dt.date(2015,10,23),'%Y')
 
     """
     return int(date.strftime(strfmt))

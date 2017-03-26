@@ -5,11 +5,10 @@ Refactored from Plotly's 'auth.py'.
 """
 from __future__ import absolute_import
 
-import six
 import os
 import json
 import warnings
-
+import six
 
 package = 'quantmod'
 dropbox = True
@@ -35,8 +34,8 @@ _FILE_CONTENT = {
         'source': 'yahoo',
         'offline': False,
         'offline_url': '',
-        'offline_show_link': False, #True,
-        'offline_link_text': '', #"Export to plot.ly",
+        'offline_show_link': True,
+        'offline_link_text': 'Edit Chart',
     }
 }
 

@@ -43,5 +43,5 @@ ch.ind
 ch.pri
 qmo.go_offline()
 qmt.get_template()
-ch.to_figure()
-ch.plot(title=False)
+#ch.to_figure()
+print(ch.plot(title=''))#, filename='try')

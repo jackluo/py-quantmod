@@ -1,20 +1,23 @@
 """Main Chart functionnality
 
-Includes Quantmod plotting engine.
+Chart is a wrapper on top of DataFrame that
+adds functionnality and allows for easy plotting.
+Features include time series adjustement, volume adjustement, and
+plotting of OHLCV data with over 100 technical indicators.
 
 """
 from __future__ import absolute_import
 
 import copy
 import six
+import time
 import numpy as np
 import pandas as pd
 import plotly.plotly as py
 import plotly.offline as pyo
 
-import talib  # To be removed
-
 from . import auth
+from . import offline
 from . import utils
 from . import tools
 from .valid import *
@@ -24,7 +27,10 @@ from .ta import *
 class Chart(object):
     """Quantmod Chart based on Pandas DataFrame.
 
-    Features include time series adjustement, volume adjustement, and plotting.
+    Chart is a wrapper on top of DataFrame that
+    adds functionnality and allows for easy plotting.
+    Features include time series adjustement, volume adjustement, and
+    plotting of OHLCV data with over 100 technical indicators.
 
     """
     def __init__(self, df, source=None,
@@ -89,20 +95,6 @@ class Chart(object):
         return self.to_frame().shape
 
     @property
-    def has_OHLCV(self):
-        """Return True if Chart DataFrame has OHLCV, False otherwise."""
-        cols = {self.op, self.hi, self.lo, self.cl, self.vo}
-        arr = self.df.columns.isin(cols)
-        return np.sum(arr) >= len(cols)
-
-    @property
-    def has_OHLC(self):
-        """Return True if Chart DataFrame has OHLC, False otherwise."""
-        cols = {self.op, self.hi, self.lo, self.cl}
-        arr = self.df.columns.isin(cols)
-        return np.sum(arr) >= len(cols)
-
-    @property
     def has_open(self):
         """Return True if Chart DataFrame has open, False otherwise."""
         if self.op in self.df.columns:
@@ -125,10 +117,43 @@ class Chart(object):
             return True
         else:
             return False
+
     @property
     def has_close(self):
         """Return True if Chart DataFrame has close, False otherwise."""
         if self.cl in self.df.columns:
+            return True
+        else:
+            return False
+
+    @property
+    def has_adjusted_open(self):
+        """Return True if Chart DataFrame has adjusted open, False otherwise."""
+        if self.aop in self.df.columns:
+            return True
+        else:
+            return False
+
+    @property
+    def has_adjusted_high(self):
+        """Return True if Chart DataFrame has adjusted high, False otherwise."""
+        if self.ahi in self.df.columns:
+            return True
+        else:
+            return False
+
+    @property
+    def has_adjusted_low(self):
+        """Return True if Chart DataFrame has adjusted low, False otherwise."""
+        if self.alo in self.df.columns:
+            return True
+        else:
+            return False
+
+    @property
+    def has_adjusted_close(self):
+        """Return True if Chart DataFrame has adjusted close, False otherwise."""
+        if self.acl in self.df.columns:
             return True
         else:
             return False
@@ -140,6 +165,28 @@ class Chart(object):
             return True
         else:
             return False
+
+    @property
+    def has_dividend(self):
+        """Return True if Chart DataFrame has dividend, False otherwise."""
+        if self.di in self.df.columns:
+            return True
+        else:
+            return False
+
+    @property
+    def has_OHLC(self):
+        """Return True if Chart DataFrame has OHLC, False otherwise."""
+        cols = {self.op, self.hi, self.lo, self.cl}
+        arr = self.df.columns.isin(cols)
+        return np.sum(arr) >= len(cols)
+
+    @property
+    def has_OHLCV(self):
+        """Return True if Chart DataFrame has OHLCV, False otherwise."""
+        cols = {self.op, self.hi, self.lo, self.cl, self.vo}
+        arr = self.df.columns.isin(cols)
+        return np.sum(arr) >= len(cols)
 
     def adjust(self, inplace=False):
         """Adjust OHLC data for splits, dividends, etc.
@@ -200,9 +247,9 @@ class Chart(object):
         technical indicators."""
         return self.df.join([self.ind])
 
-    def to_figure(self, type=None, volume=None, subtitle=None,
+    def to_figure(self, type=None, volume=None,
                   theme=None, layout=None,
-                  title=None, hovermode=None,
+                  title=None, subtitle=None, hovermode=None,
                   legend=None, annotations=None, shapes=None,
                   dimensions=None, width=None, height=None, margin=None,
                   **kwargs):
@@ -217,12 +264,9 @@ class Chart(object):
             if key not in VALID_FIGURE_KWARGS:
                 raise Exception("Invalid keyword '{0}'.".format(key))
 
-        # Kwargs
+        # Kwargs renaming
         if 'kind' in kwargs:
             type = kwargs['kind']
-
-        if 'subtitles' in kwargs:
-            subtitle = kwargs['subtitles']
 
         if 'showlegend' in kwargs:
             legend = kwargs['showlegend']
@@ -234,7 +278,7 @@ class Chart(object):
             else:
                 raise Exception("Invalid figsize '{0}'.".format(figsize))
 
-        # Default settings
+        # Default argument values
         if type is None:
             if self.has_OHLC:
                 type = 'candlestick'
@@ -249,9 +293,6 @@ class Chart(object):
             else:
                 volume = False
 
-        if subtitle is None:
-            subtitle = True
-
         if title is None:
             if self.ticker:
                 title = ticker
@@ -261,25 +302,29 @@ class Chart(object):
             else:
                 title = ''
 
+        if subtitle is None:
+            subtitle = True
+
         if legend is None:
             legend = True
 
-        # Check for argument integrity (above checked in get_template)
-        if type:
-            if not isinstance(type, six.string_types):
-                raise Exception("Invalid type '{0}'.".format(type))
-                if type not in VALID_TRACES:
-                    raise Exception("Invalid keyword '{0}'.".format(type))
-                if type in OHLC_TRACES:
-                    if not self.has_OHLC:
-                        raise Exception("Insufficient data for '{}'.".format(type))
-                else:
-                    if not self.has_close:
-                        raise Exception("Insufficient data for '{}'.".format(type))
+        # Type checks for mandatorily used arguments
+        if not isinstance(type, six.string_types):
+            raise Exception("Invalid type '{0}'.".format(type))
+            if type not in VALID_TRACES:
+                raise Exception("Invalid keyword '{0}'.".format(type))
+            if type in OHLC_TRACES:
+                if not self.has_OHLC:
+                    raise Exception("Insufficient data for '{}'.".format(type))
+            else:
+                if not self.has_close:
+                    raise Exception("Insufficient data for '{}'.".format(type))
 
-        if volume or volume == False:
-            if not isinstance(volume, bool):
-                raise Exception("Invalid volume'{0}'.".format(title))
+        if not isinstance(volume, bool):
+            raise Exception("Invalid volume'{0}'.".format(volume))
+
+        if not isinstance(subtitle, bool):
+            raise Exception("Invalid subtitle'{0}'.".format(subtitle))
 
         # Get template and bind to colors, traces, additions and layotu
         template = tools.get_template(theme=theme, layout=layout,
@@ -320,24 +365,6 @@ class Chart(object):
             if type == 'ohlc':
                 trace['increasing']['line']['color'] = colors['increasing']
                 trace['decreasing']['line']['color'] = colors['decreasing']
-
-            data.append(trace)
-
-        elif type == 'ohlc':
-            trace = copy.deepcopy(traces[type])
-
-            trace['x'] = self.df.index
-            trace['open'] = self.df[self.op]
-            trace['high'] = self.df[self.hi]
-            trace['low'] = self.df[self.lo]
-            trace['close'] = self.df[self.cl]
-            trace['name'] = title
-            trace['yaxis'] = 'y1'
-            trace['showlegend'] = False
-
-            # Colors
-            trace['increasing']['line']['color'] = colors['increasing']
-            trace['decreasing']['line']['color'] = colors['decreasing']
 
             data.append(trace)
 
@@ -484,13 +511,13 @@ class Chart(object):
                 print('Quantmod does not yet support plotting 3+ indicators.')
 
         # Margin
-        if not title:
+        if not layout['title']:
             layout['margin']['t'] = layout['margin']['b']
 
         # Subtitle
-        if legend == True and subtitle:
+        if layout['showlegend'] and subtitle:
 
-            if not annotations:
+            if 'annotations' not in layout:
                 layout['annotations'] = []
 
             if type in OHLC_TRACES:
@@ -532,26 +559,97 @@ class Chart(object):
         figure = dict(data=data, layout=layout)
         return figure
 
-    def plot(self, type=None, volume=None, subtitle=None,
+    def plot(self, type=None, volume=None,
              theme=None, layout=None,
-             title=None, hovermode=None,
+             title=None, subtitle=None, hovermode=None,
              legend=None, annotations=None, shapes=None,
              dimensions=None, width=None, height=None, margin=None,
-             **kwargs):
+             filename=None, online=None, **kwargs):
         """Generate a Plotly chart from Chart specifications.
 
         Parameters
         ----------
 
         """
-        figure = self.to_figure(type=type, volume=volume, subtitle=subtitle,
-                                theme=theme, layout=layout, title=title,
+        figure = self.to_figure(type=type, volume=volume,
+                                theme=theme, layout=layout,
+                                title=title, subtitle=subtitle,
                                 hovermode=hovermode, legend=legend,
                                 annotations=annotations, shapes=shapes,
                                 dimensions=dimensions,
                                 width=width, height=height,
                                 margin=margin, **kwargs)
-        return py.plot(figure)
+
+        # Default argument values
+
+        # To be fixed ASAP: race condition if 2 plots made within 1 sec
+        # Link filename generation to streambed API to prevent overwriting
+        if filename is None:
+            filename = 'Quantmod Chart {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))
+
+        if online is None:
+            online = False
+
+        # Type checks for mandatorily used arguments
+        if not isinstance(filename, six.string_types):
+            raise Exception("Invalid filename '{0}'.".format(filename))
+
+        if not isinstance(online, bool):
+            raise Exception("Invalid online '{0}'.".format(online))
+
+        if offline.is_offline() and not online:
+            show_link = auth.get_config_file()['offline_show_link']
+            link_text = auth.get_config_file()['offline_link_text']
+            return offline.py_offline.iplot(data_or_figure,
+                                            show_link=show_link,
+                                            link_text=link_text)
+        else:
+            return py.plot(figure, filename=filename)
+
+    def iplot(self, type=None, volume=None,
+             theme=None, layout=None,
+             title=None, subtitle=None, hovermode=None,
+             legend=None, annotations=None, shapes=None,
+             dimensions=None, width=None, height=None, margin=None,
+             filename=None, online=None, **kwargs):
+        """Generate a Plotly chart from Chart specifications.
+
+        Parameters
+        ----------
+
+        """
+        figure = self.to_figure(type=type, volume=volume,
+                                theme=theme, layout=layout,
+                                title=title, subtitle=subtitle,
+                                hovermode=hovermode, legend=legend,
+                                annotations=annotations, shapes=shapes,
+                                dimensions=dimensions,
+                                width=width, height=height,
+                                margin=margin, **kwargs)
+
+        # Default argument values
+
+        if filename is None:
+            filename = 'Quantmod Chart {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))
+
+        if online is None:
+            online = False
+
+        # Type checks for mandatorily used arguments
+        if not isinstance(filename, six.string_types):
+            raise Exception("Invalid filename '{0}'.".format(filename))
+
+        if not isinstance(online, bool):
+            raise Exception("Invalid online '{0}'.".format(online))
+
+        if offline.is_offline() and not online:
+            show_link = auth.get_config_file()['offline_show_link']
+            link_text = auth.get_config_file()['offline_link_text']
+            return offline.py_offline.iplot(data_or_figure,
+                                            show_link=show_link,
+                                            link_text=link_text)
+        else:
+            return py.iplot(figure, filename=filename)
 
 
 Chart.add_SMA = add_SMA

@@ -26,9 +26,10 @@ VALID_TRACES = {'ohlc', 'candlestick',
                 'area_dashed_thin', 'area_dashed_thick', 'area_threshold',
                 'scatter', 'bar', 'histogram',}
 
+# Subcategories of VALID_TRACES
 OHLC_TRACES = {'ohlc', 'candlestick'}
-
-OTHER_TRACES = VALID_TRACES - OHLC_TRACES
+NONLINEAR_TRACES = {'bar', 'histogram'}
+LINEAR_TRACES = VALID_TRACES - (OHLC_TRACES | NONLINEAR_TRACES)
 
 # Valid addition types for baes_additions or additions
 VALID_ADDITIONS = {'xaxis', 'yaxis',}
@@ -49,4 +50,4 @@ VALID_COLUMNS = {'op', 'hi', 'lo', 'cl',
 VALID_TEMPLATE_KWARGS = {'showlegend', 'figsize',}
 
 # Alternative syntax for to_frame
-VALID_FIGURE_KWARGS = {'kind', 'subtitles', 'showlegend', 'figsize',}
+VALID_FIGURE_KWARGS = {'kind', 'showlegend', 'figsize',}

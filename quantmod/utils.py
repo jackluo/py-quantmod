@@ -44,6 +44,8 @@ def typecheck(arg, arg_types, arg_name):
 def update(dict1, dict2):
     """Recursivel update dict-like objects and returns it.
 
+    Need return to work properly even though dict1 is updated inplace.
+
     Parameters
     ----------
         dict1 : dict
@@ -67,6 +69,8 @@ def update(dict1, dict2):
 def deep_update(dict1, dict2):
     """Update the values (deep form) of a given dictionary and returns it.
 
+    Need return to work properly even though dict1 is updated inplace.
+
     Parameters
     ----------
         dict1 : dict
@@ -76,7 +80,7 @@ def deep_update(dict1, dict2):
 
     """
     for key, value in dict2.items():
-        if isinstance(value, dict):
+        if isinstance(value, collections.Mapping):
             if key in dict1:
                 deep_update(dict1[key], value)
             else:
@@ -85,3 +89,40 @@ def deep_update(dict1, dict2):
             dict1[key] = value
 
     return dict1
+
+
+def kwargs_from_keyword(keyword, from_kwargs, to_kwargs=None, inplace=False):
+    """Look for keys of the format keyword_value.
+
+    Return a dictionary with {keyword: value} format.
+
+    Parameters
+    ----------
+        keyword : string
+                Keyword to look for in the orginal dictionary.
+        from_kwargs : dict
+                Original dictionary.
+        to_kwargs : dict
+                Dictionary where the items will be appended.
+        inplace : bool
+                If True then the key, value pairs from the original
+                dictionary are modified.
+
+    """
+    if not inplace:
+        if to_kwargs is None:
+            to_kwargs = {}
+
+    keys = set(from_kwargs.keys())
+
+    for key in keys:
+        if '{0}_'.format(keyword) in key:
+            updated_key = key.replace('{0}_'.format(keyword), '')
+            if inplace:
+                from_kwargs[updated_key] = from_kwargs[key]
+                del from_kwargs[key]
+            else:
+                to_kwargs[updated_key] = from_kwargs[key]
+
+    if not inplace:
+        return to_kwargs

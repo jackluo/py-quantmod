@@ -256,13 +256,13 @@ def make_layout(base_layout, layout, custom_layout,
     # Modifiers directly to base_layout
     utils.update(base_layout, layout)
 
-    if title:
+    if title is not None:
         base_layout['title'] = title
 
-    if hovermode or hovermode == False:
+    if hovermode is not None:
         base_layout['hovermode'] = hovermode
 
-    if legend or legend == False:
+    if legend is not None:
         if legend == True:
             base_layout['showlegend'] = True
         elif legend == False:
@@ -271,30 +271,30 @@ def make_layout(base_layout, layout, custom_layout,
             base_layout['showlegend'] = True
             base_layout['legend'] = legend
 
-    if annotations:
+    if annotations is not None:
         base_layout['annotations'] = annotations
 
-    if shapes:
+    if shapes is not None:
         base_layout['shapes'] = shapes
 
-    if dimensions or height or width:
+    if dimensions is not None or height is not None or width is not None:
         base_layout['autosize'] = False
 
-        if dimensions:
+        if dimensions is not None:
             base_layout['width'] = dimensions[0]
             bsae_layout['height'] = dimensions[1]
 
-        if height:
+        if height is not None:
             base_layout['height'] = height
 
-        if width:
+        if width is not None:
             base_layout['width'] = width
 
-    if margin:
+    if margin is not None:
         base_layout['margin'] = margin
 
     # Custom layout update
-    if custom_layout:
+    if custom_layout is not None:
         utils.update(layout, custom_layout)
 
     for key in base_layout:
@@ -348,7 +348,7 @@ def get_template(theme=None, layout=None,
         if key not in VALID_TEMPLATE_KWARGS:
             raise Exception("Invalid keyword '{0}'.".format(key))
 
-    # Kwargs
+    # Kwargs renaming
     if 'showlegend' in kwargs:
         legend = kwargs['showlegend']
 
@@ -362,8 +362,14 @@ def get_template(theme=None, layout=None,
     # Get skeleton
     skeleton = get_skeleton()
 
+    # Type checks for optionally used arguments
+
+    # The if x not None: pattern is used instead of if x:
+    # because it can catch other falsey values like False,
+    # which may cause side effects to Plotly.py.
+
     # Test if theme is str or dict, or get default theme from config otherwise
-    if theme:
+    if theme is not None:
         if isinstance(theme, six.string_types):
             theme = get_theme(theme)
         elif isinstance(theme, dict):
@@ -375,7 +381,7 @@ def get_template(theme=None, layout=None,
 
     # Test if layout is dict, else coerce Layout() to regular dict
     # Rename to custom_layout (to distinguish from base_layout and layout)
-    if layout:
+    if layout is not None:
         custom_layout = layout
         if not isinstance(custom_layout, dict):
             try:
@@ -386,12 +392,12 @@ def get_template(theme=None, layout=None,
         custom_layout = None
 
     # Test title if string, else raise exception
-    if title:
+    if title is not None:
         if not isinstance(title, six.string_types):
             raise Exception("Invalid title '{0}'.".format(title))
 
     # Test if hovermode is str or False, else raise exception
-    if hovermode or hovermode == False:
+    if hovermode is not None:
         if hovermode == False:
             pass
         elif isinstance(hovermode, six.string_types):
@@ -401,7 +407,7 @@ def get_template(theme=None, layout=None,
 
     # Test if legend is True/False, else coerce Legend() to regular dict
     # if legend is not regular dict
-    if legend or legend == False:
+    if legend is not None:
         if isinstance(legend, bool):
             pass
         elif isinstance(legend, dict):
@@ -413,7 +419,7 @@ def get_template(theme=None, layout=None,
                 raise Exception("Invalid legend '{0}'.".format(layout))
 
     # Test if annotations is list, else coerce Annotations() to regular list
-    if annotations:
+    if annotations is not None:
         if not isinstance(annotations, list):
             try:
                 annotations = list(annotations)
@@ -422,7 +428,7 @@ def get_template(theme=None, layout=None,
                     "Invalid annotations '{0}'.".format(annotations))
 
     # Test is shapes is list, else coerce Shapes() into regular list
-    if shapes:
+    if shapes is not None:
         if not isinstance(shapes, list):
             try:
                 shapes = list(shapes)
@@ -430,21 +436,21 @@ def get_template(theme=None, layout=None,
                 raise Exception("Invalid shapes '{0}'.".format(shapes))
 
     # Test if dimensions is tuple, else raise exception
-    if dimensions: # Cufflinks
+    if dimensions is not None: # Cufflinks
         if not isinstance(dimensions, tuple) or len(dimensions) == 2:
             raise Exception("Invalid dimensions '{0}'.".format(dimensions))
 
     # Test below items if int, else raise exception
-    if width:
+    if width is not None:
         if not isinstance(width, six.integer_types):
             raise Exception("Invalid width '{0}'.".format(width))
 
-    if height:
+    if height is not None:
         if not isinstance(height, six.integer_types):
             raise Exception("Invalid height '{0}'.".format(height))
 
     # Test if margin is dict, else convert tuple to dict, else raise exception
-    if margin:
+    if margin is not None:
         if isinstance(margin, dict):
             pass
         elif isinstance(margin, tuple):  # Cufflinks
