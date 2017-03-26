@@ -8,6 +8,7 @@ inside this module to keep a consistent API, as they are only used internally.
 from __future__ import absolute_import
 
 import collections
+import json
 
 
 def typecheck(arg, arg_types, arg_name):
@@ -126,3 +127,45 @@ def kwargs_from_keyword(keyword, from_kwargs, to_kwargs=None, inplace=False):
 
     if not inplace:
         return to_kwargs
+
+
+def load_json_dict(filename, *args):
+    """Check if file exists. Return {} if something fails.
+
+    Parameters
+    ----------
+        filename : string
+            Filename of file to check.
+
+    """
+    data = {}
+    if os.path.exists(filename):
+        with open(filename, "r") as f:
+            try:
+                data = json.load(f)
+                if not isinstance(data, dict):
+                    data = {}
+            except:
+                pass
+        if args:
+            return {key: data[key] for key in args if key in data}
+    return data
+
+
+def save_json_dict(filename, json_dict):
+    """Will error if filename is not appropriate, but it's checked elsewhere.
+
+    Parameters
+    ----------
+        filename : string
+            Filename of json_dict to save.
+        json_dict : dict
+            Dict that will be saved as json.
+
+    """
+    if isinstance(json_dict, dict):
+        with open(filename, 'w') as f:
+            f.write(json.dumps(json_dict, indent=4))
+    else:
+        raise TypeError("Couldn't save because 'json_dict' "
+                        "was not a dictionary.")

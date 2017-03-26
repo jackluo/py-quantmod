@@ -1,528 +1,173 @@
-"""High-level functions meant for user access
+"""Functions meant for user access
 
-This includes various plotting and theming helpers.
-Module also contains all argument validity checks.
+All non-Chart related functions are in this module.
+For Chart-related functions go in 'factory.py'.
 
 """
 from __future__ import absolute_import
 
 import six
-import copy
+import warnings
+import plotly
 
 from . import auth
 from . import utils
-from .theming.skeleton import SKELETON
-from .theming.themes import THEMES
-from .sources import SOURCES
-from .valid import *
+from .auth import FILE_CONTENT, CONFIG_FILE
 
 
-def get_theme(theme):
-    """Return a Quantmod theme (as a dict).
+pyo = plotly.offline
+
+
+def go_offline(connected=False):
+    """Take plotting offline.
+
+    __PLOTLY_OFFLINE_INITIALIZED is a secret variable
+    in plotly/offline/offline.py.
+
+    """
+    try:
+        pyo.init_notebook_mode(connected)
+    except TypeError:
+        pyo.init_notebook_mode()
+
+    pyo.__PLOTLY_OFFLINE_INITIALIZED = True
+
+
+def go_online():
+    """Take plotting offline."""
+    pyo.__PLOTLY_OFFLINE_INITIALIZED = False
+
+
+def is_offline():
+    """Check online/offline status."""
+    return pyo.__PLOTLY_OFFLINE_INITIALIZED
+
+
+def check_url(url=None):
+    """Check URL integrity.
 
     Parameters
     ----------
+        url : string
+            URL to be checked.
+
+    """
+    if not url:
+        if 'http' not in get_config_file()['offline_url']:
+            raise Exception("No default offline URL set.\n"
+                            "Please run quantmod.set_config_file(offline_url=YOUR_URL) \
+                            to set the default offline URL.")
+        else:
+            url = get_config_file()['offline_url']
+
+    pyo.download_plotlyjs(url)
+
+
+def ensure_local_files():
+    """Ensure that filesystem is setup/filled out in a valid way."""
+    if auth.check_file_permissions():
+        if not os.path.isdir(AUTH_DIR):
+            os.mkdir(AUTH_DIR)
+        for fn in [CONFIG_FILE]:
+            contents = utils.load_json_dict(fn)
+            for key, value in list(FILE_CONTENT[fn].items()):
+                if key not in contents:
+                    contents[key] = value
+            contents_keys = list(contents.keys())
+            for key in contents_keys:
+                if key not in FILE_CONTENT[fn]:
+                    del contents[key]
+            utils.save_json_dict(fn, contents)
+    else:
+        warnings.warn("Looks like you don't have 'read-write' permission to "
+                      "your specified Dropbox folder or home ('~') directory.")
+
+
+def set_config_file(sharing=None, theme=None, dimensions=None,
+                    offline=None, offline_url=None,
+                    offline_show_link=None, offline_link_text=None):
+    """Set the keyword-value pairs in `~/config`.
+
+    Parameters
+    ----------
+        sharing : string
+            Sets the sharing level permission.
+                public - anyone can see this chart
+                private - only you can see this chart
+                secret - only people with the link can see the chart
         theme : string
-            Quantmod theme
-
-    """
-    if theme in THEMES:
-        return copy.deepcopy(THEMES[theme])
-    else:
-        raise Exception("Invalid theme '{0}'.".format(theme))
-
-
-def get_themes():
-    """Return the list of available themes, or none if there is a problem."""
-    return list(THEMES)
-
-
-def get_skeleton():
-    """Return the base Quantmod skeleton."""
-    return copy.deepcopy(SKELETON)
-
-
-def get_source(source):
-    """Return a Quantmod source (as a dict).
-
-    Parameters
-    ----------
-        source : string
-            Quantmod source
-
-    """
-    if source in SOURCES:
-        return copy.deepcopy(SOURCES[source])
-    else:
-        raise Exception("Invalid source '{0}'.".format(source))
-
-
-def get_sources():
-    """Return the list of available sources, or none if there is a problem."""
-    return list(SOURCES)
-
-
-def make_colors(base_colors, colors):
-    """Make trace configuration from theme/skeleton and theme/colors.
-
-    Recursively update base_theme with theme using custom tool in utils.
-
-    Parameters
-    ----------
-        base_colors : dict
-            Additions file containing primitives from 'skeleton.py'.
-        colors : dict
-            Additions configuration from specified theme.
-
-    """
-    for key in colors:
-        if key not in VALID_COLORS:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    def _expand(base_colors):
-        pass
-
-    _expand(base_colors)
-
-    # Modifiers directly to base_colors
-    utils.update(base_colors, colors)
-
-    for key in base_colors:
-        if key not in VALID_COLORS:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    return base_colors
-
-
-def make_traces(base_traces, traces):
-    """Make trace configuration from theme/skeleton and theme/traces.
-
-    Recursively update base_theme with theme using custom tool in utils.
-
-    Parameters
-    ----------
-        base_traces : dict
-            Trace file containing primitives from 'skeleton.py'.
-        traces : dict
-            Trace configuration from specified theme.
-
-    """
-    # Check for invalid entries
-    for key in traces:
-        if key not in VALID_TRACES:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    def _expand(base_traces):
-        """Creates other traces from the three elementary ones."""
-        base_traces['candlestick']
-
-        base_traces['line']
-        base_traces['line_thin'] = copy.deepcopy(base_traces['line'])
-        base_traces['line_thick'] = copy.deepcopy(base_traces['line'])
-        base_traces['line_dashed'] = copy.deepcopy(base_traces['line'])
-        base_traces['line_dashed_thin'] = copy.deepcopy(base_traces['line'])
-        base_traces['line_dashed_thick'] = copy.deepcopy(base_traces['line'])
-
-        base_traces['area'] = copy.deepcopy(base_traces['line'])
-        base_traces['area']['fill'] = 'tonexty'
-        base_traces['area_dashed'] = copy.deepcopy(base_traces['area'])
-        base_traces['area_dashed_thin'] = copy.deepcopy(base_traces['area'])
-        base_traces['area_dashed_thick'] = copy.deepcopy(base_traces['area'])
-        base_traces['area_threshold'] = copy.deepcopy(base_traces['area'])
-
-        base_traces['scatter'] = copy.deepcopy(base_traces['line'])
-        base_traces['scatter']['mode'] = 'markers'
-
-        base_traces['bar']
-        base_traces['histogram'] = copy.deepcopy(base_traces['bar'])
-
-    _expand(base_traces)
-
-    # Mdifiers currently to 'line' only
-    # This may be subject to laterchange
-    for key in traces:
-        utils.update(base_traces[key]['line'], traces[key])
-
-    # Check after copying
-    for key in base_traces:
-        if key not in VALID_TRACES:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    return base_traces
-
-
-def make_additions(base_additions, additions):
-    """Make trace configuration from theme/skeleton and theme/additions.
-
-    Recursively update base_theme with theme using custom tool in utils.
-
-    Parameters
-    ----------
-        base_additions : dict
-            Additions file containing primitives from 'skeleton.py'.
-        additions : dict
-            Additions configuration from specified theme.
-
-    """
-    for key in additions:
-        if key not in VALID_ADDITIONS:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    # No utility right now, planned in the future for additions
-    def _expand(base_additions):
-        pass
-
-    _expand(base_additions)
-
-    # Modifiers directly to base_additions
-    utils.update(base_additions, additions)
-
-    for key in base_additions:
-        if key not in VALID_ADDITIONS:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    return base_additions
-
-
-def make_layout(base_layout, layout, custom_layout,
-                title, hovermode,
-                legend, annotations, shapes,
-                dimensions, width, height, margin, **kwargs):
-    """Make layout configuration from theme/skeleton and theme/traces.
-
-    Recursively update base_theme with theme using custom tool in utils.
-
-    Parameters
-    ----------
-        base_traces : dict
-            Layout file containing primitives from 'skeleton.py'.
-        layout : dict
-            Layout configuration from specified theme.
-        custom_layout : dict
-            Plotly layout dict or graph_objs.Layout object.
-            Will override all other arguments if conflicting as
-            user-inputted layout is updated last.
-        title : string
-            Chart title.
-        hovermode : str or False
-            Can be either 'x', 'y', 'closest' or False.
-            Toggles how a tooltip appears on cursor hover.
-        legend : dict or bool
-            True/False or Plotly legend dict.
-            If legend is a bool, Quantmod will simply toggle legend visibility.
-        annotations : list
-            Plotly annotations list.
-        shapes : list or
-            Plotly shapes list.
+            Sets the default theme.
+            See factory.get_themes() for available themes.
         dimensions : tuple
-            Dimensions 2-tuple in order (width, height). Disables autosize=True.
-        width : int
-            Width of chart. Disables autosize=True.
-        height : int
-            Height of chart. Disables autosize=True.
-        margin : dict or tuple
-            Plotly margin dict or 4-tuple in order (l, r, b, t) or
-            5-tuple in order (l, r, b, t, margin). Tuple input added for
-            Cufflinks compatibility.
+            Sets the default (width, height) of the chart.
+        offline : bool
+            If true then the charts are rendered
+            locally.
+        offline_show_link : bool
+            If true then the chart will show a link to
+            plot.ly at the bottom right of the chart.
+        offline_link_text : string
+            Text to display as link at the bottom
+            right of the chart.
 
     """
-    # Check for kwargs integrity
-    for key in kwargs:
-        if key not in VALID_TEMPLATE_KWARGS:
-            raise Exception("Invalid keyword '{0}'.".format(key))
+    if not auth.check_file_permissions():
+        raise Exception("You don't have proper file permissions "
+                        "to run this function.")
 
-    # Kwargs
-    if 'showlegend' in kwargs:
-        legend = kwargs['showlegend']
+    config = get_config_file()
 
-    if 'figsize' in kwargs: # Matplotlib
-        figsize = kwargs['figsize']
-        if isinstance(figsize, tuple) and len(figsize) == 2:
-            dimensions = tuple(80 * i for i in figsize) # 80x size
+    if isinstance(sharing, bool):
+        if sharing:
+            sharing = 'public'
         else:
-            raise Exception("Invalid figsize '{0}'.".format(figsize))
+            sharing = 'private'
+    if isinstance(sharing, six.string_types):
+        config['sharing'] = sharing
+    if isinstance(theme, six.string_types):
+        config['theme'] = theme
+    if isinstance(dimensions, tuple):
+        config['dimensions'] = dimensions
+    if isinstance(offline, bool):
+        config['offline'] = offline
+        if offline:
+            go_offline()
+    if isinstance(offline_url, six.string_types):
+        config['offline_url'] = offline_url
+    if isinstance(offline_show_link, six.string_types):
+        config['offline_show_link'] = offline_show_link
+    if isinstance(offline_link_text, six.string_types):
+        config['offline_link_text'] = offline_link_text
 
-    # Check for invalid entries
-    for key in layout:
-        if key not in VALID_LAYOUT:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    # No utility right now, planned in the future for additions
-    def _expand(base_layout):
-        pass
-
-    _expand(base_layout)
-
-    # Modifiers directly to base_layout
-    utils.update(base_layout, layout)
-
-    if title is not None:
-        base_layout['title'] = title
-
-    if hovermode is not None:
-        base_layout['hovermode'] = hovermode
-
-    if legend is not None:
-        if legend == True:
-            base_layout['showlegend'] = True
-        elif legend == False:
-            base_layout['showlegend'] = False
-        else:
-            base_layout['showlegend'] = True
-            base_layout['legend'] = legend
-
-    if annotations is not None:
-        base_layout['annotations'] = annotations
-
-    if shapes is not None:
-        base_layout['shapes'] = shapes
-
-    if dimensions is not None or height is not None or width is not None:
-        base_layout['autosize'] = False
-
-        if dimensions is not None:
-            base_layout['width'] = dimensions[0]
-            bsae_layout['height'] = dimensions[1]
-
-        if height is not None:
-            base_layout['height'] = height
-
-        if width is not None:
-            base_layout['width'] = width
-
-    if margin is not None:
-        base_layout['margin'] = margin
-
-    # Custom layout update
-    if custom_layout is not None:
-        utils.update(layout, custom_layout)
-
-    for key in base_layout:
-        if key not in VALID_LAYOUT:
-            raise Exception("Invalid keyword '{0}'".format(key))
-
-    return base_layout
+    utils.save_json_dict(CONFIG_FILE, config)
+    ensure_local_files()
 
 
-def get_template(theme=None, layout=None,
-                 title=None, hovermode=None,
-                 legend=None, annotations=None, shapes=None,
-                 dimensions=None, width=None, height=None, margin=None,
-                 **kwargs):
-    """Generate color, traces, additions and layout dicts.
+def get_config_file(*args):
+    """
+    Return specified args from `~/config`. as dict.
+    Return all if no arguments are specified.
 
-    Parameters
-    ----------
-        theme : string
-            Quantmod theme.
-        layout : dict or Layout
-            Plotly layout dict or graph_objs.Layout object.
-            Will override all other arguments if conflicting as
-            user-inputted layout is updated last.
-        title : string
-            Chart title.
-        hovermode : str or False
-            Can be either 'x', 'y', 'closest' or False.
-            Toggles how a tooltip appears on cursor hover.
-        legend : dict, Legend or bool
-            True/False or Plotly legend dict / graph_objs.Legend object.
-            If legend is a bool, Quantmod will simply toggle legend visibility.
-        annotations : list or Annotations
-            Plotly annotations list / graph.objs.Annotations object.
-        shapes : list or Shapes
-            Plotly shapes list or graph_objs.Shapes object.
-        dimensions : tuple
-            Dimensions 2-tuple in order (width, height). Disables autosize=True.
-        width : int
-            Width of chart. Disables autosize=True.
-        height : int
-            Height of chart. Disables autosize=True.
-        margin : dict or tuple
-            Plotly margin dict or 4-tuple in order (l, r, b, t) or
-            5-tuple in order (l, r, b, t, margin). Tuple input added for
-            Cufflinks compatibility.
+    Example
+    -------
+        get_config_file('sharing')
 
     """
-    # Check for kwargs integrity
-    for key in kwargs:
-        if key not in VALID_TEMPLATE_KWARGS:
-            raise Exception("Invalid keyword '{0}'.".format(key))
-
-    # Kwargs renaming
-    if 'showlegend' in kwargs:
-        legend = kwargs['showlegend']
-
-    if 'figsize' in kwargs: # Matplotlib
-        figsize = kwargs['figsize']
-        if isinstance(figsize, tuple) and len(figsize) == 2:
-            dimensions = tuple(80 * i for i in figsize) # 80x size
-        else:
-            raise Exception("Invalid figsize '{0}'.".format(figsize))
-
-    # Get skeleton
-    skeleton = get_skeleton()
-
-    # Type checks for optionally used arguments
-
-    # The if x not None: pattern is used instead of if x:
-    # because it can catch other falsey values like False,
-    # which may cause side effects to Plotly.py.
-
-    # Test if theme is str or dict, or get default theme from config otherwise
-    if theme is not None:
-        if isinstance(theme, six.string_types):
-            theme = get_theme(theme)
-        elif isinstance(theme, dict):
-            pass
-        else:
-            raise Exception("Invalid theme '{0}'.".format(theme))
+    if auth.check_file_permissions():
+        ensure_local_files()
+        return utils.load_json_dict(CONFIG_FILE, *args)
     else:
-        theme = get_theme(auth.get_config_file()['theme'])
-
-    # Test if layout is dict, else coerce Layout() to regular dict
-    # Rename to custom_layout (to distinguish from base_layout and layout)
-    if layout is not None:
-        custom_layout = layout
-        if not isinstance(custom_layout, dict):
-            try:
-                custom_layout = dict(custom_layout.items())
-            except:
-                raise Exception("Invalid layout '{0}'.".format(custom_layout))
-    else:
-        custom_layout = None
-
-    # Test title if string, else raise exception
-    if title is not None:
-        if not isinstance(title, six.string_types):
-            raise Exception("Invalid title '{0}'.".format(title))
-
-    # Test if hovermode is str or False, else raise exception
-    if hovermode is not None:
-        if hovermode == False:
-            pass
-        elif isinstance(hovermode, six.string_types):
-            pass
-        else:
-            raise Exception("Invalid hovermode '{0}'.".format(hovermode))
-
-    # Test if legend is True/False, else coerce Legend() to regular dict
-    # if legend is not regular dict
-    if legend is not None:
-        if isinstance(legend, bool):
-            pass
-        elif isinstance(legend, dict):
-            pass
-        else:
-            try:
-                layout = dict(layout.items())
-            except:
-                raise Exception("Invalid legend '{0}'.".format(layout))
-
-    # Test if annotations is list, else coerce Annotations() to regular list
-    if annotations is not None:
-        if not isinstance(annotations, list):
-            try:
-                annotations = list(annotations)
-            except:
-                raise Exception(
-                    "Invalid annotations '{0}'.".format(annotations))
-
-    # Test is shapes is list, else coerce Shapes() into regular list
-    if shapes is not None:
-        if not isinstance(shapes, list):
-            try:
-                shapes = list(shapes)
-            except:
-                raise Exception("Invalid shapes '{0}'.".format(shapes))
-
-    # Test if dimensions is tuple, else raise exception
-    if dimensions is not None: # Cufflinks
-        if not isinstance(dimensions, tuple) or len(dimensions) == 2:
-            raise Exception("Invalid dimensions '{0}'.".format(dimensions))
-
-    # Test below items if int, else raise exception
-    if width is not None:
-        if not isinstance(width, six.integer_types):
-            raise Exception("Invalid width '{0}'.".format(width))
-
-    if height is not None:
-        if not isinstance(height, six.integer_types):
-            raise Exception("Invalid height '{0}'.".format(height))
-
-    # Test if margin is dict, else convert tuple to dict, else raise exception
-    if margin is not None:
-        if isinstance(margin, dict):
-            pass
-        elif isinstance(margin, tuple):  # Cufflinks
-            if len(margin) == 4:
-                margin = dict(zip(('l', 'r', 'b', 't'), margin))
-            elif len(margin) == 5:
-                margin = dict(zip(('l', 'r', 'b', 't', 'pad'), margin))
-            else:
-                raise Exception("Invalid margin '{0}'.".format(margin))
-        else:
-            raise Exception("Invalid margin '{0}'.".format(margin))
-
-    # Split theme and skeleton
-    if all(key in skeleton for key in VALID_BASE_COMPONENTS):
-        base_colors = skeleton['base_colors']
-        base_traces = skeleton['base_traces']
-        base_additions = skeleton['base_additions']
-        base_layout = skeleton['base_layout']
-    else:
-        raise Exception("Improperly configured skeleton. "
-                        "Consider reinstalling Quantmod.")
-
-    if all(key in theme for key in VALID_THEME_COMPONENTS):
-        colors = theme['colors']
-        traces = theme['traces']
-        additions = theme['additions']
-        layout = theme['layout']
-    else:
-        raise Exception("Improperly configured theme '{0}'.".format(theme))
-
-    # Generate final template
-    final_colors = make_colors(base_colors, colors)
-    final_traces = make_traces(base_traces, traces)
-    final_additions = make_additions(base_additions, additions)
-    final_layout = make_layout(base_layout, layout, custom_layout,
-                               title, hovermode,
-                               legend, annotations, shapes,
-                               dimensions, width, height, margin)
-
-    # Convert to dict
-    template = dict(colors=final_colors, traces=final_traces,
-                    additions=final_additions, layout=final_layout)
-
-    return template
+        return FILE_CONTENT[CONFIG_FILE]
 
 
-def get_base_layout(figures):
-    """Generate a layout with the union of multiple figures' layouts.
-
-    Parameters
-    ----------
-        figures : list
-            List of Plotly figures
-
-    """
-    layout = {}
-    for figure in figures:
-        for key, value in figure['layout'].items():
-            layout[key] = value
-    return layout
+def reset_config_file():
+    """Reset config file to package defaults."""
+    ensure_local_files()  # Make sure what's there is OK
+    f = open(CONFIG_FILE, 'w')
+    f.close()
+    ensure_local_files()
 
 
-def strip_figure(figure):
-    """Strip a Plotly figure into multiple figures with a trace on each of them.
-
-    Parameters
-    ----------
-        figure : dict or Figure
-            Plotly figure
-
-    """
-    figures = []
-    for trace in figure['data']:
-        figures.append(dict(data=[trace], layout=figure['layout']))
-    return figures
+set_credentials_file = plotly.tools.set_credentials_file
+get_credentials_file = plotly.tools.get_credentials_file
+reset_credentials_file = plotly.tools.reset_credentials_file

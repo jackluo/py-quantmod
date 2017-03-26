@@ -1,9 +1,7 @@
 
 # In[]:
 
-import quantmod.offline as qmo
-import quantmod.chart as qm
-import quantmod.tools as qmt
+import quantmod as qm
 import pandas as pd
 import pandas_datareader as web
 
@@ -30,18 +28,18 @@ ch.ind
 ch.pri
 ch.adjust(inplace=True)
 ch.adjust_volume(inplace=True)
+
 ch.has_OHLC
 print(ch.has_OHLCV)
 
 #ch.add_MA(50)
 #ch.add_SMA(50)
 #ch.add_EMA(200)
-
 ch.add_BBANDS(30)
 ch.add_RSI(14)
-ch.ind
-ch.pri
-qmo.go_offline()
-qmt.get_template()
-#ch.to_figure()
-print(ch.plot(title=''))#, filename='try')
+
+qm.go_offline()
+ch.to_figure()
+ch.plot()
+qm.go_online()
+ch.iplot()

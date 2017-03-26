@@ -16,6 +16,9 @@ Credits
     cufflinks : @jorgesantos
 
 """
+from __future__ import absolute_import
+
+
 __docformat__ = 'restructuredtext'
 
 hard_dependencies = ('numpy',
@@ -36,13 +39,12 @@ if missing_dependencies:
 del hard_dependencies, dependency, missing_dependencies
 
 
-from __future__ import absolute_import
-
-
 from .core import *
 from .chart import *
-from .auth import get_config_file, set_config_file
-from .offline import go_offline, go_online
+from .tools import (go_offline, go_online, is_offline,
+                    get_config_file, set_config_file, reset_config_file,
+                    get_credentials_file, set_credentials_file,
+                    reset_credentials_file)
 from .version import __version__
 
 # Offline mode from config initialization

@@ -16,10 +16,8 @@ import pandas as pd
 import plotly.plotly as py
 import plotly.offline as pyo
 
-from . import auth
-from . import offline
-from . import utils
 from . import tools
+from . import factory
 from .valid import *
 from .ta import *
 
@@ -46,13 +44,13 @@ class Chart(object):
         # Test if source is str or dict, or get default vendor otherwise
         if source:
             if isinstance(source, six.string_types):
-                source = tools.get_source(source)
+                source = factory.get_source(source)
             elif isinstance(source, dict):
                 pass
             else:
                 raise Exception("Invalid source '{0}'.".format(source))
         else:
-            source = tools.get_source(auth.get_config_file()['source'])
+            source = factory.get_source(tools.get_config_file()['source'])
 
         """
         Ticker,
@@ -327,7 +325,7 @@ class Chart(object):
             raise Exception("Invalid subtitle'{0}'.".format(subtitle))
 
         # Get template and bind to colors, traces, additions and layotu
-        template = tools.get_template(theme=theme, layout=layout,
+        template = factory.get_template(theme=theme, layout=layout,
                                       title=title,
                                       hovermode=hovermode, legend=legend,
                                       annotations=annotations, shapes=shapes,
@@ -597,12 +595,12 @@ class Chart(object):
         if not isinstance(online, bool):
             raise Exception("Invalid online '{0}'.".format(online))
 
-        if offline.is_offline() and not online:
-            show_link = auth.get_config_file()['offline_show_link']
-            link_text = auth.get_config_file()['offline_link_text']
-            return offline.py_offline.iplot(data_or_figure,
-                                            show_link=show_link,
-                                            link_text=link_text)
+        if tools.is_offline() and not online:
+            show_link = tools.get_config_file()['offline_show_link']
+            link_text = tools.get_config_file()['offline_link_text']
+            return pyo.plot(figure, filename=filename,
+                            show_link=show_link,
+                            link_text=link_text)
         else:
             return py.plot(figure, filename=filename)
 
@@ -642,12 +640,12 @@ class Chart(object):
         if not isinstance(online, bool):
             raise Exception("Invalid online '{0}'.".format(online))
 
-        if offline.is_offline() and not online:
-            show_link = auth.get_config_file()['offline_show_link']
-            link_text = auth.get_config_file()['offline_link_text']
-            return offline.py_offline.iplot(data_or_figure,
-                                            show_link=show_link,
-                                            link_text=link_text)
+        if tools.is_offline() and not online:
+            show_link = tools.get_config_file()['offline_show_link']
+            link_text = tools.get_config_file()['offline_link_text']
+            return pyo.iplot(figure, filename=filename,
+                             show_link=show_link,
+                             link_text=link_text)
         else:
             return py.iplot(figure, filename=filename)
 
