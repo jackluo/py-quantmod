@@ -41,14 +41,16 @@ class Chart(object):
 
         """ADD ERROR HANDLING"""
 
-        # Test if source is str or dict, or get default vendor otherwise
+        # Test if source is string or dict, or get default vendor otherwise
         if source:
             if isinstance(source, six.string_types):
                 source = factory.get_source(source)
             elif isinstance(source, dict):
                 pass
             else:
-                raise Exception("Invalid source '{0}'.".format(source))
+                raise TypeError("Invalid source '{0}'. "
+                                "It should be string or dict."
+                                .format(source))
         else:
             source = factory.get_source(tools.get_config_file()['source'])
 
@@ -271,10 +273,17 @@ class Chart(object):
 
         if 'figsize' in kwargs: # Matplotlib
             figsize = kwargs['figsize']
-            if isinstance(figsize, tuple) and len(figsize) == 2:
-                dimensions = tuple(80 * i for i in figsize) # 80x size
+            if isinstance(figsize, tuple):
+                if len(figsize) == 2:
+                    dimensions = tuple(80 * i for i in figsize) # 80x size
+                else:
+                    raise Exception("Invalid figsize '{0}'. "
+                                    "It should be tuple of len 2."
+                                    .format(figsize))
             else:
-                raise Exception("Invalid figsize '{0}'.".format(figsize))
+                raise TypeError("Invalid figsize '{0}'. "
+                                "It should be tuple."
+                                .format(figsize))
 
         # Default argument values
         if type is None:
@@ -283,7 +292,7 @@ class Chart(object):
             elif self.has_close:
                 type = 'line'
             else:
-                raise Exception("Chart has neither OLHC nor close.")
+                raise Exception("Chart has neither OLHC nor close data.")
 
         if volume is None:
             if self.has_volume:
@@ -294,9 +303,6 @@ class Chart(object):
         if title is None:
             if self.ticker:
                 title = ticker
-                if self.start and self.end:
-                    if isinstance(self.start, str) and isinstance(self.end, str):
-                        title = title + ' [{0}/{1}]'.format(self.start, self.end)
             else:
                 title = ''
 
@@ -308,21 +314,33 @@ class Chart(object):
 
         # Type checks for mandatorily used arguments
         if not isinstance(type, six.string_types):
-            raise Exception("Invalid type '{0}'.".format(type))
+            raise TypeError("Invalid type '{0}'. "
+                            "It should be string."
+                            .format(type))
             if type not in VALID_TRACES:
-                raise Exception("Invalid keyword '{0}'.".format(type))
+                raise Exception("Invalid keyword '{0}'. "
+                                "It is not in VALID_TRACES."
+                                .format(type))
             if type in OHLC_TRACES:
                 if not self.has_OHLC:
-                    raise Exception("Insufficient data for '{}'.".format(type))
+                    raise Exception("Insufficient data for '{}'. "
+                                    "Chart does not have OHLC data."
+                                    .format(type))
             else:
                 if not self.has_close:
-                    raise Exception("Insufficient data for '{}'.".format(type))
+                    raise Exception("Insufficient data for '{}'. "
+                                    "Chart does not have close data."
+                                    .format(type))
 
         if not isinstance(volume, bool):
-            raise Exception("Invalid volume'{0}'.".format(volume))
+            raise TypeError("Invalid volume'{0}'. "
+                            "It should be bool."
+                            .format(volume))
 
         if not isinstance(subtitle, bool):
-            raise Exception("Invalid subtitle'{0}'.".format(subtitle))
+            raise TypeError("Invalid subtitle'{0}'. "
+                            "It should be bool."
+                            .format(subtitle))
 
         # Get template and bind to colors, traces, additions and layotu
         template = factory.get_template(theme=theme, layout=layout,
@@ -583,17 +601,22 @@ class Chart(object):
         # To be fixed ASAP: race condition if 2 plots made within 1 sec
         # Link filename generation to streambed API to prevent overwriting
         if filename is None:
-            filename = 'Quantmod Chart {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+            filename = 'Quantmod Chart {0}'.format(timestamp)
 
         if online is None:
             online = False
 
         # Type checks for mandatorily used arguments
         if not isinstance(filename, six.string_types):
-            raise Exception("Invalid filename '{0}'.".format(filename))
+            raise TypeError("Invalid filename '{0}'. "
+                            "It should be string."
+                            .format(filename))
 
         if not isinstance(online, bool):
-            raise Exception("Invalid online '{0}'.".format(online))
+            raise TypeError("Invalid online '{0}'. "
+                            "It should be bool."
+                            .format(online))
 
         if tools.is_offline() and not online:
             show_link = tools.get_config_file()['offline_show_link']
@@ -628,17 +651,22 @@ class Chart(object):
         # Default argument values
 
         if filename is None:
-            filename = 'Quantmod Chart {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+            filename = 'Quantmod Chart {0}'.format(timestamp)
 
         if online is None:
             online = False
 
         # Type checks for mandatorily used arguments
         if not isinstance(filename, six.string_types):
-            raise Exception("Invalid filename '{0}'.".format(filename))
+            raise TypeError("Invalid filename '{0}'. "
+                            "It should be string."
+                            .format(filename))
 
         if not isinstance(online, bool):
-            raise Exception("Invalid online '{0}'.".format(online))
+            raise TypeError("Invalid online '{0}'. "
+                            "It should be bool."
+                            .format(online))
 
         if tools.is_offline() and not online:
             show_link = tools.get_config_file()['offline_show_link']

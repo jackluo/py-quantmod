@@ -40,6 +40,5 @@ ch.add_RSI(14)
 
 qm.go_offline()
 ch.to_figure()
-ch.plot()
 qm.go_online()
-ch.iplot()
+ch.plot(title=False)
