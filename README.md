@@ -22,9 +22,7 @@ Ta-Lib is additionally required for technical indicator support.
 
 ### Dependencies
 
-Quantmod requires plotly, numpy, pandas and pandas_datareader to work properly (hard dependencies).
-
-In addition, an installation of Ta-Lib is strongly recommended as it is required for technical indicator support.
+Quantmod requires plotly, numpy, pandas and pandas_datareader to work properly (hard dependencies). In addition, an installation of Ta-Lib is strongly recommended as it is required for technical indicator support.
 
 The hard dependencies should be automatically installed with pip, but Ta-Lib requires a longer install.
 
