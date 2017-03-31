@@ -1,5 +1,7 @@
 # Quantmod
 
+![Quantmod](https://raw.githubusercontent.com/jackwluo/py-quantmod/master/assets/banner.png)
+
 A powerful financial charting library based on R's Quantmod.
 
 Quantmod makes creating interactive financial charts easy and intuitive. It further has over 50 technical indicators built-in, in addition to a variety of technical and quantitative financial tools.
@@ -12,11 +14,11 @@ TBD
 
 Installing from PyPI:
 
-pip install quantmod
+    pip install quantmod
 
 Or building package from source:
 
-python setup.py install
+    python setup.py install
 
 Ta-Lib is additionally required for technical indicator support.
 
@@ -30,19 +32,19 @@ First install the C/C++ package:
 
 Mac:
 
-brew install ta-lib
+    brew install ta-lib
 
 Windows:
 
-TBD
+    TBD
 
 Linux:
 
-TBD
+    TBD
 
 Then install the Python library:
 
-pip install TA-Lib
+    pip install TA-Lib
 
 ## Getting started
 
@@ -59,16 +61,3 @@ TBD
 ## License
 
 MIT
-
-## Documentation structure
-
-[Name]
-Main features
-Installation (Dependencies/Troubleshooting)
-Usage
-(Getting started)
-(Learn more)
-Documentation
-Contributing
-License
-(Questions)
