@@ -10,8 +10,7 @@ from __future__ import absolute_import
 
 import copy
 import six
-import time
-import numpy as np
+import datetime as dt
 import pandas as pd
 import plotly.plotly as py
 import plotly.offline as pyo
@@ -35,14 +34,30 @@ class Chart(object):
                  ticker=None, start=None, end=None):
         """ADD INFO
 
-        ADD DOCUMENTATION
-
+        Parameters
+        ----------
+            df : DataFrame
+                Underlying DataFrame containing ticker data.
+            source : string or dict
+                If string, provenance of data (e.g. 'google', 'yahoo') to
+                automatically map column names to OHLCV data.
+                If dict, directly specifies how column names map to OHLCV data.
+            ticker : string or False
+                Ticker associated with data. Used to plot titles.
+                If False no ticker is specified.
+            start : datetime, string or False
+                Start date, either as string or as a datetime object.
+                If False no start is specified. Default set to first
+                element of df.index.
+            end : datetime, string or False
+                Start date, either as string or as a datetime object.
+                If False no start is specified. Default set to last
+                element of df.index.
         """
-
-        """ADD ERROR HANDLING"""
+        self.df = df
 
         # Test if source is string or dict, or get default vendor otherwise
-        if source:
+        if source is not None:
             if isinstance(source, six.string_types):
                 source = factory.get_source(source)
             elif isinstance(source, dict):
@@ -54,17 +69,52 @@ class Chart(object):
         else:
             source = factory.get_source(tools.get_config_file()['source'])
 
-        """
-        Ticker,
-        Start,
-        End
-        """
+        # Check if ticker is valid
+        if ticker is not None:
+            if ticker == False:
+                pass
+            elif isinstance(ticker, six.string_types):
+                pass
+            else:
+                raise TypeError("Invalid ticker '{0}'. "
+                                "It should be string or dict."
+                                .format(ticker))
+        else:
+            ticker = False
 
-        self.df = df
+        # Check if start is valid
+        if start is not None:
+            if start == False:
+                pass
+            elif isinstance(start, six.string_types):
+                pass
+            elif isinstance(start, dt.dateime):
+                pass
+            else:
+                raise TypeError("Invalid start '{0}'. "
+                                "It should be string or datetime."
+                                .format(start))
+        else:
+            start = self.df.index[0]
+
+        # Check if end is valid
+        if end is not None:
+            if end == False:
+                pass
+            elif isinstance(end, six.string_types):
+                pass
+            elif isinstance(end, dt.dateime):
+                pass
+            else:
+                raise TypeError("Invalid end '{0}'. "
+                                "It should be string or datetime."
+                                .format(end))
+        else:
+            end = self.df.index[-1]
 
         self.ticker = ticker
-        self.start = self.df.index[0]
-        self.end = self.df.index[-1]
+        self.start = start
+        self.end = end
 
         self.op = source['op']
         self.hi = source['hi']
@@ -179,14 +229,14 @@ class Chart(object):
         """Return True if Chart DataFrame has OHLC, False otherwise."""
         cols = {self.op, self.hi, self.lo, self.cl}
         arr = self.df.columns.isin(cols)
-        return np.sum(arr) >= len(cols)
+        return sum(arr) >= len(cols)
 
     @property
     def has_OHLCV(self):
         """Return True if Chart DataFrame has OHLCV, False otherwise."""
         cols = {self.op, self.hi, self.lo, self.cl, self.vo}
         arr = self.df.columns.isin(cols)
-        return np.sum(arr) >= len(cols)
+        return sum(arr) >= len(cols)
 
     def adjust(self, inplace=False):
         """Adjust OHLC data for splits, dividends, etc.
@@ -257,6 +307,58 @@ class Chart(object):
 
         Parameters
         ----------
+            type : {'ohlc', 'candlestick',
+                    'line', 'line_thin', 'line_thick', 'line_dashed',
+                    'line_dashed_thin', 'line_dashed_thick',
+                    'area', 'area_dashed',
+                    'area_dashed_thin', 'area_dashed_thick', 'area_threshold',
+                    'scatter'}
+                Determine the chart type of the main trace. For candlestick
+                and OHLC bars Chart needs to have OHLC enabled.
+            volume : bool
+                Toggle the diplay of a volume subplot in chart.
+            theme : string
+                Quantmod theme.
+            layout : dict or Layout
+                Plotly layout dict or graph_objs.Layout object.
+                Will override all other arguments if conflicting as
+                user-inputted layout is updated last.
+            title : string
+                Chart title.
+            subtitle : bool
+                Toggle the display of last price and/or volume in chart.
+            hovermode : {'x', 'y', 'closest', False}
+                Toggle how a tooltip appears on cursor hover.
+            legend : dict, Legend or bool
+                True/False or Plotly legend dict / graph_objs.Legend object.
+                If legend is bool, Quantmod will only toggle legend visibility.
+            annotations : list or Annotations
+                Plotly annotations list / graph.objs.Annotations object.
+            shapes : list or Shapes
+                Plotly shapes list or graph_objs.Shapes object.
+            dimensions : tuple
+                Dimensions 2-tuple in order (width, height).
+                Disables autosize=True in plotly.
+            width : int
+                Width of chart.
+                Disables autosize=True in plotly.
+            height : int
+                Height of chart.
+                Disables autosize=True in plotly.
+            margin : dict or tuple
+                Plotly margin dict or 4-tuple in order (l, r, b, t) or
+                5-tuple in order (l, r, b, t, margin). Tuple input added for
+                Cufflinks compatibility.
+
+        Examples
+        --------
+            ch = qm.Chart(df)
+            ch.to_figure(type='ohlc', dimensions=(2560,1440))
+
+            ch = qm.Chart(df)
+            ch.add_BBANDS()
+            ch.add_RSI(14)
+            ch.to_figure(type='candlestick', title='EQUITY')
 
         """
         # Check for kwargs integrity
@@ -585,6 +687,64 @@ class Chart(object):
 
         Parameters
         ----------
+            type : {'ohlc', 'candlestick',
+                    'line', 'line_thin', 'line_thick', 'line_dashed',
+                    'line_dashed_thin', 'line_dashed_thick',
+                    'area', 'area_dashed',
+                    'area_dashed_thin', 'area_dashed_thick', 'area_threshold',
+                    'scatter'}
+                Determine the chart type of the main trace. For candlestick
+                and OHLC bars Chart needs to have OHLC enabled.
+            volume : bool
+                Toggle the diplay of a volume subplot in chart.
+            theme : string
+                Quantmod theme.
+            layout : dict or Layout
+                Plotly layout dict or graph_objs.Layout object.
+                Will override all other arguments if conflicting as
+                user-inputted layout is updated last.
+            title : string
+                Chart title.
+            subtitle : bool
+                Toggle the display of last price and/or volume in chart.
+            hovermode : {'x', 'y', 'closest', False}
+                Toggle how a tooltip appears on cursor hover.
+            legend : dict, Legend or bool
+                True/False or Plotly legend dict / graph_objs.Legend object.
+                If legend is bool, Quantmod will only toggle legend visibility.
+            annotations : list or Annotations
+                Plotly annotations list / graph.objs.Annotations object.
+            shapes : list or Shapes
+                Plotly shapes list or graph_objs.Shapes object.
+            dimensions : tuple
+                Dimensions 2-tuple in order (width, height).
+                Disables autosize=True.
+            width : int
+                Width of chart.
+                Disables autosize=True.
+            height : int
+                Height of chart.
+                Disables autosize=True.
+            margin : dict or tuple
+                Plotly margin dict or 4-tuple in order (l, r, b, t) or
+                5-tuple in order (l, r, b, t, margin). Tuple input added for
+                Cufflinks compatibility.
+            filename : string
+                Filename of chart that will appear on plot.ly.
+                By default, filename is set according to current system time.
+            online : bool
+                If True, forces chart to be drawn online even if qm.go_offline()
+                has been called.
+
+        Examples
+        --------
+            ch = qm.Chart(df)
+            ch.plot(type='ohlc', dimensions=(2560,1440))
+
+            ch = qm.Chart(df)
+            ch.add_BBANDS()
+            ch.add_RSI(14)
+            ch.plot(type='candlestick', title='EQUITY')
 
         """
         figure = self.to_figure(type=type, volume=volume,
@@ -601,7 +761,7 @@ class Chart(object):
         # To be fixed ASAP: race condition if 2 plots made within 1 sec
         # Link filename generation to streambed API to prevent overwriting
         if filename is None:
-            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+            timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             filename = 'Quantmod Chart {0}'.format(timestamp)
 
         if online is None:
@@ -635,8 +795,69 @@ class Chart(object):
              filename=None, online=None, **kwargs):
         """Generate a Plotly chart from Chart specifications.
 
+        The iplot function returns an embedded chart suitable for Jupyter
+        notebooks, while the plot function simply opens it in the browser.
+
         Parameters
         ----------
+            type : {'ohlc', 'candlestick',
+                    'line', 'line_thin', 'line_thick', 'line_dashed',
+                    'line_dashed_thin', 'line_dashed_thick',
+                    'area', 'area_dashed',
+                    'area_dashed_thin', 'area_dashed_thick', 'area_threshold',
+                    'scatter'}
+                Determine the chart type of the main trace. For candlestick
+                and OHLC bars Chart needs to have OHLC enabled.
+            volume : bool
+                Toggle the diplay of a volume subplot in chart.
+            theme : string
+                Quantmod theme.
+            layout : dict or Layout
+                Plotly layout dict or graph_objs.Layout object.
+                Will override all other arguments if conflicting as
+                user-inputted layout is updated last.
+            title : string
+                Chart title.
+            subtitle : bool
+                Toggle the display of last price and/or volume in chart.
+            hovermode : {'x', 'y', 'closest', False}
+                Toggle how a tooltip appears on cursor hover.
+            legend : dict, Legend or bool
+                True/False or Plotly legend dict / graph_objs.Legend object.
+                If legend is bool, Quantmod will only toggle legend visibility.
+            annotations : list or Annotations
+                Plotly annotations list / graph.objs.Annotations object.
+            shapes : list or Shapes
+                Plotly shapes list or graph_objs.Shapes object.
+            dimensions : tuple
+                Dimensions 2-tuple in order (width, height).
+                Disables autosize=True.
+            width : int
+                Width of chart.
+                Disables autosize=True.
+            height : int
+                Height of chart.
+                Disables autosize=True.
+            margin : dict or tuple
+                Plotly margin dict or 4-tuple in order (l, r, b, t) or
+                5-tuple in order (l, r, b, t, margin). Tuple input added for
+                Cufflinks compatibility.
+            filename : string
+                Filename of chart that will appear on plot.ly.
+                By default, filename is set according to current system time.
+            online : bool
+                If True, forces chart to be drawn online even if qm.go_offline()
+                has been called.
+
+        Examples
+        --------
+            ch = qm.Chart(df)
+            ch.iplot(type='ohlc', dimensions=(2560,1440))
+
+            ch = qm.Chart(df)
+            ch.add_BBANDS()
+            ch.add_RSI(14)
+            ch.iplot(type='candlestick', title='EQUITY')
 
         """
         figure = self.to_figure(type=type, volume=volume,
@@ -651,7 +872,7 @@ class Chart(object):
         # Default argument values
 
         if filename is None:
-            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+            timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             filename = 'Quantmod Chart {0}'.format(timestamp)
 
         if online is None:

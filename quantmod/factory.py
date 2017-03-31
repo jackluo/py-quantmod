@@ -23,7 +23,7 @@ def get_theme(theme):
     Parameters
     ----------
         theme : string
-            Quantmod theme
+            Quantmod theme.
 
     """
     if theme in THEMES:
@@ -48,7 +48,7 @@ def get_source(source):
     Parameters
     ----------
         source : string
-            Quantmod source
+            Quantmod source.
 
     """
     if source in SOURCES:
@@ -204,22 +204,24 @@ def make_layout(base_layout, layout, custom_layout,
             user-inputted layout is updated last.
         title : string
             Chart title.
-        hovermode : string or False
-            Can be either 'x', 'y', 'closest' or False.
-            Toggles how a tooltip appears on cursor hover.
-        legend : dict or bool
-            True/False or Plotly legend dict.
-            If legend is a bool, Quantmod will simply toggle legend visibility.
+        hovermode : {'x', 'y', 'closest', False}
+            Toggle how a tooltip appears on cursor hover.
+        legend : dict, Legend or bool
+            True/False or Plotly legend dict / graph_objs.Legend object.
+            If legend is bool, Quantmod will only toggle legend visibility.
         annotations : list
             Plotly annotations list.
         shapes : list or
             Plotly shapes list.
         dimensions : tuple
-            Dimensions 2-tuple in order (width, height). Disables autosize=True.
+            Dimensions 2-tuple in order (width, height).
+            Disables autosize=True.
         width : int
-            Width of chart. Disables autosize=True.
+            Width of chart.
+            Disables autosize=True.
         height : int
-            Height of chart. Disables autosize=True.
+            Height of chart.
+            Disables autosize=True.
         margin : dict or tuple
             Plotly margin dict or 4-tuple in order (l, r, b, t) or
             5-tuple in order (l, r, b, t, margin). Tuple input added for
@@ -328,22 +330,24 @@ def get_template(theme=None, layout=None,
             user-inputted layout is updated last.
         title : string
             Chart title.
-        hovermode : string or False
-            Can be either 'x', 'y', 'closest' or False.
-            Toggles how a tooltip appears on cursor hover.
+        hovermode : {'x', 'y', 'closest', False}
+            Toggle how a tooltip appears on cursor hover.
         legend : dict, Legend or bool
             True/False or Plotly legend dict / graph_objs.Legend object.
-            If legend is a bool, Quantmod will simply toggle legend visibility.
+            If legend is bool, Quantmod will only toggle legend visibility.
         annotations : list or Annotations
             Plotly annotations list / graph.objs.Annotations object.
         shapes : list or Shapes
             Plotly shapes list or graph_objs.Shapes object.
         dimensions : tuple
-            Dimensions 2-tuple in order (width, height). Disables autosize=True.
+            Dimensions 2-tuple in order (width, height).
+            Disables autosize=True.
         width : int
-            Width of chart. Disables autosize=True.
+            Width of chart.
+            Disables autosize=True.
         height : int
-            Height of chart. Disables autosize=True.
+            Height of chart.
+            Disables autosize=True.
         margin : dict or tuple
             Plotly margin dict or 4-tuple in order (l, r, b, t) or
             5-tuple in order (l, r, b, t, margin). Tuple input added for
@@ -543,7 +547,7 @@ def get_base_layout(figures):
     Parameters
     ----------
         figures : list
-            List of Plotly figures
+            List of Plotly figures to get base layout from.
 
     """
     if not isinstance(figures, list):
@@ -568,7 +572,7 @@ def strip_figure(figure):
     Parameters
     ----------
         figure : dict or Figure
-            Plotly figure
+            Plotly figure to strip into multiple figures.
 
     """
     if figure is not None:
