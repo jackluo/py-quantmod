@@ -6,7 +6,7 @@
 
 A powerful financial charting library based on R's Quantmod.
 
-Quantmod makes creating interactive financial charts easy and intuitive. It further has over 50 technical indicators built-in, in addition to a variety of technical and quantitative financial tools.
+Quantmod makes creating interactive financial charts easy and intuitive. Furthermore, Quantmod has over 50 technical indicators built-in, in addition to a variety of technical and quantitative financial tools.
 
 ## Main features
 
@@ -14,11 +14,11 @@ TBD
 
 ## Installation
 
-Installing from PyPI:
+Install from PyPI:
 
     pip install quantmod
 
-Or building package from source:
+Or build package from source:
 
     python setup.py install
 
