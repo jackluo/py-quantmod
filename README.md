@@ -2,8 +2,6 @@
   <img src="https://raw.githubusercontent.com/jackwluo/py-quantmod/master/assets/banner.png"><br><br>
 </div>
 
------
-
 # Quantmod
 
 A powerful financial charting library based on R's Quantmod.
@@ -28,21 +26,23 @@ Ta-Lib is additionally required for technical indicator support.
 
 ### Dependencies
 
-Quantmod requires plotly, numpy, pandas and pandas_datareader to work properly (hard dependencies). In addition, an installation of Ta-Lib is strongly recommended as it is required for technical indicator support.
+Quantmod requires plotly, pandas and pandas_datareader to work properly (hard dependencies).
+
+In addition, an installation of Ta-Lib is strongly recommended as it is required for technical indicator support.
 
 The hard dependencies should be automatically installed with pip, but Ta-Lib requires a longer install.
 
-First install the C/C++ package:
+First install the C/C++ package.
 
-Mac:
+For Mac:
 
     brew install ta-lib
 
-Windows:
+For Windows:
 
     TBD
 
-Linux:
+For Linux:
 
     TBD
 
@@ -50,11 +50,15 @@ Then install the Python library:
 
     pip install TA-Lib
 
+## Documentation
+
+TBD
+
 ## Getting started
 
 TBD
 
-## Documentation
+## Dash integration
 
 TBD
 

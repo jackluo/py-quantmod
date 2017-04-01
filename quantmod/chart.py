@@ -32,7 +32,12 @@ class Chart(object):
     """
     def __init__(self, df, source=None,
                  ticker=None, start=None, end=None):
-        """ADD INFO
+        """Quantmod Chart based on Pandas DataFrame.
+
+        Chart is a wrapper on top of DataFrame that
+        adds functionnality and allows for easy plotting.
+        Features include time series adjustement, volume adjustement, and
+        plotting of OHLCV data with over 100 technical indicators.
 
         Parameters
         ----------
@@ -42,15 +47,17 @@ class Chart(object):
                 If string, provenance of data (e.g. 'google', 'yahoo') to
                 automatically map column names to OHLCV data.
                 If dict, directly specifies how column names map to OHLCV data.
-            ticker : string or False
+            ticker : string or False, default False
                 Ticker associated with data. Used to plot titles.
                 If False no ticker is specified.
-            start : datetime, string or False
-                Start date, either as string or as a datetime object.
+            start : datetime, string or False, default df.index[0]
+                Left boundary for date range, specified
+                either as string or as a datetime object.
                 If False no start is specified. Default set to first
                 element of df.index.
-            end : datetime, string or False
-                Start date, either as string or as a datetime object.
+            end : datetime, string or False, default df.index[-1]
+                Right boundary for date range, specified
+                either as string or as a datetime object.
                 If False no start is specified. Default set to last
                 element of df.index.
         """
@@ -275,7 +282,7 @@ class Chart(object):
 
         Parameters
         ----------
-            inplace : bool
+            inplace : bool, default False
                 Modifies Chart inplace (returns None) if True, else
                 returns modified Chart by default.
 
@@ -325,11 +332,11 @@ class Chart(object):
                 user-inputted layout is updated last.
             title : string
                 Chart title.
-            subtitle : bool
+            subtitle : bool, default True
                 Toggle the display of last price and/or volume in chart.
             hovermode : {'x', 'y', 'closest', False}
                 Toggle how a tooltip appears on cursor hover.
-            legend : dict, Legend or bool
+            legend : dict, Legend or bool, default True
                 True/False or Plotly legend dict / graph_objs.Legend object.
                 If legend is bool, Quantmod will only toggle legend visibility.
             annotations : list or Annotations
@@ -705,11 +712,11 @@ class Chart(object):
                 user-inputted layout is updated last.
             title : string
                 Chart title.
-            subtitle : bool
+            subtitle : bool, default True
                 Toggle the display of last price and/or volume in chart.
             hovermode : {'x', 'y', 'closest', False}
                 Toggle how a tooltip appears on cursor hover.
-            legend : dict, Legend or bool
+            legend : dict, Legend or bool, default True
                 True/False or Plotly legend dict / graph_objs.Legend object.
                 If legend is bool, Quantmod will only toggle legend visibility.
             annotations : list or Annotations
@@ -729,10 +736,10 @@ class Chart(object):
                 Plotly margin dict or 4-tuple in order (l, r, b, t) or
                 5-tuple in order (l, r, b, t, margin). Tuple input added for
                 Cufflinks compatibility.
-            filename : string
+            filename : string, default datetime.now()
                 Filename of chart that will appear on plot.ly.
                 By default, filename is set according to current system time.
-            online : bool
+            online : bool, default False
                 If True, forces chart to be drawn online even if qm.go_offline()
                 has been called.
 
@@ -818,11 +825,11 @@ class Chart(object):
                 user-inputted layout is updated last.
             title : string
                 Chart title.
-            subtitle : bool
+            subtitle : bool, default True
                 Toggle the display of last price and/or volume in chart.
             hovermode : {'x', 'y', 'closest', False}
                 Toggle how a tooltip appears on cursor hover.
-            legend : dict, Legend or bool
+            legend : dict, Legend or bool, default True
                 True/False or Plotly legend dict / graph_objs.Legend object.
                 If legend is bool, Quantmod will only toggle legend visibility.
             annotations : list or Annotations
@@ -842,10 +849,10 @@ class Chart(object):
                 Plotly margin dict or 4-tuple in order (l, r, b, t) or
                 5-tuple in order (l, r, b, t, margin). Tuple input added for
                 Cufflinks compatibility.
-            filename : string
+            filename : string, default datetime.now()
                 Filename of chart that will appear on plot.ly.
                 By default, filename is set according to current system time.
-            online : bool
+            online : bool, default False
                 If True, forces chart to be drawn online even if qm.go_offline()
                 has been called.
 
@@ -870,7 +877,6 @@ class Chart(object):
                                 margin=margin, **kwargs)
 
         # Default argument values
-
         if filename is None:
             timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             filename = 'Quantmod Chart {0}'.format(timestamp)
