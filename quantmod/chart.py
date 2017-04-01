@@ -30,7 +30,7 @@ class Chart(object):
     plotting of OHLCV data with over 100 technical indicators.
 
     """
-    def __init__(self, df, source=None,
+    def __init__(self, df, src=None,
                  ticker=None, start=None, end=None):
         """Quantmod Chart based on Pandas DataFrame.
 
@@ -43,7 +43,7 @@ class Chart(object):
         ----------
             df : DataFrame
                 Underlying DataFrame containing ticker data.
-            source : string or dict
+            src : string or dict
                 If string, provenance of data (e.g. 'google', 'yahoo') to
                 automatically map column names to OHLCV data.
                 If dict, directly specifies how column names map to OHLCV data.
@@ -63,18 +63,18 @@ class Chart(object):
         """
         self.df = df
 
-        # Test if source is string or dict, or get default vendor otherwise
-        if source is not None:
-            if isinstance(source, six.string_types):
-                source = factory.get_source(source)
-            elif isinstance(source, dict):
+        # Test if src is string or dict, or get default vendor otherwise
+        if src is not None:
+            if isinstance(src, six.string_types):
+                src = factory.get_source(src)
+            elif isinstance(src, dict):
                 pass
             else:
-                raise TypeError("Invalid source '{0}'. "
+                raise TypeError("Invalid src '{0}'. "
                                 "It should be string or dict."
-                                .format(source))
+                                .format(src))
         else:
-            source = factory.get_source(tools.get_config_file()['source'])
+            src = factory.get_source(tools.get_config_file()['source'])
 
         # Check if ticker is valid
         if ticker is not None:
@@ -123,16 +123,16 @@ class Chart(object):
         self.start = start
         self.end = end
 
-        self.op = source['op']
-        self.hi = source['hi']
-        self.lo = source['lo']
-        self.cl = source['cl']
-        self.aop = source['aop'] # Not used currently
-        self.ahi = source['ahi'] # Not used currently
-        self.alo = source['alo'] # Not used currently
-        self.acl = source['acl']
-        self.vo = source['vo']
-        self.di = source['di'] # Not used currently
+        self.op = src['op']
+        self.hi = src['hi']
+        self.lo = src['lo']
+        self.cl = src['cl']
+        self.aop = src['aop'] # Not used currently
+        self.ahi = src['ahi'] # Not used currently
+        self.alo = src['alo'] # Not used currently
+        self.acl = src['acl']
+        self.vo = src['vo']
+        self.di = src['di'] # Not used currently
 
         self.ind = pd.DataFrame([], index=self.df.index)
         self.pri = {}
