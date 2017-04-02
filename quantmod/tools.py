@@ -6,13 +6,14 @@ For Chart-related functions go in 'factory.py'.
 """
 from __future__ import absolute_import
 
+import os
 import six
 import warnings
 import plotly
 
 from . import auth
 from . import utils
-from .auth import FILE_CONTENT, CONFIG_FILE
+from .auth import AUTH_DIR, FILE_CONTENT, CONFIG_FILE
 
 
 pyo = plotly.offline
@@ -188,9 +189,9 @@ def set_config_file(sharing=None, theme=None, dimensions=None,
 
     # Argument parsing
     if sharing is not None:
-        if sharing == True:
+        if sharing is True:
             config['sharing'] = 'public'
-        elif sharing == False:
+        elif sharing is False:
             config['sharing'] = 'private'
         else:
             config['sharing'] = sharing

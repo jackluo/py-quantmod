@@ -1,13 +1,15 @@
 """Quandmod themes module
 
 Create your own modules by copying one of the themes and editing it after.
-Make sure that colors, traces, additions and layout are all under one main dict,
-and add that dict to '_VALID_THEMES' at the bottom of the file.
+Make sure that colors, traces, additions and layout are all under one
+main dict, and add that dict to '_VALID_THEMES' at the bottom of the file.
 
 For readability, files under theming do not follow PEP8 guideline of
 no space between assignment of named arguments.
 
 """
+# flake8: noqa
+
 from __future__ import absolute_import
 
 from .palettes import LIGHT_PALETTE, DARK_PALETTE
@@ -75,4 +77,4 @@ LIGHT_QM = dict(
 )
 
 
-THEMES = {'light': LIGHT_QM} #, 'dark': DARK_QM, 'light-qm': LIGHT_QM, 'dark-qm': DARK_QM}
+THEMES = {'light': LIGHT_QM}  #, 'dark': DARK_QM, 'light-qm': LIGHT_QM, 'dark-qm': DARK_QM}

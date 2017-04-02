@@ -6,7 +6,7 @@ Python native indicators in 'tanolib.py' file.
 import talib
 
 
-"""Overlap studies"""
+# Overlap studies
 def add_SMA(self, timeperiod=30):
     """Simple moving average."""
     name = 'SMA({})'.format(str(timeperiod))
@@ -70,9 +70,9 @@ def add_BBANDS(self, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     bb = name
     lbb = 'L' + name
     self.pri[ubb] = dict(type='line_dashed_thin', color='tertiary')
-    self.pri[bb] = dict(type='area_dashed_thin', color='grey', fillcolor='fill')
-    self.pri[lbb] = dict(type='area_dashed_thin', color='tertiary', fillcolor='fill')
-    self.ind[ubb], self.ind[bb], self.ind[lbb] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)
+    self.pri[bb] = dict(type='area_dashed_thin', color='grey', fillcolor='fill')  # noqa: E501
+    self.pri[lbb] = dict(type='area_dashed_thin', color='tertiary', fillcolor='fill')  # noqa: E501
+    self.ind[ubb], self.ind[bb], self.ind[lbb] = talib.BBANDS(self.df[self.cl].values, timeperiod, nbdevup, nbdevdn, matype)  # noqa: E501
 
 
 def add_MAMA(self):

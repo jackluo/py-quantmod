@@ -9,6 +9,7 @@ from __future__ import absolute_import
 
 import collections
 import json
+import os
 
 
 def typecheck(arg, arg_types, arg_name):

@@ -34,14 +34,15 @@ def _permissions():
     try:
         os.mkdir(TEST_DIR)
         os.rmdir(TEST_DIR)
-        if not os.path.exists(PLOTLY_DIR):
-            os.mkdir(PLOTLY_DIR)
+        if not os.path.exists(AUTH_DIR):
+            os.mkdir(AUTH_DIR)
         with open(TEST_FILE, 'w') as f:
             f.write('Testing\n')
         os.remove(TEST_FILE)
         return True
     except:
         return False
+
 
 _file_permissions = _permissions()
 

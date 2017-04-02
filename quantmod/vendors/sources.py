@@ -4,6 +4,8 @@ Sources are dicts that map OHLC column names to specific data vendors, e.g.
 Bloomberg or Yahoo.
 
 """
+# flake8: noqa
+
 # Yahoo
 YAHOO = dict(
     index = 'Date',

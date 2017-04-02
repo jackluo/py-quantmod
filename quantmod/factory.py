@@ -272,9 +272,9 @@ def make_layout(base_layout, layout, custom_layout,
         base_layout['hovermode'] = hovermode
 
     if legend is not None:
-        if legend == True:
+        if legend is True:
             base_layout['showlegend'] = True
-        elif legend == False:
+        elif legend is False:
             base_layout['showlegend'] = False
         else:
             base_layout['showlegend'] = True
@@ -421,7 +421,7 @@ def get_template(theme=None, layout=None,
 
     # Test if hovermode is string or False, else raise exception
     if hovermode is not None:
-        if hovermode == False:
+        if hovermode is False:
             pass
         elif isinstance(hovermode, six.string_types):
             pass

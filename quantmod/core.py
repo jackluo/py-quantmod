@@ -7,12 +7,14 @@ along with other tools for financial data acquisition.
 from __future__ import absolute_import
 
 import six
+import datetime as dt
 import pandas_datareader.data as web
 
 from .chart import Chart
 
 
-def get_symbol(ticker, src='yahoo', start=None, end=None, to_frame=False):
+def get_symbol(ticker, src='yahoo', start='01/01/2010',
+               end="01/01/2015", to_frame=False):
     """Get symbols
 
     Currently just a wrapper over pandas_datareader.data.DataReader.
@@ -64,11 +66,11 @@ def get_symbol(ticker, src='yahoo', start=None, end=None, to_frame=False):
         pass
     else:
         raise TypeError("Invalid src '{0}'. "
-                        "It should be string or dict.".format(source))
+                        "It should be string or dict.".format(src))
 
     if isinstance(start, six.string_types):
         pass
-    elif isinstance(start, dt.dateime):
+    elif isinstance(start, dt.datetime):
         pass
     else:
         raise TypeError("Invalid start '{0}'. "
@@ -76,7 +78,7 @@ def get_symbol(ticker, src='yahoo', start=None, end=None, to_frame=False):
 
     if isinstance(end, six.string_types):
         pass
-    elif isinstance(end, dt.dateime):
+    elif isinstance(end, dt.datetime):
         pass
     else:
         raise TypeError("Invalid end '{0}'. "
@@ -113,6 +115,6 @@ def chart_series(chart, iplot=False, **kwargs):
                         "It should be bool.".format(iplot))
 
     if iplot:
-        Chart.iplot(**Kwargs)
+        Chart.iplot(**kwargs)
     else:
         Chart.plot(**kwargs)

@@ -4,6 +4,8 @@ Quantmod functions have checks against these sets below to guard
 against bad input.
 
 """
+# flake8: noqa
+
 # Mandatory dict names for skeleton structure
 VALID_BASE_COMPONENTS = {'base_colors', 'base_traces',
                          'base_additions', 'base_layout',}

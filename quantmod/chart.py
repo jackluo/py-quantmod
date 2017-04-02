@@ -6,6 +6,8 @@ Features include time series adjustement, volume adjustement, and
 plotting of OHLCV data with over 100 technical indicators.
 
 """
+# flake8: ignore=E251
+
 from __future__ import absolute_import
 
 import copy
@@ -78,7 +80,7 @@ class Chart(object):
 
         # Check if ticker is valid
         if ticker is not None:
-            if ticker == False:
+            if ticker is False:
                 pass
             elif isinstance(ticker, six.string_types):
                 pass
@@ -91,7 +93,7 @@ class Chart(object):
 
         # Check if start is valid
         if start is not None:
-            if start == False:
+            if start is False:
                 pass
             elif isinstance(start, six.string_types):
                 pass
@@ -106,7 +108,7 @@ class Chart(object):
 
         # Check if end is valid
         if end is not None:
-            if end == False:
+            if end is False:
                 pass
             elif isinstance(end, six.string_types):
                 pass
@@ -127,12 +129,12 @@ class Chart(object):
         self.hi = src['hi']
         self.lo = src['lo']
         self.cl = src['cl']
-        self.aop = src['aop'] # Not used currently
-        self.ahi = src['ahi'] # Not used currently
-        self.alo = src['alo'] # Not used currently
+        self.aop = src['aop']  # Not used currently
+        self.ahi = src['ahi']  # Not used currently
+        self.alo = src['alo']  # Not used currently
         self.acl = src['acl']
         self.vo = src['vo']
-        self.di = src['di'] # Not used currently
+        self.di = src['di']  # Not used currently
 
         self.ind = pd.DataFrame([], index=self.df.index)
         self.pri = {}
@@ -153,7 +155,8 @@ class Chart(object):
 
     @property
     def has_open(self):
-        """Return True if Chart DataFrame has open, False otherwise."""
+        """Return True if Chart DataFrame has open,
+        False otherwise."""
         if self.op in self.df.columns:
             return True
         else:
@@ -161,7 +164,8 @@ class Chart(object):
 
     @property
     def has_high(self):
-        """Return True if Chart DataFrame has high, False otherwise."""
+        """Return True if Chart DataFrame has high,
+        False otherwise."""
         if self.hi in self.df.columns:
             return True
         else:
@@ -169,7 +173,8 @@ class Chart(object):
 
     @property
     def has_low(self):
-        """Return True if Chart DataFrame has low, False otherwise."""
+        """Return True if Chart DataFrame has low,
+        False otherwise."""
         if self.lo in self.df.columns:
             return True
         else:
@@ -177,7 +182,8 @@ class Chart(object):
 
     @property
     def has_close(self):
-        """Return True if Chart DataFrame has close, False otherwise."""
+        """Return True if Chart DataFrame has close,
+        False otherwise."""
         if self.cl in self.df.columns:
             return True
         else:
@@ -185,7 +191,8 @@ class Chart(object):
 
     @property
     def has_adjusted_open(self):
-        """Return True if Chart DataFrame has adjusted open, False otherwise."""
+        """Return True if Chart DataFrame has adjusted open,
+        False otherwise."""
         if self.aop in self.df.columns:
             return True
         else:
@@ -193,7 +200,8 @@ class Chart(object):
 
     @property
     def has_adjusted_high(self):
-        """Return True if Chart DataFrame has adjusted high, False otherwise."""
+        """Return True if Chart DataFrame has adjusted high,
+        False otherwise."""
         if self.ahi in self.df.columns:
             return True
         else:
@@ -201,7 +209,8 @@ class Chart(object):
 
     @property
     def has_adjusted_low(self):
-        """Return True if Chart DataFrame has adjusted low, False otherwise."""
+        """Return True if Chart DataFrame has adjusted low,
+        False otherwise."""
         if self.alo in self.df.columns:
             return True
         else:
@@ -209,7 +218,8 @@ class Chart(object):
 
     @property
     def has_adjusted_close(self):
-        """Return True if Chart DataFrame has adjusted close, False otherwise."""
+        """Return True if Chart DataFrame has adjusted close,
+        False otherwise."""
         if self.acl in self.df.columns:
             return True
         else:
@@ -217,7 +227,8 @@ class Chart(object):
 
     @property
     def has_volume(self):
-        """Return True if Chart DataFrame has volume, False otherwise."""
+        """Return True if Chart DataFrame has volume,
+        False otherwise."""
         if self.vo in self.df.columns:
             return True
         else:
@@ -225,7 +236,8 @@ class Chart(object):
 
     @property
     def has_dividend(self):
-        """Return True if Chart DataFrame has dividend, False otherwise."""
+        """Return True if Chart DataFrame has dividend,
+        False otherwise."""
         if self.di in self.df.columns:
             return True
         else:
@@ -380,11 +392,11 @@ class Chart(object):
         if 'showlegend' in kwargs:
             legend = kwargs['showlegend']
 
-        if 'figsize' in kwargs: # Matplotlib
+        if 'figsize' in kwargs:  # Matplotlib
             figsize = kwargs['figsize']
             if isinstance(figsize, tuple):
                 if len(figsize) == 2:
-                    dimensions = tuple(80 * i for i in figsize) # 80x size
+                    dimensions = tuple(80 * i for i in figsize)  # 80x size
                 else:
                     raise Exception("Invalid figsize '{0}'. "
                                     "It should be tuple of len 2."
@@ -411,7 +423,7 @@ class Chart(object):
 
         if title is None:
             if self.ticker:
-                title = ticker
+                title = self.ticker
             else:
                 title = ''
 
@@ -453,12 +465,12 @@ class Chart(object):
 
         # Get template and bind to colors, traces, additions and layotu
         template = factory.get_template(theme=theme, layout=layout,
-                                      title=title,
-                                      hovermode=hovermode, legend=legend,
-                                      annotations=annotations, shapes=shapes,
-                                      dimensions=dimensions,
-                                      width=width, height=height,
-                                      margin=margin)
+                                        title=title,
+                                        hovermode=hovermode, legend=legend,
+                                        annotations=annotations, shapes=shapes,
+                                        dimensions=dimensions,
+                                        width=width, height=height,
+                                        margin=margin)
         colors = template['colors']
         traces = template['traces']
         additions = template['additions']
@@ -740,8 +752,8 @@ class Chart(object):
                 Filename of chart that will appear on plot.ly.
                 By default, filename is set according to current system time.
             online : bool, default False
-                If True, forces chart to be drawn online even if qm.go_offline()
-                has been called.
+                If True, forces chart to be drawn online even if
+                qm.go_offline() has been called.
 
         Examples
         --------
@@ -795,11 +807,11 @@ class Chart(object):
             return py.plot(figure, filename=filename)
 
     def iplot(self, type=None, volume=None,
-             theme=None, layout=None,
-             title=None, subtitle=None, hovermode=None,
-             legend=None, annotations=None, shapes=None,
-             dimensions=None, width=None, height=None, margin=None,
-             filename=None, online=None, **kwargs):
+              theme=None, layout=None,
+              title=None, subtitle=None, hovermode=None,
+              legend=None, annotations=None, shapes=None,
+              dimensions=None, width=None, height=None, margin=None,
+              filename=None, online=None, **kwargs):
         """Generate a Plotly chart from Chart specifications.
 
         The iplot function returns an embedded chart suitable for Jupyter
@@ -853,8 +865,8 @@ class Chart(object):
                 Filename of chart that will appear on plot.ly.
                 By default, filename is set according to current system time.
             online : bool, default False
-                If True, forces chart to be drawn online even if qm.go_offline()
-                has been called.
+                If True, forces chart to be drawn online even if
+                qm.go_offline() has been called.
 
         Examples
         --------
@@ -913,16 +925,16 @@ Chart.add_TEMA = add_TEMA
 Chart.add_KAMA = add_KAMA
 Chart.add_TRIMA = add_TRIMA
 Chart.add_MA = add_MA
-#Chart.add_MAMA = add_MAMA
-#Chart.add_MAVP = add_MAVP
+# Chart.add_MAMA = add_MAMA
+# Chart.add_MAVP = add_MAVP
 Chart.add_BBANDS = add_BBANDS
-#Chart.SAR = add_SAR
-#Chart.SAREXT = add_SAREXT
-#Chart.HT_TRENDLINE = add_HT_TRENDLINE
-#Chart.T3 = add_T3
-#Chart.add_midpoint =
+# Chart.SAR = add_SAR
+# Chart.SAREXT = add_SAREXT
+# Chart.HT_TRENDLINE = add_HT_TRENDLINE
+# Chart.T3 = add_T3
+# Chart.add_midpoint =
 
 Chart.add_RSI = add_RSI
-#Chart.ADX = add_ADX
-#Chart.ADXR = add_ADXR
-#Chard.APO = add_APO
+# Chart.ADX = add_ADX
+# Chart.ADXR = add_ADXR
+# Chard.APO = add_APO

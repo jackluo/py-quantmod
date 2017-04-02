@@ -7,6 +7,8 @@ For readability, files under theming do not follow PEP8 guideline of
 no space between assignment of named arguments.
 
 """
+# flake8: noqa
+
 _PLACEHOLDER = False
 
 # Color primitives
