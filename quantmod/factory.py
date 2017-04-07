@@ -14,7 +14,11 @@ from . import tools
 from .theming.skeleton import SKELETON
 from .theming.themes import THEMES
 from .vendors.sources import SOURCES
-from .valid import *
+from .valid import (VALID_COLORS, VALID_TRACES,
+                    VALID_LAYOUT, VALID_ADDITIONS,
+                    VALID_TEMPLATE_KWARGS,
+                    VALID_BASE_COMPONENTS,
+                    VALID_THEME_COMPONENTS)
 
 
 def get_theme(theme):
@@ -132,6 +136,7 @@ def make_traces(base_traces, traces):
 
         base_traces['scatter'] = copy.deepcopy(base_traces['line'])
         base_traces['scatter']['mode'] = 'markers'
+        base_traces['scatter']['opacity'] = 1.0
 
         base_traces['bar']
         base_traces['histogram'] = copy.deepcopy(base_traces['bar'])

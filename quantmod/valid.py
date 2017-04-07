@@ -53,3 +53,6 @@ VALID_TEMPLATE_KWARGS = {'showlegend', 'figsize',}
 
 # Alternative syntax for to_frame
 VALID_FIGURE_KWARGS = {'kind', 'showlegend', 'figsize',}
+
+# Alternative syntax for TA_indicators
+VALID_TA_KWARGS = {'kind', 'kinds', 'type', 'color', 'fillcolor'}

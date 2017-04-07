@@ -12,7 +12,57 @@ import json
 import os
 
 
-def typecheck(arg, arg_types, arg_name):
+def update(dict1, dict2):
+    """Recursivel update dict-like objects and returns it.
+
+    Need return to work properly even though dict1 is updated inplace.
+
+    Parameters
+    ----------
+        dict1 : dict
+            Dictionary that contains the values to update.
+        dict2 : dict
+            Dictionary to be updated.
+
+    """
+    for key, value in dict2.items():
+        if isinstance(value, collections.Mapping):
+            temp = update(dict1.get(key, {}), value)
+            dict1[key] = temp
+        elif isinstance(dict1, collections.Mapping):
+            dict1[key] = dict2[key]
+        else:
+            dict1 = {key: dict2[key]}
+
+    return dict1
+
+
+def deep_update(dict1, dict2):
+    """Update the values (deep form) of a given dictionary and returns it.
+
+    Need return to work properly even though dict1 is updated inplace.
+
+    Parameters
+    ----------
+        dict1 : dict
+            Dictionary that contains the values to update.
+        dict2 : dict
+            Dictionary to be updated.
+
+    """
+    for key, value in dict2.items():
+        if isinstance(value, collections.Mapping):
+            if key in dict1:
+                deep_update(dict1[key], value)
+            else:
+                dict1[key] = value
+        else:
+            dict1[key] = value
+
+    return dict1
+
+
+def type_check(arg, arg_types, arg_name):
     """Check if argument is of one or multiple allowed types.
 
     Pass if argument is within an allowed type, and raise exception
@@ -43,54 +93,35 @@ def typecheck(arg, arg_types, arg_name):
             raise Exception("Invalid {0} '{1}'.".format(arg_name, arg))
 
 
-def update(dict1, dict2):
-    """Recursivel update dict-like objects and returns it.
-
-    Need return to work properly even though dict1 is updated inplace.
+def kwargs_check(kwargs, validator):
+    """Check kwargs for validity
 
     Parameters
     ----------
-        dict1 : dict
-                Dictionary that contains the values to update.
-        dict2 : dict
-                Dictionary to be updated.
+        kwargs : dict
+            Keyword arguments to check for validity.
+        validator : iterable
+            Iterable of valid arguments to check from.
 
     """
-    for key, value in dict2.items():
-        if isinstance(value, collections.Mapping):
-            temp = update(dict1.get(key, {}), value)
-            dict1[key] = temp
-        elif isinstance(dict1, collections.Mapping):
-            dict1[key] = dict2[key]
-        else:
-            dict1 = {key: dict2[key]}
-
-    return dict1
+    for key in kwargs:
+        if key not in validator:
+            raise Exception("Invalid keyword '{0}'.".format(key))
 
 
-def deep_update(dict1, dict2):
-    """Update the values (deep form) of a given dictionary and returns it.
-
-    Need return to work properly even though dict1 is updated inplace.
+def parse(kwargs, dict):
+    """Parse kwargs into input dict.
 
     Parameters
     ----------
-        dict1 : dict
-                Dictionary that contains the values to update.
-        dict2 : dict
-                Dictionary to be updated.
+        kwargs : dict
+            Keyword arguments to update dict with
+        dict : dict
+            Dict to update with keyword arguments
 
     """
-    for key, value in dict2.items():
-        if isinstance(value, collections.Mapping):
-            if key in dict1:
-                deep_update(dict1[key], value)
-            else:
-                dict1[key] = value
-        else:
-            dict1[key] = value
-
-    return dict1
+    for key in kwargs:
+        dict[key] = kwargs[key]
 
 
 def kwargs_from_keyword(keyword, from_kwargs, to_kwargs=None, inplace=False):
@@ -101,14 +132,14 @@ def kwargs_from_keyword(keyword, from_kwargs, to_kwargs=None, inplace=False):
     Parameters
     ----------
         keyword : string
-                Keyword to look for in the orginal dictionary.
+            Keyword to look for in the orginal dictionary.
         from_kwargs : dict
-                Original dictionary.
+            Original dictionary.
         to_kwargs : dict
-                Dictionary where the items will be appended.
+            Dictionary where the items will be appended.
         inplace : bool
-                If True then the key, value pairs from the original
-                dictionary are modified.
+            If True then the key, value pairs from the original
+            dictionary are modified.
 
     """
     if not inplace:

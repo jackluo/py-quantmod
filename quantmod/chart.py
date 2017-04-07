@@ -19,8 +19,8 @@ import plotly.offline as pyo
 
 from . import tools
 from . import factory
-from .valid import *
-from .ta import *
+from .valid import VALID_FIGURE_KWARGS, VALID_TRACES, OHLC_TRACES
+from .ta import *  # noqa : F405
 
 
 class Chart(object):
@@ -666,30 +666,30 @@ class Chart(object):
                 annotations_color = colors['primary']
 
             last_price = dict(
-                x = layout['legend']['x'],
-                xanchor = layout['legend']['xanchor'],
-                xref = 'paper',
-                y = layout['legend']['y'],
-                yanchor = layout['legend']['yanchor'],
-                yref = 'paper',
-                showarrow = False,
-                text = 'Last {0:,.02f}'.format(self.df[self.cl][-1]),
-                font = dict(color = annotations_color),
+                x=layout['legend']['x'],
+                xanchor=layout['legend']['xanchor'],
+                xref='paper',
+                y=layout['legend']['y'],
+                yanchor=layout['legend']['yanchor'],
+                yref='paper',
+                showarrow=False,
+                text='Last {0:,.02f}'.format(self.df[self.cl][-1]),
+                font=dict(color=annotations_color),
             )
             layout['annotations'].append(last_price)
             layout['legend']['y'] -= 0.03
 
             if volume:
                 last_volume = dict(
-                    x = layout['legend']['x'],
-                    xanchor = layout['legend']['xanchor'],
-                    xref = 'paper',
-                    y = layout['yaxis2']['domain'][-1] - 0.01,
-                    yanchor = layout['legend']['yanchor'],
-                    yref = 'paper',
-                    showarrow = False,
-                    text = 'Volume {0:,}'.format(self.df[self.vo][-1]),
-                    font = dict(color = annotations_color),
+                    x=layout['legend']['x'],
+                    xanchor=layout['legend']['xanchor'],
+                    xref='paper',
+                    y=layout['yaxis2']['domain'][-1] - 0.01,
+                    yanchor=layout['legend']['yanchor'],
+                    yref='paper',
+                    showarrow=False,
+                    text='Volume {0:,}'.format(self.df[self.vo][-1]),
+                    font=dict(color=annotations_color),
                 )
                 layout['annotations'].append(last_volume)
 
@@ -917,24 +917,25 @@ class Chart(object):
             return py.iplot(figure, filename=filename)
 
 
-Chart.add_SMA = add_SMA
-Chart.add_EMA = add_EMA
-Chart.add_WMA = add_WMA
-Chart.add_DEMA = add_DEMA
-Chart.add_TEMA = add_TEMA
-Chart.add_KAMA = add_KAMA
-Chart.add_TRIMA = add_TRIMA
-Chart.add_MA = add_MA
-# Chart.add_MAMA = add_MAMA
-# Chart.add_MAVP = add_MAVP
-Chart.add_BBANDS = add_BBANDS
-# Chart.SAR = add_SAR
-# Chart.SAREXT = add_SAREXT
-# Chart.HT_TRENDLINE = add_HT_TRENDLINE
-# Chart.T3 = add_T3
-# Chart.add_midpoint =
+Chart.add_MA = add_MA  # noqa : F405
+Chart.add_SMA = add_SMA  # noqa : F405
+Chart.add_EMA = add_EMA  # noqa : F405
+Chart.add_WMA = add_WMA  # noqa : F405
+Chart.add_DEMA = add_DEMA  # noqa : F405
+Chart.add_TEMA = add_TEMA  # noqa : F405
+Chart.add_T3 = add_T3  # noqa : F405
+Chart.add_KAMA = add_KAMA  # noqa : F405
+Chart.add_TRIMA = add_TRIMA  # noqa : F405
+Chart.add_MAMA = add_MAMA  # noqa : F405
+Chart.add_MAVP = add_MAVP  # noqa : F405
+Chart.add_MIDPOINT = add_MIDPOINT  # noqa : F405
+Chart.add_BBANDS = add_BBANDS  # noqa : F405
+Chart.add_SAR = add_SAR  # noqa : F405
+Chart.add_SAREXT = add_SAREXT  # noqa : F405
+Chart.add_HT_TRENDLINE = add_HT_TRENDLINE  # noqa : F405
 
-Chart.add_RSI = add_RSI
-# Chart.ADX = add_ADX
-# Chart.ADXR = add_ADXR
-# Chard.APO = add_APO
+
+Chart.add_RSI = add_RSI  # noqa : F405
+Chart.add_ADX = add_ADX  # noqa : F405
+# Chart.add_ADXR = add_ADXR  # noqa : F405
+# Chard.add_APO = add_APO  # noqa : F405

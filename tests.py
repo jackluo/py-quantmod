@@ -1,5 +1,6 @@
 # In[]:
 
+import numpy as np
 import quantmod as qm
 import pandas as pd
 import pandas_datareader as web
@@ -11,8 +12,8 @@ ticker = 'AAPL'
 df = web.DataReader(ticker, data_source='yahoo')
 df = df.head(365)
 ch = qm.Chart(df, start='2015/01/01', end='2017/03/02')
-#ch = qm.get_symbol('AAPL')
-ch.to_frame()
+# ch = qm.get_symbol('AAPL')
+# ch.to_frame()
 
 # del df['Close']
 # del df['Adj Close']
@@ -33,11 +34,24 @@ ch.adjust_volume(inplace=True)
 ch.has_OHLC
 print(ch.has_OHLCV)
 
-# ch.add_MA(50)
-# ch.add_SMA(50)
-# ch.add_EMA(200)
-ch.add_BBANDS(30)
-ch.add_RSI(14)
+ch.add_MA(type='line_dashed')
+ch.add_SMA(type='line_dashed')
+ch.add_EMA(type='line_dashed')
+ch.add_WMA(type='line_dashed')
+ch.add_DEMA(type='line_dashed')
+ch.add_TEMA(type='line_dashed')
+ch.add_T3(type='line_dashed')
+ch.add_KAMA(type='line_dashed')
+ch.add_TRIMA(type='line_dashed')
+ch.add_MAMA(type='line_dashed')
+# ch.add_MAVP(type='line_dashed')
+ch.add_MIDPOINT(type='line_dashed')
+ch.add_BBANDS(type='line_dashed')
+ch.add_SAR(type='line_dashed')
+ch.add_SAREXT(type='line_dashed')
+ch.add_HT_TRENDLINE(type='line_dashed')
+# ch.add_RSI(type='line_dashed')
+ch.add_ADX(type='line_dashed')
 
 qm.go_offline()
 qm.go_online()

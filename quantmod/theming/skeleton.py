@@ -67,8 +67,8 @@ BASE_TRACES = dict(
         # Marker
         marker = dict(
             color = _PLACEHOLDER,
-            size = 6,
-            opacity = 0.8,
+            size = 3,
+            opacity = 1.0,
             symbol = 'square',
         ),
         # Line
