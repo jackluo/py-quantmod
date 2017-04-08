@@ -937,5 +937,5 @@ Chart.add_HT_TRENDLINE = add_HT_TRENDLINE  # noqa : F405
 
 Chart.add_RSI = add_RSI  # noqa : F405
 Chart.add_ADX = add_ADX  # noqa : F405
-# Chart.add_ADXR = add_ADXR  # noqa : F405
+Chart.add_ADXR = add_ADXR  # noqa : F405
 # Chard.add_APO = add_APO  # noqa : F405

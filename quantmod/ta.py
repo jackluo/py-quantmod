@@ -365,9 +365,9 @@ def add_RSI(self, timeperiod=14,
 
 def add_ADX(self, timeperiod=14,
             type='line', color='secondary', **kwargs):
-    """Average Directional Movement Index"""
+    """Average Directional Movement Index."""
 
-    if not self.has_close:
+    if not (self.has_open and self.has_low and self.has_close):
         raise Exception()
 
     utils.kwargs_check(kwargs, VALID_TA_KWARGS)
@@ -380,3 +380,39 @@ def add_ADX(self, timeperiod=14,
                                self.df[self.lo].values,
                                self.df[self.cl].values,
                                timeperiod)
+
+
+def add_ADXR(self, timeperiod=14,
+             type='line', color='secondary', **kwargs):
+    """Average Directional Movement Index Rating."""
+
+    if not (self.has_open and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'ADXR({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.ADXR(self.df[self.hi].values,
+                                self.df[self.lo].values,
+                                self.df[self.cl].values,
+                                timeperiod)
+
+
+def add_APO(self, fastperiod=12, slowperiod=26, matype=0,
+            type='line', color='secondary', **kwargs):
+    """Absolute Price Oscillator."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'APO({}, {})'.format(str(fastperiod), str(slowperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.ADXR(self.df[self.cl].values,
+                                fastperiod, slowperiod)
