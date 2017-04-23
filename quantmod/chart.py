@@ -637,22 +637,22 @@ class Chart(object):
             if n == 1:
                 layout['yaxis']['domain'] = [0.30, 1.0]
                 layout['yaxis2'] = copy.deepcopy(additions['yaxis'])
-                layout['yaxis2']['domain'] = [0.0, 0.28]
+                layout['yaxis2']['domain'] = [0.0, 0.29]
                 layout['xaxis']['anchor'] = 'y2'
 
             elif n == 2:
                 layout['yaxis']['domain'] = [0.50, 1.0]
                 layout['yaxis2'] = copy.deepcopy(additions['yaxis'])
-                layout['yaxis2']['domain'] = [0.25, 0.48]
+                layout['yaxis2']['domain'] = [0.25, 0.49]
                 layout['yaxis3'] = copy.deepcopy(additions['yaxis'])
-                layout['yaxis3']['domain'] = [0.0, 0.23]
+                layout['yaxis3']['domain'] = [0.0, 0.24]
                 layout['xaxis']['anchor'] = 'y3'
 
             elif n > 2:
                 # One big plot, n gaps and small plots
                 big_height = 0.5 * layout['height']
-                small_height = 0.23 * layout['height']
-                gap_height = 0.02 * layout['height']
+                small_height = 0.24 * layout['height']
+                gap_height = 0.01 * layout['height']
                 new_height = big_height + n * (gap_height + small_height)
 
                 big = big_height/new_height
@@ -672,7 +672,8 @@ class Chart(object):
                     layout[yaxisn] = copy.deepcopy(additions['yaxis'])
                     layout[yaxisn]['domain'] = [lower, upper]
 
-                layout['xaxis']['anchor'] = 'y{0}'.format(n + 2)
+                layout['xaxis']['anchor'] = 'y{0}'.format(n + 1)
+                print('Len: ' + layout['xaxis']['anchor'])
                 layout['height'] = new_height
 
             else:
