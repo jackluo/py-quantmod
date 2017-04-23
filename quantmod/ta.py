@@ -161,8 +161,12 @@ def add_TRIMA(self, timeperiod=20,
 def add_MAMA(self, fastlimit=0.5, slowlimit=0.05,
              types=['line', 'line'], colors=['secondary', 'tertiary'],
              **kwargs):
-    """MESA Adaptive Moving Average."""
+    """MESA Adaptive Moving Average.
 
+    Note that the first argument of types and colors refers to MAMA while the
+    second argument refers to FAMA.
+
+    """
     if not self.has_close:
         raise Exception()
 
@@ -180,7 +184,7 @@ def add_MAMA(self, fastlimit=0.5, slowlimit=0.05,
     mama = 'MAMA({}, {})'.format(str(fastlimit), str(slowlimit))
     fama = 'FAMA({}, {})'.format(str(fastlimit), str(slowlimit))
     self.pri[mama] = dict(type=types[0], color=colors[0])
-    self.pri[fama] = dict(type=types[0], color=colors[1])
+    self.pri[fama] = dict(type=types[1], color=colors[1])
     self.ind[mama], self.ind[fama] = talib.MAMA(self.df[self.cl].values,
                                                 fastlimit, slowlimit)
 
@@ -241,8 +245,9 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
                **kwargs):
     """Bollinger bands.
 
-    Note that the second argument of types and colors refers to middle band
-    whiel first argument refers to upper and lower band.
+    Note that the first argument of types and colors refers to upper and lower
+    bands while second argument refers to middle band. (Upper and lower are
+    symmetrical arguments, hence only 2 needed.)
 
     """
     if not self.has_close:
@@ -260,9 +265,9 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
         types = [kwargs['type'], kwargs['type']]
 
     name = 'BB({},{},{})'.format(str(timeperiod), str(nbdevup), str(nbdevdn))
-    ubb = 'U' + name
+    ubb = name + '[Upper]'
     bb = name
-    lbb = 'L' + name
+    lbb = name + '[Lower]'
     self.pri[ubb] = dict(type='line_' + types[0][5:],
                          color=colors[0])
     self.pri[bb] = dict(type='area_' + types[1][5:],
@@ -367,7 +372,7 @@ def add_ADX(self, timeperiod=14,
             type='line', color='secondary', **kwargs):
     """Average Directional Movement Index."""
 
-    if not (self.has_open and self.has_low and self.has_close):
+    if not (self.has_high and self.has_low and self.has_close):
         raise Exception()
 
     utils.kwargs_check(kwargs, VALID_TA_KWARGS)
@@ -386,7 +391,7 @@ def add_ADXR(self, timeperiod=14,
              type='line', color='secondary', **kwargs):
     """Average Directional Movement Index Rating."""
 
-    if not (self.has_open and self.has_low and self.has_close):
+    if not (self.has_high and self.has_low and self.has_close):
         raise Exception()
 
     utils.kwargs_check(kwargs, VALID_TA_KWARGS)
@@ -415,4 +420,38 @@ def add_APO(self, fastperiod=12, slowperiod=26, matype=0,
     name = 'APO({}, {})'.format(str(fastperiod), str(slowperiod))
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.ADXR(self.df[self.cl].values,
-                                fastperiod, slowperiod)
+                                fastperiod, slowperiod, matype)
+
+
+def add_AROON(self, timeperiod=14,
+              types=['line', 'line'],
+              colors=['increasing', 'decreasing'],
+              **kwargs):
+    """Aroon indicators.
+
+    Note that the first argument of types and colors refers to Aroon up while
+    the second argument refers to Aroon down.
+
+    """
+    if not (self.has_high and self.has_low):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+    if 'kinds' in kwargs:
+        types = kwargs['type']
+
+    if 'color' in kwargs:
+        colors = [kwargs['color'], kwargs['color']]
+    if 'type' in kwargs:
+        types = [kwargs['type'], kwargs['type']]
+
+    name = 'Aroon({})'.format(str(timeperiod))
+    uaroon = name + '[Up]'
+    daroon = name + '[Dn]'
+    self.sec[uaroon] = dict(type=types[0], color=colors[0])
+    self.sec[daroon] = dict(type=types[1], color=colors[1], on=uaroon)
+    self.ind[uaroon], self.ind[daroon] = talib.AROON(self.df[self.hi].values,
+                                                     self.df[self.lo].values,
+                                                     timeperiod)

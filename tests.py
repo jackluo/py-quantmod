@@ -50,9 +50,11 @@ ch.add_BBANDS(type='line_dashed')
 ch.add_SAR(type='line_dashed')
 ch.add_SAREXT(type='line_dashed')
 ch.add_HT_TRENDLINE(type='line_dashed')
+
 ch.add_RSI(type='line_dashed')
 ch.add_ADX(type='line_dashed', color='quaternary')
 ch.add_ADXR()
+ch.add_AROON()
 
 qm.go_offline()
 #qm.go_online()

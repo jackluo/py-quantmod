@@ -558,14 +558,14 @@ class Chart(object):
             trace['x'] = self.ind.index
             trace['y'] = self.ind[name]
             trace['name'] = name
-            trace['yaxis'] = 'y1'
 
             # Colors
             trace['line']['color'] = colors[primary['color']]
-
             if 'area' in primary['type']:
                 if 'fillcolor' in primary:
                     trace['fillcolor'] = colors[primary['fillcolor']]
+
+            trace['yaxis'] = 'y1'
 
             data.append(trace)
 
@@ -576,8 +576,6 @@ class Chart(object):
             trace['x'] = self.df.index
             trace['y'] = self.df[self.vo]
             trace['name'] = 'Volume'
-            trace['yaxis'] = 'y2'
-            trace['showlegend'] = False
 
             # Determine if volume should be in 2 colors or in 1
             if type in OHLC_TRACES and self.has_open and self.has_close:
@@ -597,6 +595,9 @@ class Chart(object):
                 trace['marker']['color'] = volume_color
                 trace['marker']['line']['color'] = volume_color
 
+            trace['yaxis'] = 'y2'
+            trace['showlegend'] = False
+
             data.append(trace)
 
         # Subplot volume delta
@@ -605,22 +606,51 @@ class Chart(object):
         else:
             delta = 0
 
-        # Plot secondary indicators
-        for i, name in enumerate(self.sec):
+        # Plot non-overlaid secondary indicators
+        i = delta
+        overlays = []
+        axes = {}  # Axes mapping for overlays
+
+        for name in self.sec:
             secondary = self.sec[name]
+
+            if 'on' in secondary:
+                if secondary['on'] is not None:
+                    overlays.append(name)
+            else:
+                trace = copy.deepcopy(traces[secondary['type']])
+
+                trace['x'] = self.ind.index
+                trace['y'] = self.ind[name]
+                trace['name'] = name
+
+                # Colors
+                trace['line']['color'] = colors[secondary['color']]
+                if 'area' in secondary['type']:
+                    if 'fillcolor' in secondary:
+                        trace['fillcolor'] = colors[secondary['fillcolor']]
+
+                i += 1
+                axes[name] = 'y{0}'.format(i + 2)
+                trace['yaxis'] = axes[name]
+                data.append(trace)
+
+        # Plot overlaid secondary indicators
+        for name in overlays:
             trace = copy.deepcopy(traces[secondary['type']])
 
             trace['x'] = self.ind.index
             trace['y'] = self.ind[name]
             trace['name'] = name
-            trace['yaxis'] = 'y' + str(i + delta + 2)
 
+            # Colors
             trace['line']['color'] = colors[secondary['color']]
-
             if 'area' in secondary['type']:
                 if 'fillcolor' in secondary:
                     trace['fillcolor'] = colors[secondary['fillcolor']]
 
+            axes[name] = axes[secondary['on']]
+            trace['yaxis'] = axes[name]
             data.append(trace)
 
         # Modify layout
@@ -972,7 +1002,7 @@ Chart.add_HT_TRENDLINE = add_HT_TRENDLINE  # noqa : F405
 Chart.add_ADX = add_ADX  # noqa : F405
 Chart.add_ADXR = add_ADXR  # noqa : F405
 Chart.add_APO = add_APO  # noqa : F405
-# Chart.add_AROON = add_AROON
+Chart.add_AROON = add_AROON  # noqa : F405
 # Chart.add_AROONOSC = add_AROONOSC
 # Chart.add_BOP = add_BOP
 # Chart.add_CCI = add_CCI
