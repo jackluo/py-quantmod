@@ -138,6 +138,7 @@ BASE_ADDITIONS = dict(
         ),
         # Other
         #type = 'datetime'
+        anchor = 'y',
         side = 'bottom',
         #showline = False,
         #showgrid = False,

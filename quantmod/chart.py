@@ -632,20 +632,51 @@ class Chart(object):
         # Subaxis
         if volume or self.sec:
 
-            if len(self.sec) + delta == 1:
-                layout['yaxis2'] = copy.deepcopy(additions['yaxis'])
-                layout['yaxis']['domain'] = [0.30, 1.0]
-                layout['yaxis2']['domain'] = [0.0, 0.25]
+            n = len(self.sec) + delta
 
-            elif len(self.sec) + delta == 2:
+            if n == 1:
+                layout['yaxis']['domain'] = [0.30, 1.0]
                 layout['yaxis2'] = copy.deepcopy(additions['yaxis'])
+                layout['yaxis2']['domain'] = [0.0, 0.28]
+                layout['xaxis']['anchor'] = 'y2'
+
+            elif n == 2:
+                layout['yaxis']['domain'] = [0.50, 1.0]
+                layout['yaxis2'] = copy.deepcopy(additions['yaxis'])
+                layout['yaxis2']['domain'] = [0.25, 0.48]
                 layout['yaxis3'] = copy.deepcopy(additions['yaxis'])
-                layout['yaxis']['domain'] = [0.5, 1.0]
-                layout['yaxis2']['domain'] = [0.25, 0.45]
-                layout['yaxis3']['domain'] = [0.0, 0.20]
+                layout['yaxis3']['domain'] = [0.0, 0.23]
+                layout['xaxis']['anchor'] = 'y3'
+
+            elif n > 2:
+                # One big plot, n gaps and small plots
+                big_height = 0.5 * layout['height']
+                small_height = 0.23 * layout['height']
+                gap_height = 0.02 * layout['height']
+                new_height = big_height + n * (gap_height + small_height)
+
+                big = big_height/new_height
+                small = small_height/new_height
+                gap = gap_height/new_height
+
+                # Main plot
+                upper = 1.0
+                lower = upper - big
+                layout['yaxis']['domain'] = [lower, upper]
+
+                # Subplots
+                for i in range(n):
+                    upper = lower - gap
+                    lower = upper - small
+                    yaxisn = 'yaxis{0}'.format(i + 2)
+                    layout[yaxisn] = copy.deepcopy(additions['yaxis'])
+                    layout[yaxisn]['domain'] = [lower, upper]
+
+                layout['xaxis']['anchor'] = 'y{0}'.format(n + 2)
+                layout['height'] = new_height
 
             else:
-                print('Quantmod does not yet support plotting 3+ indicators.')
+                raise Exception("Invalid subplot count {0}.".format(n))
 
         # Margin
         if not layout['title']:
@@ -853,10 +884,12 @@ class Chart(object):
                 Disables autosize=True.
             width : int
                 Width of chart. Default 1080 pixels.
-                If used with height, disables autosize=True.
+                If used with height, disables autosize=True (Equivalent to
+                using dimensions).
             height : int
                 Height of chart. Default 720 pixels.
-                If used with width, disables autosize=True.
+                If used with width, disables autosize=True (Equivalent to
+                using dimensions).
             margin : dict or tuple
                 Plotly margin dict or 4-tuple in order (l, r, b, t) or
                 5-tuple in order (l, r, b, t, margin). Tuple input added for
