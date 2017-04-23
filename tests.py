@@ -54,7 +54,7 @@ ch.add_HT_TRENDLINE(type='line_dashed')
 ch.add_ADX(type='line_dashed', color='quaternary')
 
 qm.go_offline()
-qm.go_online()
+#qm.go_online()
 ch.to_figure()
 # qm.go_online()
 # ch.plot(title=False)

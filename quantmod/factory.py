@@ -222,11 +222,13 @@ def make_layout(base_layout, layout, custom_layout,
             Dimensions 2-tuple in order (width, height).
             Disables autosize=True.
         width : int
-            Width of chart.
-            Disables autosize=True.
+            Width of chart. Default 1080 pixels.
+            If used with height, disables autosize=True (Equivalent to
+            using dimensions).
         height : int
-            Height of chart.
-            Disables autosize=True.
+            Height of chart. Default 720 pixels.
+            If used with width, disables autosize=True (Equivalent to
+            using dimensions).
         margin : dict or tuple
             Plotly margin dict or 4-tuple in order (l, r, b, t) or
             5-tuple in order (l, r, b, t, margin). Tuple input added for
@@ -291,18 +293,19 @@ def make_layout(base_layout, layout, custom_layout,
     if shapes is not None:
         base_layout['shapes'] = shapes
 
-    if dimensions is not None or height is not None or width is not None:
+    if dimensions is not None:
+        base_layout['width'] = dimensions[0]
+        base_layout['height'] = dimensions[1]
         base_layout['autosize'] = False
 
-        if dimensions is not None:
-            base_layout['width'] = dimensions[0]
-            base_layout['height'] = dimensions[1]
+    if width is not None:
+        base_layout['width'] = width
 
-        if height is not None:
-            base_layout['height'] = height
+    if height is not None:
+        base_layout['height'] = height
 
-        if width is not None:
-            base_layout['width'] = width
+    if width is not None and height is not None:
+        base_layout['autosize'] = False
 
     if margin is not None:
         base_layout['margin'] = margin
@@ -348,11 +351,13 @@ def get_template(theme=None, layout=None,
             Dimensions 2-tuple in order (width, height).
             Disables autosize=True.
         width : int
-            Width of chart.
-            Disables autosize=True.
+            Width of chart. Default 1080 pixels.
+            If used with height, disables autosize=True (Equivalent to
+            using dimensions).
         height : int
-            Height of chart.
-            Disables autosize=True.
+            Height of chart. Default 720 pixels.
+            If used with width, disables autosize=True (Equivalent to
+            using dimensions).
         margin : dict or tuple
             Plotly margin dict or 4-tuple in order (l, r, b, t) or
             5-tuple in order (l, r, b, t, margin). Tuple input added for

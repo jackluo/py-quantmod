@@ -852,11 +852,11 @@ class Chart(object):
                 Dimensions 2-tuple in order (width, height).
                 Disables autosize=True.
             width : int
-                Width of chart.
-                Disables autosize=True.
+                Width of chart. Default 1080 pixels.
+                If used with height, disables autosize=True.
             height : int
-                Height of chart.
-                Disables autosize=True.
+                Height of chart. Default 720 pixels.
+                If used with width, disables autosize=True.
             margin : dict or tuple
                 Plotly margin dict or 4-tuple in order (l, r, b, t) or
                 5-tuple in order (l, r, b, t, margin). Tuple input added for
@@ -935,7 +935,33 @@ Chart.add_SAREXT = add_SAREXT  # noqa : F405
 Chart.add_HT_TRENDLINE = add_HT_TRENDLINE  # noqa : F405
 
 
-Chart.add_RSI = add_RSI  # noqa : F405
 Chart.add_ADX = add_ADX  # noqa : F405
 Chart.add_ADXR = add_ADXR  # noqa : F405
-Chard.add_APO = add_APO  # noqa : F405
+Chart.add_APO = add_APO  # noqa : F405
+# Chart.add_AROON = add_AROON
+# Chart.add_AROONOSC = add_AROONOSC
+# Chart.add_BOP = add_BOP
+# Chart.add_CCI = add_CCI
+# Chart.add_CMO = add_CMO
+# Chart.add_DX = add_DX
+# Chart.add_MACD = add_MACD  # noqa : F405
+# Chart.add_MACDEXT = add_MACDEXT  # noqa : F405
+# Chart.add_MACDFIX = add_MACDEFIX  # noqa : F405
+# Chart.add_MFI = add_MFI
+# Chart.add_MINUS_DI = add_MINUS_DI
+# Chart.add_MINUS_DM = add_MINUS_DM
+# Chart.add_MOM = add_MOM
+# Chart.add_PLUS_DI = add_PLUS_DI
+# Chart.add_PLUS_DM = add.PLUS_DM
+# Chart.add_PPO = add_PPO
+# Chart.add_ROC = add_ROC
+# Chart.add_ROCP = add_ROCP
+# Chart.add_ROCR = add_ROCR
+# Chart.add_ROC100 = add_ROC100
+Chart.add_RSI = add_RSI  # noqa : F405
+# Chart.add_STOCH = add_STOCH
+# Chart.add_STOCHF = add_STOCHF
+# Chart.add_STOCHRSI = add_STOCHRSI
+# Chart.add_TRIX = add_TRIX
+# Chart.add_ULTOSC = add_ULTOSC
+# Chart.add_WILLR = add_WILLR
