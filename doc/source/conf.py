@@ -35,8 +35,14 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # Need to mock all the requirements
 
-MOCK_MODULES = ['numpy', 'pandas', 'plotly', 'pandas_datareader',
-                'pandas_datareader.data', 'talib']
+MOCK_MODULES = ['numpy',
+                'pandas',
+                'plotly',
+                'pandas_datareader',
+                'talib',
+                'pandas_datareader.data',
+                'plotly.plotly',
+                'plotly.offline']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
