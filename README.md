@@ -62,10 +62,10 @@ TBD
 
 TBD
 
-## Contributing
-
-TBD
-
 ## License
 
 MIT
+
+## Contributing
+
+TBD
