@@ -560,10 +560,19 @@ class Chart(object):
             trace['name'] = name
 
             # Colors
-            trace['line']['color'] = colors[primary['color']]
-            if 'area' in primary['type']:
+            if 'line' in primary['type']:
+                trace['line']['color'] = colors[primary['color']]
+            elif 'area' in primary['type']:
+                trace['line']['color'] = colors[primary['color']]
                 if 'fillcolor' in primary:
                     trace['fillcolor'] = colors[primary['fillcolor']]
+            elif 'scatter' in primary['type']:
+                trace['marker']['color'] = colors[primary['color']]
+            elif 'bar' in primary['type']:
+                trace['marker']['color'] = colors[primary['color']]
+            else:
+                raise Exception("Invalid chart type {0}."
+                                .format(primary['type']))
 
             trace['yaxis'] = 'y1'
 
@@ -625,10 +634,19 @@ class Chart(object):
                 trace['name'] = name
 
                 # Colors
-                trace['line']['color'] = colors[secondary['color']]
-                if 'area' in secondary['type']:
+                if 'line' in secondary['type']:
+                    trace['line']['color'] = colors[secondary['color']]
+                elif 'area' in secondary['type']:
+                    trace['line']['color'] = colors[secondary['color']]
                     if 'fillcolor' in secondary:
                         trace['fillcolor'] = colors[secondary['fillcolor']]
+                elif 'scatter' in secondary['type']:
+                    trace['marker']['color'] = colors[secondary['color']]
+                elif 'bar' in secondary['type']:
+                    trace['marker']['color'] = colors[secondary['color']]
+                else:
+                    raise Exception("Invalid chart type {0}."
+                                    .format(secondary['type']))
 
                 i += 1
                 axes[name] = 'y{0}'.format(i + 2)
@@ -637,6 +655,7 @@ class Chart(object):
 
         # Plot overlaid secondary indicators
         for name in overlays:
+            secondary = self.sec[name]
             trace = copy.deepcopy(traces[secondary['type']])
 
             trace['x'] = self.ind.index
@@ -644,10 +663,19 @@ class Chart(object):
             trace['name'] = name
 
             # Colors
-            trace['line']['color'] = colors[secondary['color']]
-            if 'area' in secondary['type']:
+            if 'line' in secondary['type']:
+                trace['line']['color'] = colors[secondary['color']]
+            elif 'area' in secondary['type']:
+                trace['line']['color'] = colors[secondary['color']]
                 if 'fillcolor' in secondary:
                     trace['fillcolor'] = colors[secondary['fillcolor']]
+            elif 'scatter' in secondary['type']:
+                trace['marker']['color'] = colors[secondary['color']]
+            elif 'bar' in secondary['type']:
+                trace['marker']['color'] = colors[secondary['color']]
+            else:
+                raise Exception("Invalid chart type {0}."
+                                .format(secondary['type']))
 
             axes[name] = axes[secondary['on']]
             trace['yaxis'] = axes[name]
@@ -1003,29 +1031,29 @@ Chart.add_ADX = add_ADX  # noqa : F405
 Chart.add_ADXR = add_ADXR  # noqa : F405
 Chart.add_APO = add_APO  # noqa : F405
 Chart.add_AROON = add_AROON  # noqa : F405
-# Chart.add_AROONOSC = add_AROONOSC
-# Chart.add_BOP = add_BOP
-# Chart.add_CCI = add_CCI
-# Chart.add_CMO = add_CMO
-# Chart.add_DX = add_DX
+Chart.add_AROONOSC = add_AROONOSC  # noqa : F405
+Chart.add_BOP = add_BOP  # noqa : F405
+# Chart.add_CCI = add_CCI  # noqa : F405
+# Chart.add_CMO = add_CMO  # noqa : F405
+# Chart.add_DX = add_DX  # noqa : F405
 # Chart.add_MACD = add_MACD  # noqa : F405
 # Chart.add_MACDEXT = add_MACDEXT  # noqa : F405
 # Chart.add_MACDFIX = add_MACDEFIX  # noqa : F405
-# Chart.add_MFI = add_MFI
-# Chart.add_MINUS_DI = add_MINUS_DI
-# Chart.add_MINUS_DM = add_MINUS_DM
-# Chart.add_MOM = add_MOM
-# Chart.add_PLUS_DI = add_PLUS_DI
-# Chart.add_PLUS_DM = add.PLUS_DM
-# Chart.add_PPO = add_PPO
-# Chart.add_ROC = add_ROC
-# Chart.add_ROCP = add_ROCP
-# Chart.add_ROCR = add_ROCR
-# Chart.add_ROC100 = add_ROC100
+# Chart.add_MFI = add_MFI  # noqa : F405
+# Chart.add_MINUS_DI = add_MINUS_DI  # noqa : F405
+# Chart.add_MINUS_DM = add_MINUS_DM  # noqa : F405
+# Chart.add_MOM = add_MOM  # noqa : F405
+# Chart.add_PLUS_DI = add_PLUS_DI  # noqa : F405
+# Chart.add_PLUS_DM = add.PLUS_DM  # noqa : F405
+# Chart.add_PPO = add_PPO  # noqa : F405
+# Chart.add_ROC = add_ROC  # noqa : F405
+# Chart.add_ROCP = add_ROCP  # noqa : F405
+# Chart.add_ROCR = add_ROCR  # noqa : F405
+# Chart.add_ROC100 = add_ROC100  # noqa : F405
 Chart.add_RSI = add_RSI  # noqa : F405
-# Chart.add_STOCH = add_STOCH
-# Chart.add_STOCHF = add_STOCHF
-# Chart.add_STOCHRSI = add_STOCHRSI
-# Chart.add_TRIX = add_TRIX
-# Chart.add_ULTOSC = add_ULTOSC
-# Chart.add_WILLR = add_WILLR
+# Chart.add_STOCH = add_STOCH  # noqa : F405
+# Chart.add_STOCHF = add_STOCHF  # noqa : F405
+# Chart.add_STOCHRSI = add_STOCHRSI  # noqa : F405
+# Chart.add_TRIX = add_TRIX  # noqa : F405
+# Chart.add_ULTOSC = add_ULTOSC  # noqa : F405
+# Chart.add_WILLR = add_WILLR  # noqa : F405

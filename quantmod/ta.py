@@ -264,7 +264,9 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
     if 'type' in kwargs:
         types = [kwargs['type'], kwargs['type']]
 
-    name = 'BB({},{},{})'.format(str(timeperiod), str(nbdevup), str(nbdevdn))
+    name = 'BBands({},{},{})'.format(str(timeperiod),
+                                     str(nbdevup),
+                                     str(nbdevdn))
     ubb = name + '[Upper]'
     bb = name
     lbb = name + '[Lower]'
@@ -312,7 +314,7 @@ def add_SAREXT(self, startvalue=0, offsetonreverse=0,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = ('SAREXT({}, {}, {}, {},'
+    name = ('SARExt({}, {}, {}, {},'
             '{}, {}, {}, {})'.format(str(startvalue), str(offsetonreverse),
                                      str(accelerationinitlong),
                                      str(accelerationlong),
@@ -344,7 +346,7 @@ def add_HT_TRENDLINE(self, timeperiod=20,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'HTTrendline'
+    name = 'HT Trendline'
     self.pri[name] = dict(type=type, color=color)
     self.ind[name] = talib.HT_TRENDLINE(self.df[self.cl].values)
 
@@ -419,8 +421,8 @@ def add_APO(self, fastperiod=12, slowperiod=26, matype=0,
 
     name = 'APO({}, {})'.format(str(fastperiod), str(slowperiod))
     self.sec[name] = dict(type=type, color=color)
-    self.ind[name] = talib.ADXR(self.df[self.cl].values,
-                                fastperiod, slowperiod, matype)
+    self.ind[name] = talib.APO(self.df[self.cl].values,
+                               fastperiod, slowperiod, matype)
 
 
 def add_AROON(self, timeperiod=14,
@@ -438,7 +440,7 @@ def add_AROON(self, timeperiod=14,
 
     utils.kwargs_check(kwargs, VALID_TA_KWARGS)
     if 'kind' in kwargs:
-        type = kwargs['kind']
+        kwargs['type'] = kwargs['kind']
     if 'kinds' in kwargs:
         types = kwargs['type']
 
@@ -455,3 +457,40 @@ def add_AROON(self, timeperiod=14,
     self.ind[uaroon], self.ind[daroon] = talib.AROON(self.df[self.hi].values,
                                                      self.df[self.lo].values,
                                                      timeperiod)
+
+
+def add_AROONOSC(self, timeperiod=14,
+                 type='line', color='secondary', **kwargs):
+    """Aroon Oscillator."""
+
+    if not (self.has_high and self.has_low):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'AroonOsc({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.AROONOSC(self.df[self.hi].values,
+                                    self.df[self.lo].values,
+                                    timeperiod)
+
+
+def add_BOP(self, timeperiod=14,
+            type='bar', color='tertiary', **kwargs):
+    """Balance of Power."""
+
+    if not self.has_OHLC:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'BOP'
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.BOP(self.df[self.op].values,
+                               self.df[self.hi].values,
+                               self.df[self.lo].values,
+                               self.df[self.cl].values)
