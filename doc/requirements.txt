@@ -1,0 +1,2 @@
+Sphinx==1.5.1
+quantmod==0.1.3
