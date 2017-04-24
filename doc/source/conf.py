@@ -16,12 +16,10 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
+
 import os
 import sys
 from unittest.mock import MagicMock
-
-sys.path.insert(0, os.path.abspath('../..'))
 
 
 class Mock(MagicMock):
@@ -30,7 +28,15 @@ class Mock(MagicMock):
             return MagicMock()
 
 
-MOCK_MODULES = ['numpy', 'pandas', 'plotly', 'pandas_datareader', 'talib']
+# System path insert
+
+sys.path.insert(0, os.path.abspath('../..'))
+
+
+# Need to mock all the requirements
+
+MOCK_MODULES = ['numpy', 'pandas', 'plotly', 'pandas_datareader',
+                'pandas_datareader.data', 'talib']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
@@ -103,8 +109,10 @@ todo_include_todos = False
 
 html_theme = 'nature'
 
+
 def setup(app):
     app.add_stylesheet('custom.css')
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
