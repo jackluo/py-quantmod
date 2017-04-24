@@ -4,6 +4,8 @@
 
 # Quantmod
 
+[![Documentation Status](https://readthedocs.org/projects/py-quantmod/badge/?version=latest)](http://py-quantmod.readthedocs.io/en/latest/?badge=latest)
+
 A powerful financial charting library based on R's Quantmod.
 
 Quantmod makes creating interactive financial charts easy and intuitive. Furthermore, Quantmod has over 50 technical indicators built-in, in addition to a variety of technical and quantitative financial tools.
@@ -52,7 +54,11 @@ Then install the Python library:
 
 ## Documentation
 
-TBD
+Read the full documentation over at:
+
+http://py-quantmod.readthedocs.io/en/latest/
+
+If you prefer learning by example, hands-on tutorials are coming soon.
 
 ## Getting started
 
