@@ -20,27 +20,6 @@ Credits
 
 from __future__ import absolute_import
 
-
-__docformat__ = 'restructuredtext'
-
-hard_dependencies = ('numpy',
-                     'pandas',
-                     'plotly',
-                     'pandas_datareader')
-missing_dependencies = []
-
-for dependency in hard_dependencies:
-    try:
-        __import__(dependency)
-    except ImportError as e:
-        missing_dependencies.append(dependency)
-
-if missing_dependencies:
-    raise ImportError(
-        "Missing required dependencies {0}.".format(missing_dependencies))
-del hard_dependencies, dependency, missing_dependencies
-
-
 from .core import *
 from .chart import *
 from .tools import (go_offline, go_online, is_offline,
@@ -48,6 +27,10 @@ from .tools import (go_offline, go_online, is_offline,
                     get_credentials_file, set_credentials_file,
                     reset_credentials_file)
 from .version import __version__
+
+
+__docformat__ = 'restructuredtext'
+
 
 # Offline mode from config initialization
 try:

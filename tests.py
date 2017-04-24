@@ -34,7 +34,7 @@ ch.adjust_volume(inplace=True)
 ch.has_OHLC
 print(ch.has_OHLCV)
 
-ch.add_MA(type='line_dashed')
+ch.add_MA()
 ch.add_SMA(type='line_dashed')
 ch.add_EMA(type='line_dashed')
 ch.add_WMA(type='line_dashed')
