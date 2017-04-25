@@ -16,7 +16,7 @@ from .valid import VALID_TA_KWARGS
 
 def add_MA(self, timeperiod=20, matype=0,
            type='line', color='secondary', **kwargs):
-    """Moving average (customizable)."""
+    """Moving Average (customizable)."""
 
     if not self.has_close:
         raise Exception()
@@ -27,12 +27,13 @@ def add_MA(self, timeperiod=20, matype=0,
 
     name = 'MA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.MA(self.df[self.cl].values, timeperiod, matype)
+    self.ind[name] = talib.MA(self.df[self.cl].values,
+                              timeperiod, matype)
 
 
 def add_SMA(self, timeperiod=20,
             type='line', color='secondary', **kwargs):
-    """Simple moving average."""
+    """Simple Moving Average."""
 
     if not self.has_close:
         raise Exception()
@@ -43,12 +44,13 @@ def add_SMA(self, timeperiod=20,
 
     name = 'SMA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.SMA(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.SMA(self.df[self.cl].values,
+                               timeperiod)
 
 
 def add_EMA(self, timeperiod=26,
             type='line', color='secondary', **kwargs):
-    """Exponential moving average."""
+    """Exponential Moving Average."""
 
     if not self.has_close:
         raise Exception()
@@ -59,12 +61,13 @@ def add_EMA(self, timeperiod=26,
 
     name = 'EMA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.EMA(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.EMA(self.df[self.cl].values,
+                               timeperiod)
 
 
 def add_WMA(self, timeperiod=20,
             type='line', color='secondary', **kwargs):
-    """Weighted moving average."""
+    """Weighted Moving Average."""
 
     if not self.has_close:
         raise Exception()
@@ -75,12 +78,13 @@ def add_WMA(self, timeperiod=20,
 
     name = 'WMA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.WMA(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.WMA(self.df[self.cl].values,
+                               timeperiod)
 
 
 def add_DEMA(self, timeperiod=26,
              type='line', color='secondary', **kwargs):
-    """Double exponential moving average."""
+    """Double Exponential Moving Average."""
 
     if not self.has_close:
         raise Exception()
@@ -91,12 +95,13 @@ def add_DEMA(self, timeperiod=26,
 
     name = 'DEMA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.DEMA(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.DEMA(self.df[self.cl].values,
+                                timeperiod)
 
 
 def add_TEMA(self, timeperiod=26,
              type='line', color='secondary', **kwargs):
-    """Triple moving exponential average."""
+    """Triple Moving Exponential Average."""
 
     if not self.has_close:
         raise Exception()
@@ -107,7 +112,8 @@ def add_TEMA(self, timeperiod=26,
 
     name = 'TEMA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.TEMA(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.TEMA(self.df[self.cl].values,
+                                timeperiod)
 
 
 def add_T3(self, timeperiod=20, vfactor=0.7,
@@ -123,12 +129,13 @@ def add_T3(self, timeperiod=20, vfactor=0.7,
 
     name = 'T3({}, {})'.format(str(timeperiod), str(vfactor))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.T3(self.df[self.cl].values, timeperiod, vfactor)
+    self.ind[name] = talib.T3(self.df[self.cl].values,
+                              timeperiod, vfactor)
 
 
 def add_KAMA(self, timeperiod=20,
              type='line', color='secondary', **kwargs):
-    """Kaufmann adaptive moving average."""
+    """Kaufmann Adaptive Moving Average."""
 
     if not self.has_close:
         raise Exception()
@@ -139,12 +146,13 @@ def add_KAMA(self, timeperiod=20,
 
     name = 'KAMA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.KAMA(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.KAMA(self.df[self.cl].values,
+                                timeperiod)
 
 
 def add_TRIMA(self, timeperiod=20,
               type='line', color='secondary', **kwargs):
-    """Triangular moving average."""
+    """Triangular Moving Average."""
 
     if not self.has_close:
         raise Exception()
@@ -155,7 +163,8 @@ def add_TRIMA(self, timeperiod=20,
 
     name = 'TRIMA({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.TRIMA(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.TRIMA(self.df[self.cl].values,
+                                 timeperiod)
 
 
 def add_MAMA(self, fastlimit=0.5, slowlimit=0.05,
@@ -176,10 +185,10 @@ def add_MAMA(self, fastlimit=0.5, slowlimit=0.05,
     if 'kinds' in kwargs:
         types = kwargs['type']
 
-    if 'color' in kwargs:
-        colors = [kwargs['color'], kwargs['color']]
     if 'type' in kwargs:
-        types = [kwargs['type'], kwargs['type']]
+        types = [kwargs['type']] * 2
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 2
 
     mama = 'MAMA({}, {})'.format(str(fastlimit), str(slowlimit))
     fama = 'FAMA({}, {})'.format(str(fastlimit), str(slowlimit))
@@ -191,7 +200,7 @@ def add_MAMA(self, fastlimit=0.5, slowlimit=0.05,
 
 def add_MAVP(self, periods, minperiod=2, maxperiod=30, matype=0,
              type='line', color='secondary', **kwargs):
-    """Moving average with variable period.
+    """Moving Average with Variable Period.
 
     Parameters
     ----------
@@ -223,27 +232,10 @@ def add_MAVP(self, periods, minperiod=2, maxperiod=30, matype=0,
                                 periods, minperiod, maxperiod, matype)
 
 
-def add_MIDPOINT(self, timeperiod=14,
-                 type='line', color='secondary', **kwargs):
-    """Midpoint price over period."""
-
-    if not self.has_close:
-        raise Exception()
-
-    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
-    if 'kind' in kwargs:
-        type = kwargs['kind']
-
-    name = 'Midpoint({})'.format(str(timeperiod))
-    self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.MIDPOINT(self.df[self.cl].values)
-
-
 def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
                types=['line_dashed_thin', 'line_dashed_thin'],
-               colors=['tertiary', 'grey'], fillcolor='fill',
-               **kwargs):
-    """Bollinger bands.
+               colors=['tertiary', 'grey'], **kwargs):
+    """Bollinger Bands.
 
     Note that the first argument of types and colors refers to upper and lower
     bands while second argument refers to middle band. (Upper and lower are
@@ -259,10 +251,10 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
     if 'kinds' in kwargs:
         types = kwargs['type']
 
-    if 'color' in kwargs:
-        colors = [kwargs['color'], kwargs['color']]
     if 'type' in kwargs:
-        types = [kwargs['type'], kwargs['type']]
+        types = [kwargs['type']] * 2
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 2
 
     name = 'BBands({},{},{})'.format(str(timeperiod),
                                      str(nbdevup),
@@ -273,13 +265,45 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
     self.pri[ubb] = dict(type='line_' + types[0][5:],
                          color=colors[0])
     self.pri[bb] = dict(type='area_' + types[1][5:],
-                        color=colors[1], fillcolor=fillcolor)
+                        color=colors[1], fillcolor='fill')
     self.pri[lbb] = dict(type='area_' + types[0][5:],
-                         color=colors[0], fillcolor=fillcolor)
+                         color=colors[0], fillcolor='fill')
     (self.ind[ubb],
      self.ind[bb],
      self.ind[lbb]) = talib.BBANDS(self.df[self.cl].values,
                                    timeperiod, nbdevup, nbdevdn, matype)
+
+
+def add_HT_TRENDLINE(self, timeperiod=20,
+                     type='line', color='secondary', **kwargs):
+    """Hilert Transform Instantaneous Trendline."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'HT Trendline'
+    self.pri[name] = dict(type=type, color=color)
+    self.ind[name] = talib.HT_TRENDLINE(self.df[self.cl].values)
+
+
+def add_MIDPOINT(self, timeperiod=14,
+                 type='line', color='secondary', **kwargs):
+    """Midpoint Price over Period."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'Midpoint({})'.format(str(timeperiod))
+    self.pri[name] = dict(type=type, color=color)
+    self.ind[name] = talib.MIDPOINT(self.df[self.cl].values)
 
 
 def add_SAR(self, acceleration=0.02, maximum=0.20,
@@ -335,28 +359,12 @@ def add_SAREXT(self, startvalue=0, offsetonreverse=0,
     self.ind[name] = self.ind[name].abs()  # Bug right now with negative value
 
 
-def add_HT_TRENDLINE(self, timeperiod=20,
-                     type='line', color='secondary', **kwargs):
-    """Hilert Transform - Instantaneous Trendline."""
-
-    if not self.has_close:
-        raise Exception()
-
-    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
-    if 'kind' in kwargs:
-        type = kwargs['kind']
-
-    name = 'HT Trendline'
-    self.pri[name] = dict(type=type, color=color)
-    self.ind[name] = talib.HT_TRENDLINE(self.df[self.cl].values)
-
-
 # Momentum indicators
 
 
-def add_RSI(self, timeperiod=14,
+def add_APO(self, fastperiod=12, slowperiod=26, matype=0,
             type='line', color='secondary', **kwargs):
-    """Relative Strength Index."""
+    """Absolute Price Oscillator."""
 
     if not self.has_close:
         raise Exception()
@@ -365,9 +373,117 @@ def add_RSI(self, timeperiod=14,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'RSI({})'.format(str(timeperiod))
+    name = 'APO({}, {})'.format(str(fastperiod), str(slowperiod))
     self.sec[name] = dict(type=type, color=color)
-    self.ind[name] = talib.RSI(self.df[self.cl].values, timeperiod)
+    self.ind[name] = talib.APO(self.df[self.cl].values,
+                               fastperiod, slowperiod, matype)
+
+
+def add_AROON(self, timeperiod=14,
+              types=['line', 'line'],
+              colors=['increasing', 'decreasing'],
+              **kwargs):
+    """Aroon indicators.
+
+    Note that the first argument of types and colors refers to Aroon up while
+    the second argument refers to Aroon down.
+
+    """
+    if not (self.has_high and self.has_low):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        kwargs['type'] = kwargs['kind']
+    if 'kinds' in kwargs:
+        types = kwargs['type']
+
+    if 'type' in kwargs:
+        types = [kwargs['type']] * 2
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 2
+
+    name = 'Aroon({})'.format(str(timeperiod))
+    uaroon = name + ' [Up]'
+    daroon = name + ' [Dn]'
+    self.sec[uaroon] = dict(type=types[0], color=colors[0])
+    self.sec[daroon] = dict(type=types[1], color=colors[1], on=uaroon)
+    self.ind[uaroon], self.ind[daroon] = talib.AROON(self.df[self.hi].values,
+                                                     self.df[self.lo].values,
+                                                     timeperiod)
+
+
+def add_AROONOSC(self, timeperiod=14,
+                 type='area', color='secondary', **kwargs):
+    """Aroon Oscillator."""
+
+    if not (self.has_high and self.has_low):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'AroonOsc({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.AROONOSC(self.df[self.hi].values,
+                                    self.df[self.lo].values,
+                                    timeperiod)
+
+
+def add_BOP(self,
+            type='histogram', color='tertiary', **kwargs):
+    """Balance of Power."""
+
+    if not self.has_OHLC:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'BOP'
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.BOP(self.df[self.op].values,
+                               self.df[self.hi].values,
+                               self.df[self.lo].values,
+                               self.df[self.cl].values)
+
+
+def add_CCI(self, timeperiod=14,
+            type='line', color='secondary', **kwargs):
+    """Channel Commodity Index."""
+
+    if not (self.has_high and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'CCI({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.CCI(self.df[self.hi].values,
+                               self.df[self.lo].values,
+                               self.df[self.cl].values,
+                               timeperiod)
+
+
+def add_CMO(self, timeperiod=14,
+            type='line', color='secondary', **kwargs):
+    """Chande Momentum Indicator."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'CMO({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.CMO(self.df[self.cl].values,
+                               timeperiod)
 
 
 def add_ADX(self, timeperiod=14,
@@ -408,34 +524,111 @@ def add_ADXR(self, timeperiod=14,
                                 timeperiod)
 
 
-def add_APO(self, fastperiod=12, slowperiod=26, matype=0,
-            type='line', color='secondary', **kwargs):
-    """Absolute Price Oscillator."""
+def add_DX(self, timeperiod=14,
+           type='line', color='secondary', **kwargs):
+    """Directional Movement Index."""
 
-    if not self.has_close:
+    if not (self.has_high and self.has_low and self.has_close):
         raise Exception()
 
     utils.kwargs_check(kwargs, VALID_TA_KWARGS)
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'APO({}, {})'.format(str(fastperiod), str(slowperiod))
+    name = 'DX({})'.format(str(timeperiod))
     self.sec[name] = dict(type=type, color=color)
-    self.ind[name] = talib.APO(self.df[self.cl].values,
-                               fastperiod, slowperiod, matype)
+    self.ind[name] = talib.DX(self.df[self.hi].values,
+                              self.df[self.lo].values,
+                              self.df[self.cl].values,
+                              timeperiod)
 
 
-def add_AROON(self, timeperiod=14,
-              types=['line', 'line'],
-              colors=['increasing', 'decreasing'],
-              **kwargs):
-    """Aroon indicators.
+def add_MINUS_DI(self, timeperiod=14,
+                 type='line', color='decreasing', **kwargs):
+    """Minus Directional Indicator."""
 
-    Note that the first argument of types and colors refers to Aroon up while
-    the second argument refers to Aroon down.
+    if not (self.has_high and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'DI({})[-]'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.MINUS_DI(self.df[self.hi].values,
+                                    self.df[self.lo].values,
+                                    self.df[self.cl].values,
+                                    timeperiod)
+
+
+def add_PLUS_DI(self, timeperiod=14,
+                type='line', color='increasing', **kwargs):
+    """Plus Directional Indicator."""
+
+    if not (self.has_high and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'DI({})[+]'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.PLUS_DI(self.df[self.hi].values,
+                                   self.df[self.lo].values,
+                                   self.df[self.cl].values,
+                                   timeperiod)
+
+
+def add_MINUS_DM(self, timeperiod=14,
+                 type='line', color='decreasing', **kwargs):
+    """Minus Directional Movement."""
+
+    if not (self.has_high and self.has_low):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'DM({})[-]'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.MINUS_DM(self.df[self.hi].values,
+                                    self.df[self.lo].values,
+                                    timeperiod)
+
+
+def add_PLUS_DM(self, timeperiod=14,
+                type='line', color='increasing', **kwargs):
+    """Plus Directional Movement."""
+
+    if not (self.has_high and self.has_low):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'DM({})[+]'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.PLUS_DM(self.df[self.hi].values,
+                                   self.df[self.lo].values,
+                                   timeperiod)
+
+
+def add_MACD(self, fastperiod=12, slowperiod=26, signalperiod=9,
+             types=['line', 'line', 'histogram'],
+             colors=['primary', 'tertiary', 'fill'],
+             **kwargs):
+    """Moving Average Convergence Divergence.
+
+    Note that the first argument of types and colors refers to MACD,
+    the second argument refers to MACD signal line and the third argument
+    refers to MACD histogram.
 
     """
-    if not (self.has_high and self.has_low):
+    if not self.has_close:
         raise Exception()
 
     utils.kwargs_check(kwargs, VALID_TA_KWARGS)
@@ -444,53 +637,117 @@ def add_AROON(self, timeperiod=14,
     if 'kinds' in kwargs:
         types = kwargs['type']
 
-    if 'color' in kwargs:
-        colors = [kwargs['color'], kwargs['color']]
     if 'type' in kwargs:
-        types = [kwargs['type'], kwargs['type']]
+        types = [kwargs['type']] * 3
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 3
 
-    name = 'Aroon({})'.format(str(timeperiod))
-    uaroon = name + '[Up]'
-    daroon = name + '[Dn]'
-    self.sec[uaroon] = dict(type=types[0], color=colors[0])
-    self.sec[daroon] = dict(type=types[1], color=colors[1], on=uaroon)
-    self.ind[uaroon], self.ind[daroon] = talib.AROON(self.df[self.hi].values,
-                                                     self.df[self.lo].values,
-                                                     timeperiod)
+    name = 'MACD({}, {}, {})'.format(fastperiod, slowperiod, signalperiod)
+    macd = name
+    smacd = name + '[Sign]'
+    hmacd = name + '[Hist]'
+    self.sec[macd] = dict(type=types[0], color=colors[0])
+    self.sec[smacd] = dict(type=types[1], color=colors[1], on=macd)
+    self.sec[hmacd] = dict(type=types[2], color=colors[2], on=macd)
+    (self.ind[macd],
+     self.ind[smacd],
+     self.ind[hmacd]) = talib.MACD(self.df[self.cl].values,
+                                   fastperiod, slowperiod,
+                                   signalperiod)
 
 
-def add_AROONOSC(self, timeperiod=14,
-                 type='line', color='secondary', **kwargs):
-    """Aroon Oscillator."""
+def add_MACDEXT(self, fastperiod=12, fastmatype=0,
+                slowperiod=26, slowmatype=0,
+                signalperiod=9, signalmatype=0,
+                types=['line', 'line', 'histogram'],
+                colors=['primary', 'tertiary', 'fill'],
+                **kwargs):
+    """Moving Average Convergence Divergence with Controllable MA Type.
 
-    if not (self.has_high and self.has_low):
+    Note that the first argument of types and colors refers to MACD,
+    the second argument refers to MACD signal line and the third argument
+    refers to MACD histogram.
+
+    """
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        kwargs['type'] = kwargs['kind']
+    if 'kinds' in kwargs:
+        types = kwargs['type']
+
+    if 'type' in kwargs:
+        types = [kwargs['type']] * 3
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 3
+
+    name = 'MACDExt({}, {}, {})'.format(fastperiod, slowperiod, signalperiod)
+    macd = name
+    smacd = name + '[Sign]'
+    hmacd = name + '[Hist]'
+    self.sec[macd] = dict(type=types[0], color=colors[0])
+    self.sec[smacd] = dict(type=types[1], color=colors[1], on=macd)
+    self.sec[hmacd] = dict(type=types[2], color=colors[2], on=macd)
+    (self.ind[macd],
+     self.ind[smacd],
+     self.ind[hmacd]) = talib.MACD(self.df[self.cl].values,
+                                   fastperiod, fastmatype,
+                                   slowperiod, slowmatype,
+                                   signalperiod, signalmatype)
+
+
+def add_MFI(self, timeperiod=14,
+            type='line', color='secondary', **kwargs):
+    """Money Flow Index."""
+
+    if not (self.has_high and self.has_low and
+            self.has_close and self.has_volume):
         raise Exception()
 
     utils.kwargs_check(kwargs, VALID_TA_KWARGS)
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'AroonOsc({})'.format(str(timeperiod))
+    name = 'MFI({})'.format(str(timeperiod))
     self.sec[name] = dict(type=type, color=color)
-    self.ind[name] = talib.AROONOSC(self.df[self.hi].values,
-                                    self.df[self.lo].values,
-                                    timeperiod)
-
-
-def add_BOP(self, timeperiod=14,
-            type='bar', color='tertiary', **kwargs):
-    """Balance of Power."""
-
-    if not self.has_OHLC:
-        raise Exception()
-
-    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
-    if 'kind' in kwargs:
-        type = kwargs['kind']
-
-    name = 'BOP'
-    self.sec[name] = dict(type=type, color=color)
-    self.ind[name] = talib.BOP(self.df[self.op].values,
-                               self.df[self.hi].values,
+    self.ind[name] = talib.MFI(self.df[self.hi].values,
                                self.df[self.lo].values,
-                               self.df[self.cl].values)
+                               self.df[self.cl].values,
+                               self.df[self.vo].values,
+                               timeperiod)
+
+
+def add_MOM(self, timeperiod=10,
+            type='line', color='secondary', **kwargs):
+    """Momentum Indicator."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'MOM({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.MOM(self.df[self.cl].values,
+                               timeperiod)
+
+
+def add_RSI(self, timeperiod=14,
+            type='line', color='secondary', **kwargs):
+    """Relative Strength Index."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'RSI({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.RSI(self.df[self.cl].values,
+                               timeperiod)

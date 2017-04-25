@@ -62,7 +62,6 @@ class Chart(object):
                 either as string or as a datetime object.
                 If False no start is specified. Default set to last
                 element of df.index.
-
         """
         self.df = df
 
@@ -599,7 +598,7 @@ class Chart(object):
                     trace['fillcolor'] = colors[primary['fillcolor']]
             elif 'scatter' in primary['type']:
                 trace['marker']['color'] = colors[primary['color']]
-            elif 'bar' or 'histogram' in primary['type']:
+            elif 'bar' in primary['type']:
                 trace['marker']['color'] = colors[primary['color']]
             else:
                 raise Exception("Invalid chart type {0}."
@@ -673,16 +672,16 @@ class Chart(object):
                         trace['fillcolor'] = colors[secondary['fillcolor']]
                 elif 'scatter' in secondary['type']:
                     trace['marker']['color'] = colors[secondary['color']]
-                elif 'bar' or 'histogram' in secondary['type']:
+                elif 'bar' in secondary['type']:
                     trace['marker']['color'] = colors[secondary['color']]
                 else:
                     raise Exception("Invalid chart type {0}."
                                     .format(secondary['type']))
 
+                i += 1
                 axes[name] = 'y{0}'.format(i + 2)
                 trace['yaxis'] = axes[name]
                 data.append(trace)
-                i += 1
 
         # Plot overlaid secondary indicators
         for name in overlays:
@@ -702,7 +701,7 @@ class Chart(object):
                     trace['fillcolor'] = colors[secondary['fillcolor']]
             elif 'scatter' in secondary['type']:
                 trace['marker']['color'] = colors[secondary['color']]
-            elif 'bar' or 'histogram' in secondary['type']:
+            elif 'bar' in secondary['type']:
                 trace['marker']['color'] = colors[secondary['color']]
             else:
                 raise Exception("Invalid chart type {0}."
@@ -719,11 +718,9 @@ class Chart(object):
         layout['yaxis'] = copy.deepcopy(additions['yaxis'])
 
         # Subaxis
+        if volume or self.sec:
 
-        # TO CHANGE
-        if volume or (len(self.sec) - len(overlays)):
-
-            n = len(self.sec) - len(overlays) + delta
+            n = len(self.sec) + delta
 
             if n == 1:
                 layout['yaxis']['domain'] = [0.30, 1.0]
@@ -740,25 +737,25 @@ class Chart(object):
                 layout['xaxis']['anchor'] = 'y3'
 
             elif n > 2:
-                # One main plot, n gaps and sub plots
-                main_height = 0.5 * layout['height']
-                sub_height = 0.24 * layout['height']
+                # One big plot, n gaps and small plots
+                big_height = 0.5 * layout['height']
+                small_height = 0.24 * layout['height']
                 gap_height = 0.01 * layout['height']
-                new_height = main_height + n * (gap_height + sub_height)
+                new_height = big_height + n * (gap_height + small_height)
 
-                main = main_height/new_height
-                sub = sub_height/new_height
+                big = big_height/new_height
+                small = small_height/new_height
                 gap = gap_height/new_height
 
                 # Main plot
                 upper = 1.0
-                lower = upper - main
+                lower = upper - big
                 layout['yaxis']['domain'] = [lower, upper]
 
                 # Subplots
                 for i in range(n):
                     upper = lower - gap
-                    lower = upper - sub
+                    lower = upper - small
                     yaxisn = 'yaxis{0}'.format(i + 2)
                     layout[yaxisn] = copy.deepcopy(additions['yaxis'])
                     layout[yaxisn]['domain'] = [lower, upper]
@@ -1055,32 +1052,31 @@ Chart.add_KAMA = add_KAMA  # noqa : F405
 Chart.add_TRIMA = add_TRIMA  # noqa : F405
 Chart.add_MAMA = add_MAMA  # noqa : F405
 Chart.add_MAVP = add_MAVP  # noqa : F405
-
+Chart.add_MIDPOINT = add_MIDPOINT  # noqa : F405
 Chart.add_BBANDS = add_BBANDS  # noqa : F405
-Chart.add_HT_TRENDLINE = add_HT_TRENDLINE  # noqa : F405, add_ht_trendline
-Chart.add_MIDPOINT = add_MIDPOINT  # noqa : F405, add_midpoint
 Chart.add_SAR = add_SAR  # noqa : F405
 Chart.add_SAREXT = add_SAREXT  # noqa : F405
+Chart.add_HT_TRENDLINE = add_HT_TRENDLINE  # noqa : F405
 
 
-Chart.add_APO = add_APO  # noqa : F405
-Chart.add_AROON = add_AROON  # noqa : F405, add_aroon
-Chart.add_AROONOSC = add_AROONOSC  # noqa : F405, add_aroonosc
-Chart.add_BOP = add_BOP  # noqa : F405, smoothing, volume color
-Chart.add_CCI = add_CCI  # noqa : F405, band range color
-Chart.add_CMO = add_CMO  # noqa : F405
-Chart.add_ADX = add_ADX  # noqa : F405, add_DMI
+Chart.add_ADX = add_ADX  # noqa : F405
 Chart.add_ADXR = add_ADXR  # noqa : F405
-Chart.add_DX = add_DX  # noqa : F405
-Chart.add_MINUS_DI = add_MINUS_DI  # noqa : F405
-Chart.add_PLUS_DI = add_PLUS_DI  # noqa : F405
-Chart.add_MINUS_DM = add_MINUS_DM  # noqa : F405
-Chart.add_PLUS_DM = add_PLUS_DM  # noqa : F405
-Chart.add_MACD = add_MACD  # noqa : F405
-Chart.add_MACDEXT = add_MACDEXT  # noqa : F405
-# Chart.add_MACDFIX = add_MACDEFIX  # noqa : F405, not present
-Chart.add_MFI = add_MFI  # noqa : F405, band range color
-Chart.add_MOM = add_MOM  # noqa : F405
+Chart.add_APO = add_APO  # noqa : F405
+Chart.add_AROON = add_AROON  # noqa : F405
+Chart.add_AROONOSC = add_AROONOSC  # noqa : F405
+Chart.add_BOP = add_BOP  # noqa : F405, smoothing, volume color
+# Chart.add_CCI = add_CCI  # noqa : F405, band range color
+# Chart.add_CMO = add_CMO  # noqa : F405
+# Chart.add_DX = add_DX  # noqa : F405
+# Chart.add_MACD = add_MACD  # noqa : F405
+# Chart.add_MACDEXT = add_MACDEXT  # noqa : F405
+# Chart.add_MACDFIX = add_MACDEFIX  # noqa : F405
+# Chart.add_MFI = add_MFI  # noqa : F405
+# Chart.add_MINUS_DI = add_MINUS_DI  # noqa : F405
+# Chart.add_MINUS_DM = add_MINUS_DM  # noqa : F405
+# Chart.add_MOM = add_MOM  # noqa : F405
+# Chart.add_PLUS_DI = add_PLUS_DI  # noqa : F405
+# Chart.add_PLUS_DM = add.PLUS_DM  # noqa : F405
 # Chart.add_PPO = add_PPO  # noqa : F405
 # Chart.add_ROC = add_ROC  # noqa : F405
 # Chart.add_ROCP = add_ROCP  # noqa : F405
