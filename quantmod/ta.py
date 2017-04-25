@@ -736,6 +736,92 @@ def add_MOM(self, timeperiod=10,
                                timeperiod)
 
 
+def add_PPO(self, fastperiod=12, slowperiod=26, matype=0,
+            type='line', color='secondary',
+            **kwargs):
+    """Percent Price Oscillator."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        kwargs['type'] = kwargs['kind']
+
+    name = 'PPO({}, {})'.format(fastperiod, slowperiod)
+    self.ind[name] = talib.PPO(self.df[self.cl].values,
+                               fastperiod, slowperiod,
+                               matype)
+
+
+def add_ROC(self, timeperiod=10,
+            type='line', color='tertiary', **kwargs):
+    """Rate of Change."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'ROC({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.ROC(self.df[self.cl].values,
+                               timeperiod)
+
+
+def add_ROCP(self, timeperiod=10,
+             type='line', color='tertiary', **kwargs):
+    """Rate of Change (Percentage)."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'ROCP({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.ROCP(self.df[self.cl].values,
+                                timeperiod)
+
+
+def add_ROCR(self, timeperiod=10,
+             type='line', color='tertiary', **kwargs):
+    """Rate of Change (Ratio)."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'ROCR({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.ROCR(self.df[self.cl].values,
+                                timeperiod)
+
+
+def add_ROCR100(self, timeperiod=10,
+                type='line', color='tertiary', **kwargs):
+    """Rate of Change (Ratio * 100)."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'ROCR100({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.ROCR100(self.df[self.cl].values,
+                                   timeperiod)
+
+
 def add_RSI(self, timeperiod=14,
             type='line', color='secondary', **kwargs):
     """Relative Strength Index."""
