@@ -764,7 +764,6 @@ class Chart(object):
                     layout[yaxisn]['domain'] = [lower, upper]
 
                 layout['xaxis']['anchor'] = 'y{0}'.format(n + 1)
-                print('Len: ' + layout['xaxis']['anchor'])
                 layout['height'] = new_height
 
             else:
@@ -1064,9 +1063,9 @@ Chart.add_SAREXT = add_SAREXT  # noqa : F405
 
 
 Chart.add_APO = add_APO  # noqa : F405, HL 0 (MACD no signal line)
-Chart.add_AROON = add_AROON  # noqa : F405, add_aroon
-Chart.add_AROONOSC = add_AROONOSC  # noqa : F405, add_aroonosc
-Chart.add_BOP = add_BOP  # noqa : F405, smoothing, volume color
+Chart.add_AROON = add_AROON  # noqa : F405,
+Chart.add_AROONOSC = add_AROONOSC  # noqa : F405, area (HL 0)
+Chart.add_BOP = add_BOP  # noqa : F405, smoothing, volume color (HL 0)
 Chart.add_CCI = add_CCI  # noqa : F405, band range color
 Chart.add_CMO = add_CMO  # noqa : F405, HL 0, HL +- 50
 Chart.add_ADX = add_ADX  # noqa : F405, ADX + +-DI, HL +20
@@ -1080,16 +1079,16 @@ Chart.add_MACD = add_MACD  # noqa : F405
 Chart.add_MACDEXT = add_MACDEXT  # noqa : F405
 # Chart.add_MACDFIX = add_MACDEFIX  # noqa : F405, not present
 Chart.add_MFI = add_MFI  # noqa : F405, band range color, HL 20, HL 80
-Chart.add_MOM = add_MOM  # noqa : F405, HL 100
+Chart.add_MOM = add_MOM  # noqa : F405, (HL 0)
 Chart.add_PPO = add_PPO  # noqa : F405, PPO + Signal + Histogram
 Chart.add_ROC = add_ROC  # noqa : F405
 Chart.add_ROCP = add_ROCP  # noqa : F405
 Chart.add_ROCR = add_ROCR  # noqa : F405
-Chart.add_ROC100 = add_ROC100  # noqa : F405
+Chart.add_ROCR100 = add_ROCR100  # noqa : F405
 Chart.add_RSI = add_RSI  # noqa : F405, band range color, HL 30, HL 70
-# Chart.add_STOCH = add_STOCH  # noqa : F405, HL 20, HL 80
-# Chart.add_STOCHF = add_STOCHF  # noqa : F405
-# Chart.add_STOCHRSI = add_STOCHRSI  # noqa : F405
-Chart.add_TRIX = add_TRIX  # noqa : F405, + Signal
-# Chart.add_ULTOSC = add_ULTOSC  # noqa : F405
-# Chart.add_WILLR = add_WILLR  # noqa : F405
+Chart.add_STOCH = add_STOCH  # noqa : F405, HL 20, HL 80
+Chart.add_STOCHF = add_STOCHF  # noqa : F405
+Chart.add_STOCHRSI = add_STOCHRSI  # noqa : F405
+Chart.add_TRIX = add_TRIX  # noqa : F405, + Signal, area (HL 0)
+Chart.add_ULTOSC = add_ULTOSC  # noqa : F405, band range color, HL 30, HL 70
+Chart.add_WILLR = add_WILLR  # noqa : F405, band range color, HL 20, HL 80

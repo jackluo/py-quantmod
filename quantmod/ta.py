@@ -190,8 +190,8 @@ def add_MAMA(self, fastlimit=0.5, slowlimit=0.05,
     if 'color' in kwargs:
         colors = [kwargs['color']] * 2
 
-    mama = 'MAMA({}, {})'.format(str(fastlimit), str(slowlimit))
-    fama = 'FAMA({}, {})'.format(str(fastlimit), str(slowlimit))
+    mama = 'MAMA({},{})'.format(str(fastlimit), str(slowlimit))
+    fama = 'FAMA({},{})'.format(str(fastlimit), str(slowlimit))
     self.pri[mama] = dict(type=types[0], color=colors[0])
     self.pri[fama] = dict(type=types[1], color=colors[1])
     self.ind[mama], self.ind[fama] = talib.MAMA(self.df[self.cl].values,
@@ -226,7 +226,7 @@ def add_MAVP(self, periods, minperiod=2, maxperiod=30, matype=0,
                         "It should be Series or array."
                         .format(periods))
 
-    name = 'MAVP({}, {})'.format(str(minperiod), str(maxperiod))
+    name = 'MAVP({},{})'.format(str(minperiod), str(maxperiod))
     self.pri[name] = dict(type=type, color=color)
     self.ind[name] = talib.MAVP(self.df[self.cl].values,
                                 periods, minperiod, maxperiod, matype)
@@ -256,7 +256,7 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
     if 'color' in kwargs:
         colors = [kwargs['color']] * 2
 
-    name = 'BBands({},{},{})'.format(str(timeperiod),
+    name = 'BBANDS({},{},{})'.format(str(timeperiod),
                                      str(nbdevup),
                                      str(nbdevdn))
     ubb = name + '[Upper]'
@@ -285,7 +285,7 @@ def add_HT_TRENDLINE(self, timeperiod=20,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'HT Trendline'
+    name = 'HT_TRENDLINE'
     self.pri[name] = dict(type=type, color=color)
     self.ind[name] = talib.HT_TRENDLINE(self.df[self.cl].values)
 
@@ -301,7 +301,7 @@ def add_MIDPOINT(self, timeperiod=14,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'Midpoint({})'.format(str(timeperiod))
+    name = 'MIDPOINT({})'.format(str(timeperiod))
     self.pri[name] = dict(type=type, color=color)
     self.ind[name] = talib.MIDPOINT(self.df[self.cl].values)
 
@@ -317,7 +317,7 @@ def add_SAR(self, acceleration=0.02, maximum=0.20,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'SAR({}, {})'.format(str(acceleration), str(maximum))
+    name = 'SAR({},{})'.format(str(acceleration), str(maximum))
     self.pri[name] = dict(type=type, color=color)
     self.ind[name] = talib.SAR(self.df[self.hi].values,
                                self.df[self.lo].values,
@@ -338,14 +338,14 @@ def add_SAREXT(self, startvalue=0, offsetonreverse=0,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = ('SARExt({}, {}, {}, {},'
-            '{}, {}, {}, {})'.format(str(startvalue), str(offsetonreverse),
-                                     str(accelerationinitlong),
-                                     str(accelerationlong),
-                                     str(accelerationmaxlong),
-                                     str(accelerationinitshort),
-                                     str(accelerationshort),
-                                     str(accelerationmaxshort)))
+    name = ('SAREXT({},{},{},{},'
+            '{},{},{},{})'.format(str(startvalue), str(offsetonreverse),
+                                  str(accelerationinitlong),
+                                  str(accelerationlong),
+                                  str(accelerationmaxlong),
+                                  str(accelerationinitshort),
+                                  str(accelerationshort),
+                                  str(accelerationmaxshort)))
     self.pri[name] = dict(type=type, color=color)
     self.ind[name] = talib.SAREXT(self.df[self.hi].values,
                                   self.df[self.lo].values,
@@ -403,7 +403,7 @@ def add_AROON(self, timeperiod=14,
     if 'color' in kwargs:
         colors = [kwargs['color']] * 2
 
-    name = 'Aroon({})'.format(str(timeperiod))
+    name = 'AROON({})'.format(str(timeperiod))
     uaroon = name + ' [Up]'
     daroon = name + ' [Dn]'
     self.sec[uaroon] = dict(type=types[0], color=colors[0])
@@ -424,7 +424,7 @@ def add_AROONOSC(self, timeperiod=14,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'AroonOsc({})'.format(str(timeperiod))
+    name = 'AROONOSC({})'.format(str(timeperiod))
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.AROONOSC(self.df[self.hi].values,
                                     self.df[self.lo].values,
@@ -554,7 +554,7 @@ def add_MINUS_DI(self, timeperiod=14,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'DI({})[-]'.format(str(timeperiod))
+    name = 'MINUS_DI({})'.format(str(timeperiod))
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.MINUS_DI(self.df[self.hi].values,
                                     self.df[self.lo].values,
@@ -573,7 +573,7 @@ def add_PLUS_DI(self, timeperiod=14,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'DI({})[+]'.format(str(timeperiod))
+    name = 'PLUS_DI({})'.format(str(timeperiod))
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.PLUS_DI(self.df[self.hi].values,
                                    self.df[self.lo].values,
@@ -592,7 +592,7 @@ def add_MINUS_DM(self, timeperiod=14,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'DM({})[-]'.format(str(timeperiod))
+    name = 'MINUS_DM({})'.format(str(timeperiod))
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.MINUS_DM(self.df[self.hi].values,
                                     self.df[self.lo].values,
@@ -610,7 +610,7 @@ def add_PLUS_DM(self, timeperiod=14,
     if 'kind' in kwargs:
         type = kwargs['kind']
 
-    name = 'DM({})[+]'.format(str(timeperiod))
+    name = 'PLUS_DM({})'.format(str(timeperiod))
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.PLUS_DM(self.df[self.hi].values,
                                    self.df[self.lo].values,
@@ -642,7 +642,9 @@ def add_MACD(self, fastperiod=12, slowperiod=26, signalperiod=9,
     if 'color' in kwargs:
         colors = [kwargs['color']] * 3
 
-    name = 'MACD({}, {}, {})'.format(fastperiod, slowperiod, signalperiod)
+    name = 'MACD({},{},{})'.format(str(fastperiod),
+                                   str(slowperiod),
+                                   str(signalperiod))
     macd = name
     smacd = name + '[Sign]'
     hmacd = name + '[Hist]'
@@ -683,7 +685,9 @@ def add_MACDEXT(self, fastperiod=12, fastmatype=0,
     if 'color' in kwargs:
         colors = [kwargs['color']] * 3
 
-    name = 'MACDExt({}, {}, {})'.format(fastperiod, slowperiod, signalperiod)
+    name = 'MACDEXT({},{},{})'.format(str(fastperiod),
+                                      str(slowperiod),
+                                      str(signalperiod))
     macd = name
     smacd = name + '[Sign]'
     hmacd = name + '[Hist]'
@@ -692,10 +696,10 @@ def add_MACDEXT(self, fastperiod=12, fastmatype=0,
     self.sec[hmacd] = dict(type=types[2], color=colors[2], on=macd)
     (self.ind[macd],
      self.ind[smacd],
-     self.ind[hmacd]) = talib.MACD(self.df[self.cl].values,
-                                   fastperiod, fastmatype,
-                                   slowperiod, slowmatype,
-                                   signalperiod, signalmatype)
+     self.ind[hmacd]) = talib.MACDEXT(self.df[self.cl].values,
+                                      fastperiod, fastmatype,
+                                      slowperiod, slowmatype,
+                                      signalperiod, signalmatype)
 
 
 def add_MFI(self, timeperiod=14,
@@ -748,7 +752,7 @@ def add_PPO(self, fastperiod=12, slowperiod=26, matype=0,
     if 'kind' in kwargs:
         kwargs['type'] = kwargs['kind']
 
-    name = 'PPO({}, {})'.format(fastperiod, slowperiod)
+    name = 'PPO({},{})'.format(str(fastperiod), str(slowperiod))
     self.ind[name] = talib.PPO(self.df[self.cl].values,
                                fastperiod, slowperiod,
                                matype)
@@ -839,8 +843,127 @@ def add_RSI(self, timeperiod=14,
                                timeperiod)
 
 
+def add_STOCH(self, fastk_period=5, slowk_period=3,
+              slowk_matype=0, slowd_period=3, slowd_matype=0,
+              types=['line', 'line'],
+              colors=['primary', 'tertiary'],
+              **kwargs):
+    """Slow Stochastic Oscillator.
+
+    Note that the first argument of types and colors refers to Slow Stoch %K,
+    while second argument refers to Slow Stoch %D
+    (signal line of %K obtained by MA).
+
+    """
+    if not (self.has_high and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        kwargs['type'] = kwargs['kind']
+    if 'kinds' in kwargs:
+        types = kwargs['type']
+
+    if 'type' in kwargs:
+        types = [kwargs['type']] * 2
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 2
+
+    name = 'STOCH({},{},{})'.format(str(fastk_period),
+                                    str(slowk_period),
+                                    str(slowd_period))
+    slowk = name + r'[%k]'
+    slowd = name + r'[%d]'
+    self.sec[slowk] = dict(type=types[0], color=colors[0])
+    self.sec[slowd] = dict(type=types[1], color=colors[1], on=slowk)
+    self.ind[slowk], self.ind[slowd] = talib.STOCH(self.df[self.hi].values,
+                                                   self.df[self.lo].values,
+                                                   self.df[self.cl].values,
+                                                   fastk_period, slowk_period,
+                                                   slowk_matype, slowd_period,
+                                                   slowd_matype)
+
+
+def add_STOCHF(self, fastk_period=5, fastd_period=3, fastd_matype=0,
+               types=['line', 'line'],
+               colors=['primary', 'tertiary'],
+               **kwargs):
+    """Fast Stochastic Oscillator.
+
+    Note that the first argument of types and colors refers to Fast Stoch %K,
+    while second argument refers to Fast Stoch %D
+    (signal line of %K obtained by MA).
+
+    """
+    if not (self.has_high and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        kwargs['type'] = kwargs['kind']
+    if 'kinds' in kwargs:
+        types = kwargs['type']
+
+    if 'type' in kwargs:
+        types = [kwargs['type']] * 2
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 2
+
+    name = 'STOCHF({},{})'.format(str(fastk_period),
+                                  str(fastd_period))
+    fastk = name + r'[%k]'
+    fastd = name + r'[%d]'
+    self.sec[fastk] = dict(type=types[0], color=colors[0])
+    self.sec[fastd] = dict(type=types[1], color=colors[1], on=fastk)
+    self.ind[fastk], self.ind[fastd] = talib.STOCHF(self.df[self.hi].values,
+                                                    self.df[self.lo].values,
+                                                    self.df[self.cl].values,
+                                                    fastk_period, fastd_period,
+                                                    fastd_matype)
+
+
+def add_STOCHRSI(self, timeperiod=14,
+                 fastk_period=5, fastd_period=3, fastd_matype=0,
+                 types=['line', 'line'],
+                 colors=['primary', 'tertiary'],
+                 **kwargs):
+    """Stochastic Relative Strength Index.
+
+    Note that the first argument of types and colors refers to StochRSI %K
+    while second argument refers to StochRSI %D
+    (signal line of %K obtained by MA).
+
+    """
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        kwargs['type'] = kwargs['kind']
+    if 'kinds' in kwargs:
+        types = kwargs['type']
+
+    if 'type' in kwargs:
+        types = [kwargs['type']] * 2
+    if 'color' in kwargs:
+        colors = [kwargs['color']] * 2
+
+    name = 'STOCHRSI({},{},{})'.format(str(timeperiod),
+                                       str(fastk_period),
+                                       str(fastd_period))
+    fastk = name + r'[%k]'
+    fastd = name + r'[%d]'
+    self.sec[fastk] = dict(type=types[0], color=colors[0])
+    self.sec[fastd] = dict(type=types[1], color=colors[1], on=fastk)
+    self.ind[fastk], self.ind[fastd] = talib.STOCHRSI(self.df[self.cl].values,
+                                                      timeperiod,
+                                                      fastk_period,
+                                                      fastd_period,
+                                                      fastd_matype)
+
+
 def add_TRIX(self, timeperiod=15,
-             type='line', color='secondary', **kwargs):
+             type='area', color='secondary', **kwargs):
     """1-day Rate of Change of Triple Smooth EMA."""
 
     if not self.has_close:
@@ -854,3 +977,45 @@ def add_TRIX(self, timeperiod=15,
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.TRIX(self.df[self.cl].values,
                                 timeperiod)
+
+
+def add_ULTOSC(self, timeperiod=14, timeperiod2=14, timeperiod3=28,
+               type='line', color='secondary', **kwargs):
+    """Ultimate Oscillator."""
+
+    if not (self.has_high and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'ULTOSC({})'.format(str(timeperiod),
+                               str(timeperiod2),
+                               str(timeperiod3))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.ULTOSC(self.df[self.hi].values,
+                                  self.df[self.lo].values,
+                                  self.df[self.cl].values,
+                                  timeperiod,
+                                  timeperiod2,
+                                  timeperiod3)
+
+
+def add_WILLR(self, timeperiod=14,
+              type='line', color='secondary', **kwargs):
+    """Williams %R."""
+
+    if not (self.has_high and self.has_low and self.has_close):
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'WILLR({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.WILLR(self.df[self.hi].values,
+                                 self.df[self.lo].values,
+                                 self.df[self.cl].values,
+                                 timeperiod)
