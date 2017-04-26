@@ -837,3 +837,20 @@ def add_RSI(self, timeperiod=14,
     self.sec[name] = dict(type=type, color=color)
     self.ind[name] = talib.RSI(self.df[self.cl].values,
                                timeperiod)
+
+
+def add_TRIX(self, timeperiod=15,
+             type='line', color='secondary', **kwargs):
+    """1-day Rate of Change of Triple Smooth EMA."""
+
+    if not self.has_close:
+        raise Exception()
+
+    utils.kwargs_check(kwargs, VALID_TA_KWARGS)
+    if 'kind' in kwargs:
+        type = kwargs['kind']
+
+    name = 'TRIX({})'.format(str(timeperiod))
+    self.sec[name] = dict(type=type, color=color)
+    self.ind[name] = talib.TRIX(self.df[self.cl].values,
+                                timeperiod)
