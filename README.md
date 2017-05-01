@@ -19,31 +19,37 @@ Quantmod makes creating interactive financial charts easy and intuitive. Further
 #### Intuitive API
 
 Financial charting should not hinder your research and trading.
+
 Quantmod aims to provide the most user-friendly API so that you don't need to worry about making charts.
 
 #### Fully interactive financial charts
 
 Built on top of Plotly, Quantmod provides interactive, D3.js charting out of the box. No more Matplotlib images!
+
 Easily toggle indicators simply by clicking on them, infinitely zoom on any graph, choose preset date ranges and more.
 
 #### Pandas DataFrame integration
 
 Because Pandas is the lingua franca of Python data science, Quantmod is tightly based upon the DataFrame object.
+
 Easily switch from Series/DataFrame to Chart, and vice-versa.
 
 #### 50+ technical indicators and statistical tools
 
 From EMA, to RSI, to BBANDS, to ULTOSC, Quantmod has nearly every indicator out of the box.
+
 Indicators are implemented with custom bindings to industry standard Ta-Lib; Python-only technical implementations coming soon.
 
 #### Plotly Dash integration
 
 Quantmod integrates nicely with Dash, allowing you to build modern React webapps in pure Python.
+
 The stock market app above takes less than 5 minutes and 50 lines to make.
 
 #### Data acquisition engine
 
 Quantmod has end-of-day data acquisition functionality via get_symbol().
+
 Tick data acquisition for past month (via built-in scraping) coming soon.
 
 #### Theming engine
