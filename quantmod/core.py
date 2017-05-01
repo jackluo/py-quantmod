@@ -14,7 +14,7 @@ from .chart import Chart
 
 
 def get_symbol(ticker, src='yahoo', start='01/01/2010',
-               end="01/01/2015", to_frame=False):
+               end=dt.datetime.today(), to_frame=False):
     """Get symbols
 
     Currently just a wrapper over pandas_datareader.data.DataReader.
@@ -70,7 +70,7 @@ def get_symbol(ticker, src='yahoo', start='01/01/2010',
 
     if isinstance(start, six.string_types):
         pass
-    elif isinstance(start, dt.datetime):
+    elif isinstance(start, dt.datetime) or isinstance(start, dt.date):
         pass
     else:
         raise TypeError("Invalid start '{0}'. "
@@ -78,7 +78,7 @@ def get_symbol(ticker, src='yahoo', start='01/01/2010',
 
     if isinstance(end, six.string_types):
         pass
-    elif isinstance(end, dt.datetime):
+    elif isinstance(end, dt.datetime) or isinstance(end, dt.date):
         pass
     else:
         raise TypeError("Invalid end '{0}'. "
@@ -88,10 +88,12 @@ def get_symbol(ticker, src='yahoo', start='01/01/2010',
         raise TypeError("Invalid to_frame '{0}'. "
                         "It should be bool.".format(to_frame))
 
-    symbols = web.DataReader(ticker, src, start, end)
+    symbols = web.DataReader(ticker, data_source=src, start=start, end=end)
 
     if not to_frame:
         symbols = Chart(symbols, ticker=ticker, src=src, start=start, end=end)
+
+    return symbols
 
 
 def chart_series(chart, iplot=False, **kwargs):

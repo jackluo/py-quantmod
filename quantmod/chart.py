@@ -98,7 +98,7 @@ class Chart(object):
                 pass
             elif isinstance(start, six.string_types):
                 pass
-            elif isinstance(start, dt.dateime):
+            elif isinstance(start, dt.datetime) or isinstance(start, dt.date):
                 pass
             else:
                 raise TypeError("Invalid start '{0}'. "
@@ -113,7 +113,7 @@ class Chart(object):
                 pass
             elif isinstance(end, six.string_types):
                 pass
-            elif isinstance(end, dt.dateime):
+            elif isinstance(end, dt.datetime) or isinstance(end, dt.date):
                 pass
             else:
                 raise TypeError("Invalid end '{0}'. "

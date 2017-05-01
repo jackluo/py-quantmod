@@ -9,7 +9,7 @@ import pandas_datareader as web
 # In[]:
 
 ticker = 'AAPL'
-df = web.DataReader(ticker, data_source='yahoo')
+df = web.DataReader(ticker, data_source='yahoo', start='2016/01/01')
 df = df.tail(365)
 ch = qm.Chart(df, start='2015/01/01', end='2017/03/02')
 # ch = qm.get_symbol('AAPL')
@@ -81,4 +81,12 @@ ch.add_TRIX()
 ch.add_ULTOSC()
 ch.add_WILLR()
 
-ch.plot(kind='candlestick', volume=True, title='Full Test')
+ch.plot(kind='candlestick', volume=True,
+        title='Full Test', filename='full_test')
+
+
+import quantmod as qm
+ch = qm.get_symbol('QQQ', start='01/01/2016')
+ch.add_EMA(9)
+ch.add_RSI(14)
+ch.iplot()
