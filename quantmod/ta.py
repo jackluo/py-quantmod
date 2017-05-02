@@ -234,7 +234,7 @@ def add_MAVP(self, periods, minperiod=2, maxperiod=30, matype=0,
 
 def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
                types=['line_dashed_thin', 'line_dashed_thin'],
-               colors=['tertiary', 'grey'], **kwargs):
+               colors=['tertiary', 'grey_strong'], **kwargs):
     """Bollinger Bands.
 
     Note that the first argument of types and colors refers to upper and lower
@@ -264,8 +264,8 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
     lbb = name + '[Lower]'
     self.pri[ubb] = dict(type='line_' + types[0][5:],
                          color=colors[0])
-    self.pri[bb] = dict(type='area_' + types[1][5:],
-                        color=colors[1], fillcolor='fill')
+    self.pri[bb] = dict(type='line_' + types[1][5:],
+                        color=colors[1])
     self.pri[lbb] = dict(type='area_' + types[0][5:],
                          color=colors[0], fillcolor='fill')
     (self.ind[ubb],
