@@ -5,6 +5,8 @@ import dash
 import dash_core_components as core
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from flask_caching import Cache
+import os
 
 import quantmod as qm
 
@@ -19,6 +21,15 @@ app.css.append_css({
         "/2.0.4/skeleton.min.css"
     )
 })
+
+# Add caching
+cache = Cache(app.server, config={
+    # try 'filesystem' if you don't want to setup redis
+    'CACHE_TYPE': 'redis',
+    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', '127.0.0.1:6379')
+})
+timeout = 60 * 60  # 1 hour
+
 
 app.layout = html.Div(
     [
@@ -90,6 +101,7 @@ def display_ema_control(selected_values):
                                            Input('multi', 'value'),
                                            Input('rsa-slider', 'value'),
                                            Input('ema-slider', 'value')])
+@cache.memoize(timeout=timeout)
 def update_graph_from_dropdown(dropdown, multi, rsi_value, ema_value):
     print(rsi_value)
     print(ema_value)
