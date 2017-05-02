@@ -76,5 +76,66 @@ LIGHT_QM = dict(
 
 )
 
+# Dark Quantmod theme
+DARK_QM = dict(
 
-THEMES = {'light': LIGHT_QM}  #, 'dark': DARK_QM, 'light-qm': LIGHT_QM, 'dark-qm': DARK_QM}
+    colors = dict(
+        increasing = '#00FF00',
+        decreasing = '#FF9900',
+        border = DARK_PALETTE['grey25'],
+        primary = '#172585',
+        secondary = '#0D47EF',
+        tertiary = '#E13B30',
+        quaternary = '#87F35C',
+        grey = DARK_PALETTE['grey25'],
+        grey_light = DARK_PALETTE['grey15'],
+        grey_strong = DARK_PALETTE['grey40'],
+        fill = DARK_PALETTE['grey05'],
+        fill_light = DARK_PALETTE['grey02'],
+        fill_strong = DARK_PALETTE['grey10'],
+    ),
+
+    traces = dict(
+        line_thin = dict(width = 1,),
+        line_thick = dict(width = 4,),
+        line_dashed = dict(dash = 5,),
+        line_dashed_thin = dict(dash = 5, width = 1,),
+        line_dashed_thick = dict(dash = 5, width = 4,),
+        area_dashed = dict(dash = 5,),
+        area_dashed_thin = dict(dash = 5, width = 1,),
+        area_dashed_thick = dict(dash = 5, width = 4,),
+    ),
+
+    additions = dict(
+        xaxis = dict(
+            rangeslider = dict(
+                bordercolor = '#CCCCCC',
+                bgcolor = '#CCCCCC',
+                thickness = 0.1,
+            ),
+            rangeselector = dict(
+                bordercolor = '#C9C9C9',
+                bgcolor = '#C9C9C9',
+                activecolor = '#888888',
+            ),
+        ),
+        yaxis = dict(side = 'left',),
+    ),
+
+    layout = dict(
+        font = dict(
+            family = 'droid sans mono',
+            size = 12,
+            color = '#CCCCCC',
+        ),
+        plot_bgcolor = '#282828',
+        paper_bgcolor = '#252525',
+        legend = dict(
+            bgcolor = DARK_PALETTE['transparent'],
+        ),
+    ),
+
+)
+
+
+THEMES = {'light': LIGHT_QM, 'dark': DARK_QM}  # light-qm': LIGHT_QM, 'dark-qm': DARK_QM}
