@@ -22,10 +22,10 @@ LIGHT_QM = dict(
         increasing = '#00CC00',
         decreasing = '#FF7700',
         border = LIGHT_PALETTE['grey25'],
-        primary = '#172585',
-        secondary = '#0D47EF',
-        tertiary = '#E13B30',
-        quaternary = '#87F35C',
+        primary = '#252585',
+        secondary = '#0044FF',
+        tertiary = '#FF0000',
+        quaternary = '#00CC00',
         grey = LIGHT_PALETTE['grey25'],
         grey_light = LIGHT_PALETTE['grey15'],
         grey_strong = LIGHT_PALETTE['grey40'],
@@ -47,6 +47,8 @@ LIGHT_QM = dict(
 
     additions = dict(
         xaxis = dict(
+            color = '#444444',
+            tickfont = dict(color = '#222222',),
             rangeslider = dict(
                 bordercolor = '#CCCCCC',
                 bgcolor = '#CCCCCC',
@@ -58,14 +60,18 @@ LIGHT_QM = dict(
                 activecolor = '#888888',
             ),
         ),
-        yaxis = dict(side = 'left',),
+        yaxis = dict(
+            color = '#444444',
+            tickfont = dict(color = '#222222',),
+            side = 'left',
+            ),
     ),
 
     layout = dict(
         font = dict(
             family = 'droid sans mono',
             size = 12,
-            color = '#000000',
+            color = '#222222',
         ),
         plot_bgcolor = '#FFFFFF',
         paper_bgcolor = '#F3F3F3',
@@ -82,17 +88,17 @@ DARK_QM = dict(
     colors = dict(
         increasing = '#00FF00',
         decreasing = '#FF9900',
-        border = DARK_PALETTE['grey25'],
-        primary = '#172585',
-        secondary = '#0D47EF',
-        tertiary = '#E13B30',
-        quaternary = '#87F35C',
-        grey = DARK_PALETTE['grey25'],
-        grey_light = DARK_PALETTE['grey15'],
-        grey_strong = DARK_PALETTE['grey40'],
-        fill = DARK_PALETTE['grey05'],
-        fill_light = DARK_PALETTE['grey02'],
-        fill_strong = DARK_PALETTE['grey10'],
+        border = DARK_PALETTE['grey95'],
+        primary = '#11AAEE',
+        secondary = '#0084FF',
+        tertiary = '#FC0D1B',
+        quaternary = '#00FF00',
+        grey = DARK_PALETTE['grey75'],
+        grey_light = DARK_PALETTE['grey85'],
+        grey_strong = DARK_PALETTE['grey60'],
+        fill = DARK_PALETTE['grey90'],
+        fill_light = DARK_PALETTE['grey95'],
+        fill_strong = DARK_PALETTE['grey85'],
     ),
 
     traces = dict(
@@ -108,6 +114,8 @@ DARK_QM = dict(
 
     additions = dict(
         xaxis = dict(
+            color = '#999999',
+            tickfont = dict(color = '#CCCCCC',),
             rangeslider = dict(
                 bordercolor = '#CCCCCC',
                 bgcolor = '#CCCCCC',
@@ -119,7 +127,11 @@ DARK_QM = dict(
                 activecolor = '#888888',
             ),
         ),
-        yaxis = dict(side = 'left',),
+        yaxis = dict(
+            color = '#999999',
+            tickfont = dict(color = '#CCCCCC',),
+            side = 'left',
+        ),
     ),
 
     layout = dict(
@@ -128,8 +140,8 @@ DARK_QM = dict(
             size = 12,
             color = '#CCCCCC',
         ),
-        plot_bgcolor = '#282828',
-        paper_bgcolor = '#252525',
+        plot_bgcolor = '#252525',
+        paper_bgcolor = '#202020',
         legend = dict(
             bgcolor = DARK_PALETTE['transparent'],
         ),

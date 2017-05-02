@@ -12,12 +12,6 @@ ticker = 'AAPL'
 df = web.DataReader(ticker, data_source='yahoo', start='2016/01/01')
 df = df.tail(365)
 ch = qm.Chart(df, start='2015/01/01', end='2017/03/02')
-# ch = qm.get_symbol('AAPL')
-# ch.to_frame()
-
-# del df['Close']
-# del df['Adj Close']
-# del ch.df['Open']
 
 ch.has_open
 ch.has_high
