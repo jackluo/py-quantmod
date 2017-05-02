@@ -118,7 +118,9 @@ def update_graph_from_dropdown(dropdown, multi, rsi_value, ema_value):
         ch.add_BBANDS()
 
     # Return plot as figure
-    return ch.to_figure()
+    fig = ch.to_figure()
+    fig['layout']['width'] = '1300'
+    return fig
 
 
 # In[]:
