@@ -98,16 +98,12 @@ If you prefer learning by example, hands-on tutorials are coming soon.
 
 ## Getting started
 
-TBD
+See the start_here.ipynb notebook provided in the repository.
 
 ## Dash integration
 
-TBD
+See the dash_example notebooks provided in the repository.
 
 ## License
 
 MIT
-
-## Contributing
-
-TBD

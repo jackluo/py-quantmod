@@ -119,7 +119,7 @@ BASE_ADDITIONS = dict(
         ),
         # Range selector
         rangeselector = dict(
-            visible = False,
+            visible = True,
             bordercolor = _PLACEHOLDER,
             bgcolor = _PLACEHOLDER,
             activecolor = _PLACEHOLDER,

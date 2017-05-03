@@ -21,7 +21,8 @@ LIGHT_QM = dict(
     colors = dict(
         increasing = '#00CC00',
         decreasing = '#FF7700',
-        border = LIGHT_PALETTE['grey25'],
+        border_increasing = LIGHT_PALETTE['grey25'],
+        border_decreasing = LIGHT_PALETTE['grey25'],
         primary = '#252585',
         secondary = '#0044FF',
         tertiary = '#FF0000',
@@ -88,7 +89,8 @@ DARK_QM = dict(
     colors = dict(
         increasing = '#00FF00',
         decreasing = '#FF9900',
-        border = DARK_PALETTE['grey95'],
+        border_increasing = DARK_PALETTE['grey95'],
+        border_decreasing = DARK_PALETTE['grey95'],
         primary = '#11AAEE',
         secondary = '#0084FF',
         tertiary = '#FC0D1B',
@@ -117,14 +119,14 @@ DARK_QM = dict(
             color = '#999999',
             tickfont = dict(color = '#CCCCCC',),
             rangeslider = dict(
-                bordercolor = '#CCCCCC',
-                bgcolor = '#CCCCCC',
+                bordercolor = '#444444',
+                bgcolor = '#444444',
                 thickness = 0.1,
             ),
             rangeselector = dict(
-                bordercolor = '#C9C9C9',
-                bgcolor = '#C9C9C9',
-                activecolor = '#888888',
+                bordercolor = '#444444',
+                bgcolor = '#444444',
+                activecolor = '#666666',
             ),
         ),
         yaxis = dict(

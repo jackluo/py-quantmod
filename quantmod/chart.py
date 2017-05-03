@@ -347,7 +347,7 @@ class Chart(object):
 
     def to_figure(self, type=None, volume=None,
                   theme=None, layout=None,
-                  title=None, subtitle=None, hovermode=None,
+                  title=None, subtitle=None, log=None, hovermode=None,
                   legend=None, annotations=None, shapes=None,
                   dimensions=None, width=None, height=None, margin=None,
                   **kwargs):
@@ -364,7 +364,7 @@ class Chart(object):
                 Determine the chart type of the main trace. For candlestick
                 and OHLC bars Chart needs to have OHLC enabled.
             volume : bool
-                Toggle the diplay of a volume subplot in chart.
+                Toggle the diplay of a volume subplot in chart. Default True.
             theme : string
                 Quantmod theme.
             layout : dict or Layout
@@ -375,6 +375,8 @@ class Chart(object):
                 Chart title.
             subtitle : bool, default True
                 Toggle the display of last price and/or volume in chart.
+            log : bool
+                Toggle logarithmic y-axis. Default False.
             hovermode : {'x', 'y', 'closest', False}
                 Toggle how a tooltip appears on cursor hover.
             legend : dict, Legend or bool, default True
@@ -461,6 +463,9 @@ class Chart(object):
         if subtitle is None:
             subtitle = True
 
+        if log is None:
+            log = False
+
         if legend is None:
             legend = True
 
@@ -490,6 +495,11 @@ class Chart(object):
                             .format(volume))
 
         if not isinstance(subtitle, bool):
+            raise TypeError("Invalid subtitle'{0}'. "
+                            "It should be bool."
+                            .format(subtitle))
+
+        if not isinstance(log, bool):
             raise TypeError("Invalid subtitle'{0}'. "
                             "It should be bool."
                             .format(subtitle))
@@ -526,9 +536,9 @@ class Chart(object):
             # Colors
             if type == 'candlestick':
                 trace['increasing']['fillcolor'] = colors['increasing']
-                trace['increasing']['line']['color'] = colors['border']
+                trace['increasing']['line']['color'] = colors['border_increasing']   # noqa: E501
                 trace['decreasing']['fillcolor'] = colors['decreasing']
-                trace['decreasing']['line']['color'] = colors['border']
+                trace['decreasing']['line']['color'] = colors['border_decreasing']  # noqa: E501
 
             if type == 'ohlc':
                 trace['increasing']['line']['color'] = colors['increasing']
@@ -625,12 +635,18 @@ class Chart(object):
                     else colors['decreasing']
                     for i, value in enumerate(self.df[self.cl].values)
                 ]
+                border_color = [
+                    colors['border_increasing']
+                    if (value - self.df[self.op].values[i]) >= 0
+                    else colors['border_decreasing']
+                    for i, value in enumerate(self.df[self.cl].values)
+                ]
             else:
                 volume_color = colors['primary']
 
             if type == 'candlestick':
                 trace['marker']['color'] = volume_color
-                trace['marker']['line']['color'] = colors['border']
+                trace['marker']['line']['color'] = border_color
             else:
                 trace['marker']['color'] = volume_color
                 trace['marker']['line']['color'] = volume_color
@@ -717,6 +733,10 @@ class Chart(object):
         # Axis
         layout['xaxis'] = copy.deepcopy(additions['xaxis'])
         layout['yaxis'] = copy.deepcopy(additions['yaxis'])
+
+        layout['yaxis']['side'] = 'right'
+        if log:
+            layout['yaxis']['type'] = 'log'
 
         # Subaxis
 
@@ -820,7 +840,7 @@ class Chart(object):
 
     def plot(self, type=None, volume=None,
              theme=None, layout=None,
-             title=None, subtitle=None, hovermode=None,
+             title=None, subtitle=None, log=None, hovermode=None,
              legend=None, annotations=None, shapes=None,
              dimensions=None, width=None, height=None, margin=None,
              filename=None, online=None, **kwargs):
@@ -837,7 +857,9 @@ class Chart(object):
                 Determine the chart type of the main trace. For candlestick
                 and OHLC bars Chart needs to have OHLC enabled.
             volume : bool
-                Toggle the diplay of a volume subplot in chart.
+                Toggle the diplay of a volume subplot in chart. Default True.
+            log : bool
+                Toggle logarithmic y-axis. Default False.
             theme : string
                 Quantmod theme.
             layout : dict or Layout
@@ -848,6 +870,8 @@ class Chart(object):
                 Chart title.
             subtitle : bool, default True
                 Toggle the display of last price and/or volume in chart.
+            log : bool
+                Toggle logarithmic y-axis. Default False.
             hovermode : {'x', 'y', 'closest', False}
                 Toggle how a tooltip appears on cursor hover.
             legend : dict, Legend or bool, default True
@@ -892,7 +916,7 @@ class Chart(object):
         """
         figure = self.to_figure(type=type, volume=volume,
                                 theme=theme, layout=layout,
-                                title=title, subtitle=subtitle,
+                                title=title, subtitle=subtitle, log=log,
                                 hovermode=hovermode, legend=legend,
                                 annotations=annotations, shapes=shapes,
                                 dimensions=dimensions,
@@ -930,7 +954,7 @@ class Chart(object):
         else:
             return py.plot(figure, filename=filename)
 
-    def iplot(self, type=None, volume=None,
+    def iplot(self, type=None, volume=None, log=None,
               theme=None, layout=None,
               title=None, subtitle=None, hovermode=None,
               legend=None, annotations=None, shapes=None,
@@ -952,7 +976,9 @@ class Chart(object):
                 Determine the chart type of the main trace. For candlestick
                 and OHLC bars Chart needs to have OHLC enabled.
             volume : bool
-                Toggle the diplay of a volume subplot in chart.
+                Toggle the diplay of a volume subplot in chart. Default True.
+            log : bool
+                Toggle logarithmic y-axis. Default False.
             theme : string
                 Quantmod theme.
             layout : dict or Layout
@@ -963,6 +989,8 @@ class Chart(object):
                 Chart title.
             subtitle : bool, default True
                 Toggle the display of last price and/or volume in chart.
+            log : bool
+                Toggle logarithmic y-axis. Default False.
             hovermode : {'x', 'y', 'closest', False}
                 Toggle how a tooltip appears on cursor hover.
             legend : dict, Legend or bool, default True
@@ -1007,7 +1035,7 @@ class Chart(object):
         """
         figure = self.to_figure(type=type, volume=volume,
                                 theme=theme, layout=layout,
-                                title=title, subtitle=subtitle,
+                                title=title, subtitle=subtitle, log=log,
                                 hovermode=hovermode, legend=legend,
                                 annotations=annotations, shapes=shapes,
                                 dimensions=dimensions,

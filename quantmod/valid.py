@@ -14,7 +14,8 @@ VALID_BASE_COMPONENTS = {'base_colors', 'base_traces',
 VALID_THEME_COMPONENTS = {'colors', 'traces', 'additions', 'layout',}
 
 # Valid colors for base_colors or colors
-VALID_COLORS = {'increasing', 'decreasing', 'border',
+VALID_COLORS = {'increasing', 'decreasing',
+                'border_increasing', 'border_decreasing',
                 'primary', 'secondary', 'tertiary', 'quaternary',
                 'grey', 'grey_light', 'grey_strong',
                 'fill', 'fill_light', 'fill_strong',
