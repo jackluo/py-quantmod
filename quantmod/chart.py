@@ -10,6 +10,7 @@ plotting of OHLCV data with over 100 technical indicators.
 
 from __future__ import absolute_import
 
+import collections
 import copy
 import six
 import datetime as dt
@@ -138,8 +139,8 @@ class Chart(object):
         self.di = src['di']  # Not used currently
 
         self.ind = pd.DataFrame([], index=self.df.index)
-        self.pri = {}
-        self.sec = {}
+        self.pri = collections.OrderedDict()
+        self.sec = collections.OrderedDict()
 
     def __repr__(self):
         """Return representation of Chart object."""
