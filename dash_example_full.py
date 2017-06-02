@@ -97,17 +97,6 @@ functions = dir(qm.ta)[9:-4]
 functions = [dict(label=str(function[4:]), value=str(function))
              for function in functions]
 
-divs = []
-for function in functions:
-    name = function['label'].lower() + '-controls'
-    label = function['label'] + ' Parameters'
-    div = html.Div(
-        [html.Label(label), core.Input(id=function['label'].lower())],
-        id=name,
-        style={'display': 'none'}
-    )
-    divs.append(div)
-
 # Layout
 app.layout = html.Div(
     [
@@ -140,9 +129,6 @@ app.layout = html.Div(
                     },
                 ),
             ]
-        ),
-        html.Div(
-            divs
         ),
         html.Div(
             [html.Label('Custom Arguments:'), core.Input(id='arglist')],
