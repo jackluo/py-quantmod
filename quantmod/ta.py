@@ -274,7 +274,7 @@ def add_BBANDS(self, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0,
                                    timeperiod, nbdevup, nbdevdn, matype)
 
 
-def add_HT_TRENDLINE(self, timeperiod=20,
+def add_HT_TRENDLINE(self,
                      type='line', color='secondary', **kwargs):
     """Hilert Transform Instantaneous Trendline."""
 
