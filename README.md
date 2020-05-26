@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/jackwluo/py-quantmod/master/assets/banner.png"><br><br>
+  <img src="https://raw.githubusercontent.com/jackluo/py-quantmod/master/assets/banner.png"><br><br>
 </div>
 
 # Quantmod
