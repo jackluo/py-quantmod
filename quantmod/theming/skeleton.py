@@ -9,7 +9,7 @@ no space between assignment of named arguments.
 """
 # flake8: noqa
 
-_PLACEHOLDER = False
+_PLACEHOLDER = None
 
 # Color primitives
 BASE_COLORS = dict()

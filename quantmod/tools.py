@@ -10,6 +10,7 @@ import os
 import six
 import warnings
 import plotly
+import chart_studio.tools
 
 from . import auth
 from . import utils
@@ -245,6 +246,6 @@ def reset_config_file():
     ensure_local_files()
 
 
-set_credentials_file = plotly.tools.set_credentials_file
-get_credentials_file = plotly.tools.get_credentials_file
-reset_credentials_file = plotly.tools.reset_credentials_file
+set_credentials_file = chart_studio.tools.set_credentials_file
+get_credentials_file = chart_studio.tools.get_credentials_file
+reset_credentials_file = chart_studio.tools.reset_credentials_file
